@@ -15,13 +15,13 @@ Antes de empezar, asegúrate de tener los siguientes requisitos:
 
    - En sistemas **Windows**:
      ```bash
-     python -m venv venv
+     python -m venv env_pruebas
      .\venv\Scripts\activate
      ```
 
    - En sistemas **Linux/macOS**:
      ```bash
-     python3 -m venv venv
+     python3 -m venv enev_pruebas
      source venv/bin/activate
      ```
 
