@@ -18,14 +18,12 @@ Antes de empezar, asegúrate de tener los siguientes requisitos:
      python -m venv env_pruebas
      .\env_pruebas\Scripts\activate
      ```
-     * **Corrección:** El nombre de la carpeta del entorno virtual es `env_pruebas`, por lo que la ruta para activar debe coincidir.
-
+     
    - En sistemas **Linux/macOS**:
      ```bash
      python3 -m venv env_pruebas
      source env_pruebas/bin/activate
      ```
-     * **Corrección:** Para mantener la consistencia, te recomiendo usar el mismo nombre para el entorno virtual en ambos sistemas: `env_pruebas`.
 
 ### 1.2. **Activar entorno de manera rápida**
   - Con el fin de activar el entorno de una manera fácil se ha **creado** un alias dentro de `~/.bashrc` llamado `entorno`:
