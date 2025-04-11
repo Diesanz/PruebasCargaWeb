@@ -23,7 +23,18 @@ def get_connection():
         return None
 
 
-def select_db(query, args=(), one=False):
+def close_connection(connection):
+    """
+    Cierra conexión con la base de datos
+
+    parameters: 
+        -connection: objetito de tipo conexión a base de datos la cual se quiere cerrar
+    """
+    if connection: 
+        #si la conexión es válida se cierra conexión
+        connection.close()
+
+def select_db(query, args=(), one=False, conn=None):
     """Función destinada a realizar consultas SELECT en la base de datos.
 
     Keyword arguments:
@@ -38,7 +49,7 @@ def select_db(query, args=(), one=False):
     connection = None
 
     try:
-        connection = get_connection()
+        connection = conn
 
         with connection.cursor() as cursor:
             cursor.execute(query, args)
@@ -51,13 +62,10 @@ def select_db(query, args=(), one=False):
 
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
-    finally:
-        if connection: 
-            # Si la conexión es válida, se cierra la conexión
-            connection.close()
 
 
-def execute_db(query, args=()):
+
+def execute_db(query, args=(), conn=None):
     """Función destinada a ejecutar consultas que modifican la base de datos (INSERT, UPDATE, DELETE).
 
     Keyword arguments:
@@ -70,14 +78,11 @@ def execute_db(query, args=()):
     connection = None
 
     try:
-        connection = get_connection()
+        connection = conn
 
         with connection.cursor() as cursor:
             cursor.execute(query, args)
             connection.commit()  # Realiza el commit para asegurar que los cambios se guarden
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
-    finally:
-        if connection: 
-            # Si la conexión es válida, se cierra la conexión
-            connection.close()
+

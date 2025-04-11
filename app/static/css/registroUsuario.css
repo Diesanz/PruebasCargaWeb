@@ -1,0 +1,126 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0;
+    margin: 0;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(15, 123, 165);
+}
+header a{
+    width: 100%;
+    color: white;
+    margin: 25px;
+    text-decoration: none;
+}
+.material-symbols-outlined{
+    font-size: 40px;
+}
+
+.caja{
+    background: white;
+    width: 80%;
+    border-radius: 10px;
+    height: 90%;
+    display: block;
+    align-items: center;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.caja h2{
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+.caja p, .caja span{
+    text-align: center;
+    color: #555;
+}
+
+.caja .titulo{
+    text-align: left;
+    color: black;
+}
+
+.caja label{
+    display: block;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.caja input.input{
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+}
+
+.caja input.input:focus{
+    outline: solid 2px #09f;
+}
+
+.caja .redes{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn{
+    border: none;
+    padding: 15px 0;
+    width: 100%;
+    font-weight: bolder;
+    display: block;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn.btn-login{
+    background: black;
+    color: white;
+}
+
+.btn.btn-login:hover{
+    background: #333;
+    color: white;
+}
+
+.btn.btn-facebook{
+    background: rgb(10, 86, 216);
+    color: white;
+}
+
+.btn.btn-facebook:hover{
+    background: rgb(8, 69, 182);
+}
+
+.btn.btn-google{
+    background: white;
+    color: black;
+    border: solid 1px #ccc;
+}
+
+.btn.btn.btn-google:hover{
+    background: rgb(240, 240, 240);
+}
+
+.btn.btn-twitter{
+    background: rgb(10, 168, 216);
+    color: white;
+}
+
+.btn.btn.btn-twitter:hover{
+    background: rgb(8, 137, 177);
+}
+
+.caja .welcome-screen-container{
+    background: black;
+    height: 100%;
+    width: 50%;
+}
