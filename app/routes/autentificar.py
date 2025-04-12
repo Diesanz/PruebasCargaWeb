@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Blueprint
-from app.models.Usuario import Usuario
+from app.models.Usuario import Usuario, UsuarioDB
 from app.schemas.Usuario import usuario_schema
 from app.db.conexiondb import get_connection, close_connection, select_db, execute_db
 
@@ -24,4 +24,6 @@ def registro_post():
         return jsonify({"message": "El usuario con este DNI ya existe."}), 400
         #return render_template('registroUsuario.html', error="El usuario con este DNI ya existe.")
     
-    
+    UsuarioDB(nombre, dni, email, domicilio, password)
+    print(UsuarioDB.to_tuple())
+    return jsonify({"message": "El suario fue creado"})
