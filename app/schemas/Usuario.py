@@ -1,7 +1,7 @@
 
 def usuario_schema(usuario) -> dict:
     return{
-        "id": int(usuario["id"]) | None,
+        "id": int(usuario["id"]) or None,
         "nombre": usuario["nombre"],
         "dni": usuario["dni"],
         "email": usuario["email"],
@@ -10,7 +10,7 @@ def usuario_schema(usuario) -> dict:
 
 def usuario_schema_db(usuario) -> dict:
     return{
-        "id": int(usuario["id"]) | None,
+        "id": int(usuario["id"]) or  None,
         "nombre": usuario["nombre"],
         "dni": usuario["dni"],
         "email": usuario["email"],

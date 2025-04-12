@@ -5,9 +5,9 @@ from app.db.conexiondb import get_connection, close_connection, select_db, execu
 
 autentificar_usuarios = Blueprint('autentificar', __name__)
 
-def search_usuario(dni:str) -> Usuario:
-    query_db = "SELECT * FROM Usuario WHERE dni = %s"
-    users = select_db(query_db, (dni,), conn=get_connection(), one=True)
+def search_usuario(busqueda:str, valor:str) -> Usuario:
+    query_db = f"SELECT * FROM Usuario WHERE {busqueda} = %s"
+    users = select_db(query_db, (valor,), conn=get_connection(), one=True)
 
     return Usuario(**usuario_schema(users)) if users else None
 
@@ -20,10 +20,16 @@ def registro_post():
     domicilio = request.form.get('domicilio')
     password = request.form.get('password')
 
-    if type(search_usuario(dni)) == Usuario:
-        return jsonify({"message": "El usuario con este DNI ya existe."}), 400
+    if type(search_usuario("dni", email)) == Usuario or type(search_usuario("email", email)) == Usuario:
+        return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         #return render_template('registroUsuario.html', error="El usuario con este DNI ya existe.")
     
-    UsuarioDB(nombre, dni, email, domicilio, password)
-    print(UsuarioDB.to_tuple())
-    return jsonify({"message": "El suario fue creado"})
+    usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
+    
+    query = "INSERT INTO Usuario (nombre,dni,email,domicilio,password) VALUES (%s, %s, %s, %s, %s)"
+    success=execute_db(query, usuario.to_tuple(), conn=get_connection())
+    
+    if success:
+        return jsonify({"message": "El suario fue creado"}), 200
+    else:
+        return jsonify({"message": "Hubo un error al registrar el usuario."}), 500

@@ -63,7 +63,9 @@ def select_db(query, args=(), one=False, conn=None):
 
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
-
+    finally:
+        if connection:
+            connection.close()
 
 
 def execute_db(query, args=(), conn=None):
@@ -86,4 +88,6 @@ def execute_db(query, args=(), conn=None):
             connection.commit()  # Realiza el commit para asegurar que los cambios se guarden
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
-
+    finally:
+        if connection:
+            connection.close()

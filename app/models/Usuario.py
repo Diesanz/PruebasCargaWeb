@@ -1,7 +1,8 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class Usuario(BaseModel):
-    id: int | None
+    id: Optional[int]=None
     nombre: str
     dni: str
     email: str
@@ -12,9 +13,9 @@ class Usuario(BaseModel):
         return ( self.nombre, self.dni, self.email, self.domicilio)
 
 class UsuarioDB(Usuario):
-    fechaCreacion: str | None
+    fechaCreacion: Optional[str]=None
     password: str
 
     # Sobrescribir el método to_tuple para incluir los nuevos atributos
     def to_tuple(self):
-        return (self.id, self.nombre, self.dni, self.email, self.domicilio, self.fechaCreacion, self.password)
+        return (self.nombre, self.dni, self.email, self.domicilio, self.password)
