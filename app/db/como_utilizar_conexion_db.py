@@ -15,7 +15,6 @@ def add_user(conn=None):
     
     return f"✅ Usuario '{nombre}' agregado exitosamente!"
 
-
 def update_user(id, new_name, conn):
     query = "UPDATE Usuario SET nombre = %s WHERE id = %s"
     execute_db(query, (new_name, id), conn=conn)

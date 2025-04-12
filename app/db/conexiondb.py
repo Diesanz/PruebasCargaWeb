@@ -53,12 +53,13 @@ def select_db(query, args=(), one=False, conn=None):
 
         with connection.cursor() as cursor:
             cursor.execute(query, args)
-            result = cursor.fetchall()
 
-            if one:  # En caso de que solo se devuelva un solo resultado (por ejemplo, un usuario o un producto)
-                return result[0]
+            if one:
+                result = cursor.fetchone()  # Devuelve un solo diccionario
             else:
-                return result  # Devuelve una lista de resultados
+                result = cursor.fetchall()  # Lista de diccionarios
+
+            return result
 
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
