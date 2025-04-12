@@ -15,6 +15,6 @@ def usuario_schema_db(usuario) -> dict:
         "dni": usuario["dni"],
         "email": usuario["email"],
         "domicilio": usuario["domicilio"],
-        "fecha_creacion": usuario["fecha_creacion"] | None,
+        "fecha_creacion": usuario["fechaCreacion"] or None,
         "password": usuario["password"]
     }
