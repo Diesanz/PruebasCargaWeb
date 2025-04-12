@@ -86,8 +86,10 @@ def execute_db(query, args=(), conn=None):
         with connection.cursor() as cursor:
             cursor.execute(query, args)
             connection.commit()  # Realiza el commit para asegurar que los cambios se guarden
+            return True
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
+        return False
     finally:
         if connection:
             connection.close()

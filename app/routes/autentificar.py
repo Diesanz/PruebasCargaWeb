@@ -67,4 +67,4 @@ def login_post():
 @autentificar_usuarios.route('/me', methods=['GET'])
 @verificar_token
 def me():
-    return jsonify({"message": "ruta disponibleee"}), 200
+    return jsonify({"message": "ruta disponible"}), 200
