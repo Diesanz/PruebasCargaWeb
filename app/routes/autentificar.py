@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from app.models.Usuario import Usuario, UsuarioDB
 from app.schemas.Usuario import usuario_schema, usuario_schema_db
 from app.db.conexiondb import get_connection, close_connection, select_db, execute_db
+from app.utils.comprobar_token import verificar_token #importar el decorador del token
 
 autentificar_usuarios = Blueprint('autentificar', __name__)
 
@@ -57,7 +58,13 @@ def login_post():
         return jsonify({"message": "Email o contraseña incorrecto."}), 400
 
     #Creación de un token de autentificación
-    expire = datetime.utcnow() + timedelta(minutes=10) #establecer un tiempo de expiración
+    expire = datetime.utcnow() + timedelta(minutes=1) #establecer un tiempo de expiración
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
-    return jsonify({"token": token, "token_type":"bearer"}), 200 #añaddir el token en la sesion mediante javascript
+    return jsonify({"token": token, "token_type":"bearer"}), 200 #añadir el token en la sesion mediante javascript
+
+
+@autentificar_usuarios.route('/me', methods=['GET'])
+@verificar_token
+def me():
+    return jsonify({"message": "ruta disponibleee"}), 200
