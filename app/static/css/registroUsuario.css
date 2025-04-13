@@ -124,3 +124,12 @@ header a{
     height: 100%;
     width: 50%;
 }
+
+.mensaje-error {
+    color: red;
+    background-color: #ffe0e0;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}

@@ -12,23 +12,22 @@
 
         <div class="caja">
 
-            <h2>Bienvenido a EATTHIS!!</h2>
-            <p>Selecciona el metodo de autentificacion</p>
-
-            <form action="../IniciarSesion" method="GET">
+            <div id="mensaje-error" style="display:none; color: red;"></div>
+            <p>Login EATTHIS</p>
+            
+            <form id="loginForm">
                 
                 <p class="izquierda">
-                    <label for="username">Nombre de usuario</label>
-                    <input class="input" type="text" name="username" id="username">
+                    <label for="email">Correo electrónico</label>
+                    <input class="input" type="email" name="email" id="email">
                 </p>
-
+                
                 <p class="izquierda">
-                    <label for="username">Contraseña</label>
-                    <input class="input" type="password" name="password" id="username">
+                    <label for="password">Contraseña</label>
+                    <input class="input" type="password" name="password" id="password">
                 </p>
                 
                 
-
                 <div class="opciones">
                     <div>
                         Recuerdame
@@ -38,10 +37,10 @@
 
 
                 <p>
-                    <input type="submit" class="btn btn-login" name="btn-login" value="Log in">
+                    <input type="submit" class="btn btn-login" name="btn-login" value="Iniciar Sesion">
                 </p>
                 <p>
-                    <a href="registroUsuario.jsp" class="btn btn-login">Sign in</a>
+                    <a href="/registro" class="btn btn-login">Registrarse</a>
                 </p>
 
                 <div class="redes">
@@ -51,6 +50,7 @@
                     <button class="btn btn-twitter">Twitter</button>
                 </div>
             </form>
+            <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
         </div>
     </body>
 </html>

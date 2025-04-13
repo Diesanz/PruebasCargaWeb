@@ -93,3 +93,44 @@ def execute_db(query, args=(), conn=None):
     finally:
         if connection:
             connection.close()
+
+def procedure(procedimiento, args=(), conn=None):
+    """
+    Ejecuta un procedimiento almacenado en la base de datos y retorna el ID de un usuario.
+
+    Este método llama al procedimiento almacenado especificado en la base de datos,
+    pasa los argumentos proporcionados y obtiene el ID del usuario insertado
+    o cualquier otro valor que retorne el procedimiento. Si ocurre algún error,
+    realiza un rollback de la transacción.
+
+    Keyword arguments:
+    procedimiento -- el nombre del procedimiento almacenado a ejecutar (str)
+    args -- una tupla de parámetros que se pasan al procedimiento (por defecto es una tupla vacía)
+    conn -- una conexión a la base de datos. Si no se proporciona, se utilizará la conexión predeterminada.
+
+    Return:
+    id_usuario -- el ID del usuario (o el valor que se espera del procedimiento) si el procedimiento fue exitoso.
+    False -- si ocurre un error durante la ejecución del procedimiento.
+    """
+    
+    connection = None
+    id_usuario = None
+
+    try:
+        connection = conn
+
+        with connection.cursor() as cursor:
+            cursor.callproc(procedimiento, args)
+
+            result = cursor.fetchall()
+            if result:
+                id_usuario = result[0]['id']
+
+            connection.commit()
+            return id_usuario
+    except Exception as e:
+        print(f"Error al ejecutar la consulta: {e}")
+        return False
+    finally:
+        if connection:
+            connection.close()

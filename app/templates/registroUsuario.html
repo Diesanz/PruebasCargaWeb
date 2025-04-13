@@ -7,81 +7,57 @@
         <link rel="stylesheet" href="../static/css/registroUsuario.css">
     </head>
     <body>
-        <header><a class="material-symbols-outlined" href="../InicioSesion/inicioSesion.jsp">arrow_back</a></header>
+        <header><a class="material-symbols-outlined" href="/login">arrow_back</a></header>
 
         <div class="caja">
 
             <h2>Bienvenido a EATTHIS!!</h2>
             <p>Complete las siguietes casillas con sus datos personales</p>
 
-            <form action="../RegistrarNuevoUsuario" method="POST">
+            <form action="/registro" method="POST">
 
                 <p class="titulo">
-                    <label for="respuesta">Nombre de usuario</label>
-                    <input class="input" type="text" name="nombreUsuario" id="nombreUsuario" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Nombre</label>
+                    <label for="nombre">Nombre</label>
                     <input class="input" type="text" name="nombre" id="nombre" required>
                 </p>
-
+                
                 <p class="titulo">
-                    <label for="respuesta">Apellido 1</label>
-                    <input class="input" type="text" name="apellido1" id="apellido1" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Apellido 2</label>
-                    <input class="input" type="text" name="apellido2" id="apellido2" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Contraseña</label>
-                    <input class="input" type="password" name="contrasena" id="contrasena" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Repetir contraseña</label>
-                    <input class="input" type="password" name="repContrasena" id="repContrasena" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">DNI o NIE</label>
+                    <label for="dni">DNI o NIE</label>
                     <input class="input" type="text" name="dni" id="dni" required>
                 </p>
-
+                
                 <p class="titulo">
-                    <label for="respuesta">Domicilio</label>
+                    <label for="email">Correo electrónico</label>
+                    <input class="input" type="email" name="email" id="email" required>
+                </p>
+                
+                <p class="titulo">
+                    <label for="domicilio">Domicilio</label>
                     <input class="input" type="text" name="domicilio" id="domicilio" required>
                 </p>
-
+                
                 <p class="titulo">
-                    <label for="respuesta">Ciudad</label>
-                    <input class="input" type="text" name="ciudad" id="ciudad" required>
+                    <label for="password">Contraseña</label>
+                    <input class="input" type="password" name="password" id="password" required>
                 </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Codigo Postal</label>
-                    <input class="input" type="text" name="codpost" id="codpost" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Teléfono de contacto</label>
-                    <input class="input" type="tel" name="telefono" id="telefono" required>
-                </p>
-
-                <p class="titulo">
-                    <label for="respuesta">Correo electrónico</label>
-                    <input class="input" type="email" name="correo" id="correo" required>
-                </p>
-
-                <p>Revise que todos los datos estén correctos</p>
-
+                
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="mensaje-error">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Revisa que todos los campos sean correctos</p>
+                    {% endif %}
+                {% endwith %}
+            
+                
                 <p>
-                    <input type="submit" class="btn btn-login" name="btn-login" value="Sign in">
+                    <input type="submit" class="btn btn-login" name="btn-login" value="Registrarse">
                 </p>
-
+                
                 <div class="redes">
                     <span>Elige cualquier otro metodo de identificacion</span>
                     <button class="btn btn-google">Google</button>
