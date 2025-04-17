@@ -123,7 +123,7 @@ header .portatil nav .abajo ul li .link:hover{
     box-shadow: 0 0 10px rgba(0, 0, 0, .8);
 }
 #seccion1 .izquierda {
-    background-image: url(./imagenes/imagenesPagPrin/platoSaludable.jpg);
+    background-image: url(../img/pastacarbonara.jpg);
     background-size: cover;
     background-position: center ;
     height: 40vh;

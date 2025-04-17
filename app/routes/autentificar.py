@@ -3,7 +3,7 @@ import jwt
 from datetime import datetime, timedelta
 from app.models.Usuario import Usuario, UsuarioDB
 from app.schemas.Usuario import usuario_schema, usuario_schema_db
-from app.db.conexiondb import get_connection, close_connection, select_db, execute_db, procedure
+from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
 
 autentificar_usuarios = Blueprint('autentificar', __name__)
@@ -12,14 +12,16 @@ SECRET = 'mi_clave_secreta'
 ALGORITHM = 'HS256'  # Algoritmo de firma por defecto
 
 def search_usuario(busqueda:str, valor:str) -> Usuario:
+    conn = Conexion()
     query_db = f"SELECT * FROM Usuario WHERE {busqueda} = %s"
-    user = select_db(query_db, (valor,), conn=get_connection(), one=True)
+    user = conn.select_db(query_db, (valor,), one=True)
 
     return Usuario(**usuario_schema(user)) if user else None
 
 def search_usuario_db(email:str) -> UsuarioDB:
+    conn = Conexion()
     query_db = "SELECT * FROM Usuario WHERE email = %s"
-    user = select_db(query_db, (email,), conn=get_connection(), one=True)
+    user = conn.select_db(query_db, (email,), one=True)
 
     return UsuarioDB(**usuario_schema_db(user)) if user else None
 
@@ -73,11 +75,14 @@ def registro_post():
     
     usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
     
-    success_id=procedure('CreateUser', usuario.to_tuple(), conn=get_connection()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
+    conn = Conexion()
+    success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
     
     if success_id:
         query = "INSERT INTO Carrito (usuario_id) VALUES (%s)" #Crea el carrito para ese usuario
-        success_execution=execute_db(query, success_id, conn=get_connection())
+
+        conn = Conexion()
+        success_execution=conn.execute_db(query, success_id)
         
         if success_execution:
             return redirect(url_for('login'))

@@ -6,7 +6,7 @@ app = create_app()
 
 @app.route('/')
 def hello_world():
-    return (app.template_folder)
+    return render_template('index.html')
 
 @app.get('/login')
 def login():

@@ -1,136 +1,149 @@
 import pymysql
 
-def get_connection():
-    try:
+class Conexion:
+    """
+    Clase que gestiona la conexión y operaciones con una base de datos MySQL utilizando pymysql.
+    """
+
+    def __init__(self, host="localhost", port=3306, database="Carga_web", user="user_pr", password="Grupo6esi"):
         """
-        Establece una conexión con la base de datos MariaDB utilizando los parámetros proporcionados.
-                
-        return: Devuelve un objeto de tipo conexión a la base de datos si la conexión es exitosa.
-                Si ocurre un error, devuelve None.
+        Inicializa la configuración de conexión con los parámetros dados.
+
+        Parámetros:
+        - host (str): Dirección del servidor MySQL (por defecto: localhost)
+        - port (int): Puerto del servidor MySQL (por defecto: 3306)
+        - database (str): Nombre de la base de datos a la que conectarse
+        - user (str): Nombre del usuario con permisos en la base de datos
+        - password (str): Contraseña del usuario
+
+        Inicializa:
+        - self.connection_params (dict): Diccionario con los parámetros de conexión
+        - self.connection (pymysql.Connection | None): Objeto de conexión
         """
-        connection = pymysql.connect(
-            host= "localhost",
-            port= int(3306),
-            database= "Carga_web",
-            user= "user_pr",
-            password= "Grupo6esi",
-            charset='utf8mb4',  # Evita problemas de encoding
-            cursorclass=pymysql.cursors.DictCursor
-        )
-        return connection
-    except pymysql.MySQLError as e:
-        print("Error al conectarse a la base de datos:" + str(e))
-        return None
+        self.connection_params = {
+            "host": host,
+            "port": port,
+            "database": database,
+            "user": user,
+            "password": password,
+            "charset": 'utf8mb4',
+            "cursorclass": pymysql.cursors.DictCursor
+        }
+        self.connection = None
 
+    def get_connection(self):
+        """
+        Establece una conexión con la base de datos utilizando los parámetros definidos.
 
-def close_connection(connection):
-    """
-    Cierra conexión con la base de datos
+        Return:
+        - pymysql.Connection: Objeto de conexión activo si la conexión es exitosa
+        - None: Si ocurre un error al conectar
 
-    parameters: 
-        -connection: objetito de tipo conexión a base de datos la cual se quiere cerrar
-    """
-    if connection: 
-        #si la conexión es válida se cierra conexión
-        connection.close()
+        Excepciones:
+        - pymysql.MySQLError: Captura errores de conexión y los imprime
+        """
+        try:
+            self.connection = pymysql.connect(**self.connection_params)
+            return self.connection
+        except pymysql.MySQLError as e:
+            print("Error al conectarse a la base de datos:" + str(e))
+            self.connection = None
+            return self.connection
 
-def select_db(query, args=(), one=False, conn=None):
-    """Función destinada a realizar consultas SELECT en la base de datos.
+    def close_connection(self):
+        """
+        Cierra la conexión activa con la base de datos si existe.
+        """
+        if self.connection:
+            self.connection.close()
+            self.connection = None
 
-    Keyword arguments:
-    query -- consulta SQL que se ejecuta en la base de datos.
-    args -- parámetros que se deben sustituir en la consulta SQL (por defecto es una tupla vacía).
-    one -- si es True, devuelve solo un resultado (el primer elemento) en lugar de una lista de resultados.
+    def select_db(self, query: str, args: tuple = (), one: bool = False):
+        """
+        Ejecuta una consulta SELECT en la base de datos.
 
-    Return:
-    Si 'one' es True, devuelve un solo valor. Si 'one' es False, devuelve una lista de resultados.
-    """
-    
-    connection = None
+        Parámetros:
+        - query (str): Consulta SQL que se va a ejecutar (de tipo SELECT)
+        - args (tuple): Tupla de argumentos para la consulta parametrizada
+        - one (bool): Si es True devuelve solo un registro; si es False, todos los registros
 
-    try:
-        connection = conn
+        Return:
+        - dict | list[dict] | None: Resultado de la consulta (uno o varios diccionarios)
 
-        with connection.cursor() as cursor:
-            cursor.execute(query, args)
+        Excepciones:
+        - Exception: Captura errores en la ejecución de la consulta y los imprime
+        """
+        if not self.connection:
+            self.get_connection()
 
-            if one:
-                result = cursor.fetchone()  # Devuelve un solo diccionario
-            else:
-                result = cursor.fetchall()  # Lista de diccionarios
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, args)
+                result = cursor.fetchone() if one else cursor.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+        finally:
+            self.close_connection()
 
-            return result
+    def execute_db(self, query: str, args: tuple = ()):
+        """
+        Ejecuta una consulta de modificación (INSERT, UPDATE, DELETE) en la base de datos.
 
-    except Exception as e:
-        print(f"Error al ejecutar la consulta: {e}")
-    finally:
-        if connection:
-            connection.close()
+        Parámetros:
+        - query (str): Consulta SQL a ejecutar
+        - args (tuple): Tupla con los valores a insertar en la consulta
 
+        Return:
+        - bool: True si la operación fue exitosa, False si ocurrió algún error
 
-def execute_db(query, args=(), conn=None):
-    """Función destinada a ejecutar consultas que modifican la base de datos (INSERT, UPDATE, DELETE).
+        Excepciones:
+        - Exception: Captura errores en la ejecución y los imprime
+        """
+        if not self.connection:
+            self.get_connection()
 
-    Keyword arguments:
-    query -- consulta SQL que se ejecuta en la base de datos.
-    args -- parámetros que se deben sustituir en la consulta SQL (por defecto es una tupla vacía).
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, args)
+                self.connection.commit()
+                return True
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return False
+        finally:
+            self.close_connection()
 
-    Return:
-    No devuelve nada, pero se realiza un commit en la base de datos para aplicar cambios.
-    """
-    connection = None
+    def procedure(self, procedimiento: str, args: tuple = ()):
+        """
+        Ejecuta un procedimiento almacenado y devuelve el resultado esperado.
 
-    try:
-        connection = conn
+        Parámetros:
+        - procedimiento (str): Nombre del procedimiento almacenado a ejecutar
+        - args (tuple): Argumentos necesarios para el procedimiento
 
-        with connection.cursor() as cursor:
-            cursor.execute(query, args)
-            connection.commit()  # Realiza el commit para asegurar que los cambios se guarden
-            return True
-    except Exception as e:
-        print(f"Error al ejecutar la consulta: {e}")
-        return False
-    finally:
-        if connection:
-            connection.close()
+        Return:
+        - int | bool: Retorna el 'id' del usuario si se obtiene correctamente,
+                      o False si hubo un error en la ejecución
 
-def procedure(procedimiento, args=(), conn=None):
-    """
-    Ejecuta un procedimiento almacenado en la base de datos y retorna el ID de un usuario.
+        Excepciones:
+        - Exception: Captura errores en la ejecución del procedimiento
+        """
+        if not self.connection:
+            self.get_connection()
 
-    Este método llama al procedimiento almacenado especificado en la base de datos,
-    pasa los argumentos proporcionados y obtiene el ID del usuario insertado
-    o cualquier otro valor que retorne el procedimiento. Si ocurre algún error,
-    realiza un rollback de la transacción.
+        id_usuario = None
 
-    Keyword arguments:
-    procedimiento -- el nombre del procedimiento almacenado a ejecutar (str)
-    args -- una tupla de parámetros que se pasan al procedimiento (por defecto es una tupla vacía)
-    conn -- una conexión a la base de datos. Si no se proporciona, se utilizará la conexión predeterminada.
-
-    Return:
-    id_usuario -- el ID del usuario (o el valor que se espera del procedimiento) si el procedimiento fue exitoso.
-    False -- si ocurre un error durante la ejecución del procedimiento.
-    """
-    
-    connection = None
-    id_usuario = None
-
-    try:
-        connection = conn
-
-        with connection.cursor() as cursor:
-            cursor.callproc(procedimiento, args)
-
-            result = cursor.fetchall()
-            if result:
-                id_usuario = result[0]['id']
-
-            connection.commit()
-            return id_usuario
-    except Exception as e:
-        print(f"Error al ejecutar la consulta: {e}")
-        return False
-    finally:
-        if connection:
-            connection.close()
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.callproc(procedimiento, args)
+                result = cursor.fetchall()
+                if result:
+                    id_usuario = result[0]['id']  # Se espera que el procedimiento devuelva una fila con la clave 'id'
+                self.connection.commit()
+                return id_usuario
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return False
+        finally:
+            self.close_connection()

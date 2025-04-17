@@ -1,4 +1,11 @@
 
+async function logout(){
+    //eliminar el token
+    localStorage.removeItem('token');
+
+    window.location.href = '/login'; //redirigir al login
+}
+
 async function hacerLogin(login){
     login.addEventListener('submit', async(e) =>{
         e.preventDefault();
@@ -26,7 +33,7 @@ async function hacerLogin(login){
         })
         .then(data => {
             localStorage.setItem('authToken', data.token);
-            window.location.href = '/dashboard';
+            window.location.href = '/';
         })
         .catch(error => {
             // Aquí puedes mostrar el error con JS sin necesidad de recargar la página
@@ -40,8 +47,17 @@ async function hacerLogin(login){
 
 document.addEventListener('DOMContentLoaded', function(){
     const login = document.getElementById('loginForm');
+    const userIcon = document.getElementById('userIcon')
 
     if(login){
         hacerLogin(login)
+    }
+    
+    if(userIcon){
+        if(localStorage.getItem('authToken')){
+            userIcon.innerHTML = `
+            <img src="../static/img/arrozPollo.jpeg" alt="Usuario" style="width:32px; height:32px; border-radius:50%;">
+            `;
+        }
     }
 });
