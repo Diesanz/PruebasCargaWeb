@@ -56,8 +56,13 @@ document.addEventListener('DOMContentLoaded', function(){
     if(userIcon){
         if(localStorage.getItem('authToken')){
             userIcon.innerHTML = `
-            <img src="../static/img/arrozPollo.jpeg" alt="Usuario" style="width:32px; height:32px; border-radius:50%;">
+            <img src="../static/img/persona.jpg" alt="Usuario" style="width:32px; height:32px; border-radius:50%;">
             `;
         }
+        userIcon.addEventListener('click', function() {
+            if(!localStorage.getItem('authToken')){
+                window.location.href = '/login';
+            }
+        });        
     }
 });
