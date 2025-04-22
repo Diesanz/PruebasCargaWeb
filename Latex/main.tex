@@ -135,4 +135,93 @@
             \label{fig:web-map}
         \end{figure}
 
+\section{Locust}
+    Locust es una herramienta de código abierto escrita en Python para realizar pruebas de carga y rendimiento sobre sitios o aplicaciones web, APIs, o cualquier otro sistema que pueda ser probado mediante peticiones HTTP u otras.\\
+    
+    Debido a que está desarrollado en Python, lo hace una herramienta flexible, potente y fácil de entender capaz de ser un sistema distribuido y escalable que puede ejecutarse sobre varias máquinas. Además, dispone de una interfaz web en tiempo real que muestra métricas como el número de usuarios activos, número de peticiones por segundo, o tiempos de respuesta y tasas de error.\\
+    
+    Su principal función es generar tráfico simulado hacia el sistema para medir cómo se comporta bajo diferentes niveles de carga. Otras funcionalidades son:
+        \begin{itemize}
+            \item Identificar cuellos de botella en el rendimiento.
+            \item Evaluar la escalabilidad.
+            \item Optimizar el rendimiento.
+            \item Planificar la capacidad.
+            \item Validar la infraestructura.
+            \item Pruebas de estrés.
+            \item Pruebas de resistencia.
+        \end{itemize}
+
+\section{API}
+    API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
+    Los tipos de API son:
+        \begin{itemize}
+            \item Según su acceso:
+            \begin{itemize}
+                \item APIs abiertas (públicas): cualquier persona puede usarlas sin autenticación.
+                \item APIs restringidas (privadas): solo pueden usarlas ciertas aplicaciones o usuarios.
+            \end{itemize}
+            \item Según su arquitectura:
+            \begin{itemize}
+                \item RESTful APIs: usan HTTP y recursos estructurados como URLs.
+                \item SOAP: usan XML.
+            \end{itemize}
+        \end{itemize}
+    Los principales usos de las APIs son:
+        \begin{itemize}
+            \item Integración de servicios: permiten que diferentes servicios web y aplicaciones se conecten y compartan funcionalidades.
+            \item Desarrollo de aplicaciones modulares: son aplicaciones complejas divididas en módulos.
+            \item Acceso a datos y funcionalidades: exponen datos y funcionalidades específicas de una aplicación.
+            \item Automatización de tareas: permiten automatizar tareas para que no sea necesario la intervención humana.
+            \item Creación de nuevas aplicaciones y servicios: combinando funcionalidades de diferentes sistemas de manera sencilla.
+            \item Plataformas como servicio (PaaS): plataformas en la nube.
+            \item Microservicios: funcionalidades pequeñas en la arquitectura de microservicios.
+        \end{itemize}
+    Existen diferentes métodos HTTP, que son utilizados por las APIs:
+        \begin{itemize}
+            \item GET: usado para obtener datos del servidor.
+            \item POST: usado para enviar datos al servidor y crear un nuevo recurso.
+            \item PUT: usado para reemplazar completamente un recurso existente.
+            \item PATCH: usado para actualizar parcialmente un recurso.
+            \item DELETE: usado para eliminar un recurso.
+        \end{itemize}
+
+    \subsection{Endpoints de la práctica}
+        \begin{itemize}
+            \item Autenticación (Login y Registro)
+            \begin{itemize}
+                \item POST /api/login $\rightarrow$ verificar credenciales y devuelve un token o sesión.
+                \item POST /api/registro $\rightarrow$ crea una nueva cuenta de usuario.
+            \end{itemize}
+            \item Menú principal
+            \begin{itemize}
+                \item GET /api/menu $\rightarrow$ devuelve información general de la tienda y categorías de productos.
+            \end{itemize}
+            \item Selector de productos
+            \begin{itemize}
+                \item GET /api/productos $\rightarrow$ devuelve la lista de productos disponibles.
+                \item GET /api/productos/{id} $\rightarrow$ devuelve detalles de un producto específico.
+            \end{itemize}
+            \item Carrito de compra
+            \begin{itemize}
+                \item POST /api/carrito/agregar $\rightarrow$ agregar un producto al carrito.
+                \item GET /api/carrito $\rightarrow$ obtiene el estado actual del carrito.
+                \item DELETE /api/carrito/vaciar $\rightarrow$ vacía el carrito del usuario.
+            \end{itemize}
+            \item Listado de pedidos
+            \begin{itemize}
+                \item GET /api/pedidos $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
+                \item GET /api/pedidos/{id} $\rightarrow$ devuelve los detalles de un pedido específico.
+            \end{itemize}
+            \item Proceso de compra
+            \begin{itemize}
+                \item POST /api/checkout $\rightarrow$ procesa la compra y registra la venta.
+            \end{itemize}
+            \item Actualización de productos
+            \begin{itemize}
+                \item PUT /api/productos/{id} $\rightarrow$ actualiza completamente un producto.
+                \item PATCH /api/productos/{id} $\rightarrow$ modifica parcialmente un producto.
+            \end{itemize}
+        \end{itemize}
+
+
 \end{document}
