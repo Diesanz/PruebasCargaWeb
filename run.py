@@ -16,6 +16,9 @@ def login():
 def registro():
     return render_template('registroUsuario.html')
 
+@app.get('/carrito')
+def carrito():
+    return render_template('carrito.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

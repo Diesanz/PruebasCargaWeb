@@ -1,0 +1,294 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/*------------------
+    HEADER
+-------------------*/
+header{
+    color: white;
+    background-color: rgb(15, 123, 165);
+}
+
+
+header .movil{
+    display: none;
+    width: 100%;
+}
+header .movil nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+header .movil nav #bmenu{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    width: 0;
+
+    color: white;
+}
+header .movil nav a{
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px;
+
+    color: white;
+}
+header .movil nav .logo-movil a{
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+}
+.show{
+    display: flex !important;
+}
+header .movil .links{
+    display: none;
+    flex-direction: column;
+    position: relative;
+    z-index: 200;
+
+    background-color: rgb(15, 123, 165);
+}
+header .movil .links a{
+    font-size: 20px;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+
+    color: white;
+}
+header .movil .links a:hover{
+    font-size: 20px;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+
+    color: rgb(15, 123, 165);
+    background-color: white;
+}
+
+
+header .portatil {
+    width: 100%;
+}
+header .portatil nav .arriba{
+    text-align: center;
+}
+header .portatil nav a{
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px;
+
+    color: white;
+}
+header .portatil nav .arriba a{
+    font-size: 30px;
+}
+header .portatil nav .abajo{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+header .portatil nav .abajo ul{
+    display: contents;
+    position: relative;
+    list-style: none;
+    padding: 20px 15px 10px 15px;
+    text-decoration: none;
+    width: 25%;
+}
+header .portatil nav .abajo .iconos_portatil a{
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+}
+header .portatil nav .abajo ul li .link:hover{
+    text-decoration: underline;
+    color: white;
+}
+
+
+/*--------------------
+    FOOTER
+---------------------*/
+footer{
+    background-color: rgb(153, 153, 153);
+    padding: 33px;
+}
+footer .footerdiv{
+    display: flex;
+    width: 100%;
+}
+footer .footerdiv .grupo{
+    width: 100%;
+    text-align: center;
+}
+footer .footerdiv .grupo h4{
+    font-size: 20px;
+    color: black;
+    margin-bottom: 25px;
+    font-weight: 500;
+    border-bottom: 2px solid #0099ff;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+footer .footerdiv .grupo ul li{
+    list-style: none;
+}
+footer .footerdiv .grupo ul li a{
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+footer .footerdiv .grupo ul li a:hover{
+    color: #bbb;
+    padding-left: 5px;
+}
+
+/*--MODO PORTATIL----*/
+@media screen and (max-width: 1000px){
+    #seccion2 .secciondiv{
+        display: block;
+    }
+}
+
+
+/*--MODO MOVIL----*/
+@media screen and (max-width: 600px){
+    header .movil{
+        display: block;
+    }
+    header .portatil{
+        display: none;
+    }
+    footer .footerdiv{
+        display: block;
+    }
+}
+
+div#products-container{
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+}
+
+.container {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 50px;
+}
+
+.product {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.product img {
+  width: 25%;
+  margin: 10px;
+  border-radius: 10px;
+  margin-bottom:  5px;
+}
+
+p.money{
+    width: 20%;
+}
+
+.product-name {
+  width: 25%;
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.price {
+  margin-right: 20px;
+}
+
+.total {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 18px;
+  color: #333;
+}
+
+.quantity-selector {
+  margin-right: 20px;
+}
+
+.delete-product-btn {
+  margin-right: 20px;
+  width: 20%;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between; 
+}
+
+.delete-btn,
+.submit-btn,
+.select-all-btn,
+.deselect-all-btn,
+.delete-product-btn {
+  background-color: rgb(15, 123, 165);
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover,
+.submit-btn:hover,
+.select-all-btn:hover,
+.delete-product-btn:hover {
+  background-color: rgb(0, 98, 132);
+}
+
+.check-product{
+    border-color: rgb(15, 123, 165);
+    
+}
+
+.quantity-selector {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc ;
+    border-color:rgb(15, 123, 165);
+    border-radius: 4px;
+    appearance: none; 
+    background-position: right 10px center; /* Posición del icono */
+    background-size: 16px; /* Tamaño del icono */
+}
+
+/* Estilo para cuando el selector está enfocado */
+.quantity-selector:focus {
+    outline: none;
+    border-color: #007bff; 
+}
+
+.quantity-selector:disabled {
+    opacity: 0.5;
+    cursor: not-allowed; 
+}
+
+ .custom-tooltip {
+        position: absolute;
+        background-color: rgb(15, 123, 165);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 1000;
+        font-size: 0.75rem;
+}

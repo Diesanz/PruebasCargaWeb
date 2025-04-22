@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Static Shopping Cart</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="../static/css/carrito.css">
+</head>
+
+<body>
+    <header>
+        <div class="movil">
+            <nav>
+                <button id="bmenu"><span class="material-symbols-outlined">menu</span></button>
+                <div class="logo-portatil"><a href="/">EATTHIS!!</a></div>
+                <div class="link-movil">
+                    <a href="#" class="link"><span class="material-symbols-outlined">forum</span></a>
+                    <a href="#" class="link"><span class="material-symbols-outlined">shopping_cart</span></a>
+                    <a href="#" class="link"><span class="material-symbols-outlined">account_circle</span></a>
+                </div>
+            </nav>
+            <div class="links">
+                <a href="#">Menu</a>
+                <a href="#">Snacks</a>
+                <a href="#">Platos</a>
+                <a href="#">Rutinas</a>
+            </div>
+        </div>
+
+        <div class="portatil">
+            <nav>
+                <div class="arriba">
+                    <div class="logo-portatil"><a href="/">EATTHIS!!</a></div>
+                </div>
+                <div class="abajo">
+                    <div></div>
+                    <ul>
+                        <li><a href="#" class="link">Platos Equilibrados</a></li>
+                        <li><a href="#" class="link">Platos Veganos</a></li>
+                        <li><a href="#" class="link">Platos proteicos</a></li>
+                    </ul>
+                    <div class="iconos-portatil">
+                        <a href="#" class="link"><span class="material-symbols-outlined">forum</span></a>
+                        <a href="/carrito" class="link"><span class="material-symbols-outlined">shopping_cart</span></a>
+                        <a href="/login" class="link" id="userIcon">
+                            <span class="material-symbols-outlined">account_circle</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+            
+    <div class="container">
+        <h1>Cesta</h1>
+        <div id="products-container">
+            <div class="product">
+                <input type="checkbox" class="check-product"  id="#" nombreidentificadopr="#" precioidentificadopr="#" cantidadidentificadapr="#">
+                <img src="../static/img/albondigas.jpg">
+                <span class="product-name">Albondigas</span>
+                <p class="money">10€</p>
+                <button class="delete-product-btn" id="#" cantidad-identificada-Pr="#">Eliminar</button>
+            </div>
+            <div class="product">
+                <input type="checkbox" class="check-product"  id="#" nombreidentificadopr="#" precioidentificadopr="#" cantidadidentificadapr="#">
+                <img src="../static/img/almejasconalubias.jpg">
+                <span class="product-name">Almejas con alubias</span>
+                <p class="money">12€</p>
+                <button class="delete-product-btn" id="#" cantidad-identificada-Pr="#">Eliminar</button>
+            </div>
+        </div>
+            <div class="total">
+                <p>Precio final productos: <span class="price-final-Prs">22.00€</span></p>
+                <p>Gastos de gestión: <span class="price-envio">3.00 €</span></p>
+                <p>Total: <span class="price-total">25.00€</span></p>
+            </div>
+        <div class="buttons">
+            <div class="delete-select-buttons">
+                <button class="select-all-btn">Seleccionar todo</button>
+                <button class="delete-btn">Eliminar productos seleccionados</button>
+                <button class="deselect-all-btn">Quitar selección</button>
+            </div>
+            <button class="submit-btn">Tramitar pedido</button>
+        </div> 
+    </div>
+                    
+    <footer>
+        <div class="footerdiv">
+            <div class="grupo">
+                <h4>Descarga la app</h4>
+                <ul>
+                    <li><a href="#"><span class="material-symbols-outlined">ios</span>App Store</a></li>
+                    <li><a href="#"><span class="material-symbols-outlined">android</span>Play Store</a></li>
+                </ul>
+            </div>
+            <div class="grupo">
+                <h4>Opiniones y reseña</h4>
+                <ul>
+                    <li><a href="#"><span class="material-symbols-outlined">mark_as_unread</span>Enviar opinion</a></li>
+                </ul>
+            </div>
+            <div class="grupo">
+                <h4>Síguenos</h4>
+                <ul>
+                    <li><a href="#"><span class="material-symbols-outlined">raven</span>Twitter</a></li>
+                    <li><a href="#"><span class="material-symbols-outlined">nest_heat_link_gen_3</span>Instagram</a></li>
+                    <li><a href="#"><span class="material-symbols-outlined">youtube_activity</span>YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <script src="../main.js" type="module"></script>
+</body>
+</html>
