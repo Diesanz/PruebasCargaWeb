@@ -20,6 +20,10 @@ def registro():
 def carrito():
     return render_template('carrito.html')
 
+@app.get('/platos')
+def platos():
+    return render_template('platos.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
 

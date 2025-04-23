@@ -1,0 +1,307 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/*------------------
+    HEADER
+-------------------*/
+header{
+    color: white;
+    background-color: rgb(15, 123, 165);
+}
+
+
+header .movil{
+    display: none;
+    width: 100%;
+}
+header .movil nav{
+    display: flex;
+    align-items: left;
+    justify-content: space-between;
+}
+header .movil nav #bmenu{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    width: 0;
+
+    color: white;
+}
+header .movil nav a{
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px;
+
+    color: white;
+}
+header .movil nav .logo-movil a{
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
+}
+.show{
+    display: flex !important;
+}
+header .movil .links{
+    display: none;
+    flex-direction: column;
+    position: relative;
+    z-index: 200;
+
+    background-color: rgb(15, 123, 165);
+}
+header .movil .links a{
+    font-size: 20px;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+
+    color: white;
+}
+header .movil .links a:hover{
+    font-size: 20px;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+
+    color: rgb(15, 123, 165);
+    background-color: white;
+}
+
+
+header .portatil {
+    width: 100%;
+}
+header .portatil nav .arriba{
+    text-align: center;
+}
+header .portatil nav a{
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px;
+
+    color: white;
+}
+header .portatil nav .arriba a{
+    font-size: 30px;
+}
+header .portatil nav .abajo{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+header .portatil nav .abajo ul{
+    display: contents;
+    position: relative;
+    list-style: none;
+    padding: 20px 15px 10px 15px;
+    text-decoration: none;
+    width: 25%;
+}
+header .portatil nav .abajo .iconos_portatil a{
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+}
+header .portatil nav .abajo ul li .link:hover{
+    text-decoration: underline;
+    color: white;
+}
+
+#seccion1{
+    display: block;
+    margin: 10px;
+}
+
+#seccion1 .tipoPlatos {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    margin-bottom: 20px;
+}
+#seccion1 .platos{
+    display: grid;
+    margin-right: 15px;
+    grid-template-columns: 
+        repeat(
+            auto-fit,
+            minmax(240px, 1fr)
+        );
+        gap: 32px
+}
+#seccion1 .tipoPlatos{
+    border-bottom: 2px solid black;
+}
+#seccion1 .platos .plato{
+    width: 100%;
+    border-radius: 10px;
+    padding: 0;
+    margin-left: 10px;
+    background-color: rgba(200, 200, 200, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+    cursor:pointer;
+}
+
+#seccion1 .platos .plato img{
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    height: 35vh;
+}
+#seccion1 .platos .plato .nombre{
+    margin-top: 5px;
+    text-align: center;
+}
+
+#seccion1 .platos .plato .descripcion .precio{
+    text-align: center;
+    font-size: 18px;
+    margin-top: -20px;
+    margin-bottom: -25px;
+}
+
+#seccion1 .platos .plato .descripcion .nutrientes{
+    border: none;
+    border-radius: 30px; 
+    background-color: rgb(255, 255, 255);
+    
+}
+
+#seccion1 .platos .plato .descripcion .nutrientes .nutrientes1{
+    display: flex;
+    font-size: 13px;
+    gap: 9px;
+    justify-content: center;
+}
+#seccion1 .platos .plato .descripcion .nutrientes .nutrientes2{
+    font-size: 9px;
+    font-style: italic;
+    display: flex;
+    margin-top: -10px;
+    gap: 6px;
+    justify-content: center;
+}
+.botonCarro{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    margin-right: 15px;
+}
+.boton1 {
+    padding: 10px 20px; /* Ajusta el relleno del botón */
+    background-color: rgb(15, 123, 165); /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Elimina el borde */
+    border-radius: 20px; /* Añade bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar por encima del botón */
+    margin-top:4px;
+    width: 140%;
+    height: 80%;
+    margin: 10px;
+}
+
+/* Estilos cuando el cursor está sobre el botón */
+.boton1:hover {
+    background-color: white; /* Cambia el color de fondo al pasar el cursor */
+    color: rgb(15, 123, 165);
+}
+
+footer{
+    background-color: rgb(153, 153, 153);
+    padding: 33px;
+}
+footer .footerdiv{
+    display: flex;
+    width: 100%;
+}
+footer .footerdiv .grupo{
+    width: 100%;
+    text-align: center;
+}
+footer .footerdiv .grupo h4{
+    font-size: 20px;
+    color: black;
+    margin-bottom: 25px;
+    font-weight: 500;
+    border-bottom: 2px solid #0099ff;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+footer .footerdiv .grupo ul li{
+    list-style: none;
+}
+footer .footerdiv .grupo ul li a{
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+footer .footerdiv .grupo ul li a:hover{
+    color: #bbb;
+    padding-left: 5px;
+}
+
+.no-rutinas h2{
+    background-color: white;
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    unicode-bidi: isolate;
+  }
+
+/*--------------------
+  Inicio banner
+---------------------*/
+.banner {
+    background-color: white; /* Color de fondo */
+    color: rgb(15, 123, 165); /* Color del texto */
+    margin-top:  35px;
+    text-align: center; /* Alineación del texto */
+    width: 100%; /* Ancho completo */
+  
+}
+
+.banner button {
+    background-color: #dc3545; /* Color de fondo del botón */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre él */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.banner button:hover {
+    background-color: #c82333; /* Color de fondo más oscuro al pasar el cursor */
+}
+/*--------------------
+  Fin banner
+---------------------*/
+
+/*--MODO PORTATIL----*/
+@media screen and (max-width: 1000px){
+    
+}
+
+
+/*--MODO MOVIL----*/
+@media screen and (max-width: 600px){
+    header .movil{
+        display: block;
+    }
+    header .portatil{
+        display: none;
+    }
+    footer .footerdiv{
+        display: block;
+    }
+}
