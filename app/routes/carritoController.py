@@ -9,14 +9,79 @@ from app.utils.comprobar_token import verificar_token #importar el decorador del
 
 carrito = Blueprint('carritoController', __name__, url_prefix="/api/carrito")
 
-#añadir funcion getProducto
-
 def get_id_carrito_usuario(usuario_id: str):
     query_db = "SELECT id FROM Carrito WHERE usuario_id = %s"
     conn = Conexion()
     id_carrito = conn.select_db(query_db, (usuario_id,), one=True)
 
+    if not id_carrito:
+        return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 
+
     return id_carrito['id']
+
+def get_datos_producto(id_producto: str): #cambiar esto para que devuelva un objeto
+    query_db = "SELECT nombre, precio FROM Producto WHERE id = %s"
+    conn = Conexion()
+    producto = conn.select_db(query_db, (id_producto,), one=True)
+
+    if not producto:
+        return jsonify({"error": "Producto no encontrado."}), 404
+
+    return producto
+
+def get_carrito_items_usuario(usuario_id: str) -> Carrito:
+    query_db = "SELECT * FROM Carrito WHERE usuario_id = %s"
+    conn = Conexion()
+    carrito = conn.select_db(query_db, (usuario_id,), one=True)
+    
+    #obtner los items
+    query_db_items = "SELECT * FROM CarritoItem WHERE carrito_id = %s"
+    conn = Conexion()
+    items = conn.select_db(query_db_items, (carrito['id'],), one=False)
+    
+    lista_items = [ItemCarrito(**item_carrito_schema(i)) for i in items]
+   
+    return Carrito(**carrito_schema(carrito, lista_items))
+
+@carrito.route('/', methods=['GET'])
+@verificar_token
+def get_items_carrito(usuario_id):
+    carrito = get_carrito_items_usuario(usuario_id)
+    if isinstance(carrito, Carrito):
+        # Obtener el total del carrito
+        total_carrito = carrito.getTotalCarrito()
+
+        # Convertir los ítems a JSON usando el esquema
+        items_json = [item_carrito_schema(item, True) for item in carrito.items] #indicar que se van a para al schema objetos
+
+        # Crear el objeto de respuesta con el total y los ítems
+        response_data = {
+            "total": total_carrito,  # Total con dos decimales
+            "items": items_json  # Lista de ítems convertidos con el esquema
+        }
+
+        return jsonify(response_data)
+    
+    return jsonify({"error": "Carrito no encontrado"}), 404
+
+@carrito.route('/vaciar', methods=['DELETE'])
+@verificar_token
+def delete_items_carrito(usuario_id):
+    carrito = get_carrito_items_usuario(usuario_id)
+    
+    if isinstance(carrito, Carrito):
+        carrito_id = carrito.id
+
+        # Conexión a la base de datos y eliminación de los ítems
+        conn = Conexion()
+        query_db = "DELETE FROM CarritoItem WHERE carrito_id = %s"
+        borrado_exitoso = conn.execute_db(query_db, (carrito_id,))
+
+        if borrado_exitoso:
+            return jsonify({"message": "Carrito vaciado exitosamente"}), 200
+
+    return jsonify({"error": "No se encontró el carrito del usuario"}), 404
+
 
 @carrito.route('/agregar', methods=['POST'])
 @verificar_token
@@ -37,51 +102,23 @@ def add_item_carrito(usuario_id):
         return jsonify({"error": "El id_producto es obligatorio."}), 400
 
     # Paso 2: Consultar la base de datos para obtener el producto
-    query_db = "SELECT nombre, precio FROM Producto WHERE id = %s"
-    conn = Conexion()
-    producto = conn.select_db(query_db, (id_producto,), one=True)
+    producto = get_datos_producto(id_producto)
 
-    if not producto:
-        return jsonify({"error": "Producto no encontrado."}), 404
-
-    # Extraemos los datos del producto
-    nombre = producto['nombre']
-    precio = producto['precio']
-
-    # Paso 3: Obtener el ID del carrito del usuario
-    id_carrito = get_id_carrito_usuario(usuario_id)
-
-    if not id_carrito:
-        return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 #sustituir por un pocedimiento qaue se encarge de todo
-
-    # Paso 4: Verificar si el producto ya existe en el carrito
-    query_check = "SELECT cantidad FROM CarritoItem WHERE carrito_id = %s AND producto_id = %s"
-    item_existente = conn.select_db(query_check, (id_carrito, id_producto), one=True)
-
-    if item_existente:
-        # Si el producto ya está en el carrito, se actualiza la cantidad
-        nueva_cantidad = item_existente['cantidad'] + 1
-        query_update = "UPDATE CarritoItem SET cantidad = %s WHERE carrito_id = %s AND producto_id = %s"
-        conn.execute_db(query_update, (nueva_cantidad, id_carrito, id_producto))
-        message = "Producto actualizado en el carrito."
-    else:
-        # Si el producto no está en el carrito, se agrega un nuevo ítem
-        query_insert = "INSERT INTO CarritoItem (carrito_id, producto_id, nombre, cantidad, precio) VALUES (%s, %s, %s, %s, %s)"
-        conn.execute_db(query_insert, (id_carrito, id_producto, nombre, 1, precio))
-        message = "Producto agregado al carrito exitosamente."
-
-    # Crear el objeto de ItemCarritoDB y devolver el resultado
     item_carrito_db = ItemCarritoDB(
         producto_id=id_producto,
-        nombre=nombre,
+        nombre=producto['nombre'],
         cantidad=1,
-        precio=precio,
-        carrito_id=id_carrito
+        precio=producto['precio'],
+        carrito_id=get_id_carrito_usuario(usuario_id)
     )
+
+    # Paso 3: Añadir item al carrito o actualizar su cantidad
+    conn = Conexion()
+    success_id=conn.procedure('AddOrUpdateItemCarrito', item_carrito_db.to_tuple())
 
     # Devolver el ítem agregado o actualizado como una respuesta JSON
     return jsonify({
-        "message": message,
+        "message": "Item añadido al carrito",
         "item": item_carrito_db.dict()  # Devuelve los datos del ítem recién agregado o actualizado
     }), 200
 

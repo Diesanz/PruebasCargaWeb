@@ -1,11 +1,13 @@
 from flask import request, jsonify
+from functools import wraps
 import jwt
 
 SECRET = 'mi_clave_secreta' 
 ALGORITHM = 'HS256'
 
 def verificar_token(f):
-    def wraps(*args, **kwargs):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         token = request.headers.get('Authorization')  # Obtener el token del header
         if token:
             try:
@@ -20,4 +22,4 @@ def verificar_token(f):
         else:
             return jsonify({"message": "Token no proporcionado."}), 401
     
-    return wraps
+    return wrapper

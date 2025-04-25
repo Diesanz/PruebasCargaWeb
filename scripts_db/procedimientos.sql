@@ -3,10 +3,12 @@ CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `AddOrUpdateItemCarrito`(
     IN p_carrito_id INT,
     IN p_producto_id INT,
     IN p_nombre VARCHAR(255),
+    IN p_cantidad INT,
     IN p_precio DECIMAL(10,2)
 )
 BEGIN
     DECLARE cantidad_existente INT;
+    DECLARE id_item INT;
 
     -- Verificamos si el producto ya está en el carrito
     SELECT cantidad INTO cantidad_existente
@@ -16,13 +18,16 @@ BEGIN
     IF cantidad_existente IS NOT NULL THEN
         -- Si el producto ya está en el carrito, actualizamos la cantidad
         UPDATE CarritoItem
-        SET cantidad = cantidad + 1
+        SET cantidad = cantidad_existente + 1
         WHERE carrito_id = p_carrito_id AND producto_id = p_producto_id;
     ELSE
         -- Si el producto no está en el carrito, lo insertamos
         INSERT INTO CarritoItem (carrito_id, producto_id, nombre, cantidad, precio)
-        VALUES (p_carrito_id, p_producto_id, p_nombre, 1, p_precio);
+        VALUES (p_carrito_id, p_producto_id, p_nombre, p_cantidad, p_precio);
     END IF;
+
+    SELECT id INTO id_item FROM CarritoItem WHERE carrito_id = p_carrito_id AND producto_id = p_producto_id;
+    
 END
 
 DROP PROCEDURE CreateUser;

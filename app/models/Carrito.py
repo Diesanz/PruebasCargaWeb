@@ -6,7 +6,7 @@ class Carrito(BaseModel):
     id: Optional[int]=None
     usuario_id: int
     #estado: str
-    items: List[ItemCarrito]
+    items: Optional[List[ItemCarrito]] = None
 
     # Método para convertir el objeto en una tupla
     def to_tuple(self):
@@ -16,6 +16,7 @@ class Carrito(BaseModel):
         sumaTotal = 0.0
         for item in self.items:
             sumaTotal += item.subtotal()
+        return round(sumaTotal, 2)
     
     def vaciarCarrito(self):
         self.items = []
