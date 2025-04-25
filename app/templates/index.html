@@ -4,27 +4,12 @@
     <meta charset="UTF-8">
     <title>Inicio</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 
 <body>
     <header>
-        <div class="movil">
-            <nav>
-                <button id="bmenu"><span class="material-symbols-outlined">menu</span></button>
-                <div class="logo-portatil"><a href="/">EATTHIS!!</a></div>
-                <div class="link-movil">
-                    <a href="#" class="link"><span class="material-symbols-outlined">forum</span></a>
-                    <a href="/carrito" class="link"><span class="material-symbols-outlined">shopping_cart</span></a>
-                    <a href="/login" class="link"><span class="material-symbols-outlined">account_circle</span></a>
-                </div>
-            </nav>
-            <div class="links">
-                <a href="/platos">Menu</a>
-                <a href="/platos">Platos</a>
-                <a href="/platos">Snacks</a>
-            </div>
-        </div>
+
 
         <div class="portatil">
             <nav>
@@ -39,9 +24,9 @@
                         <li><a href="/platos" class="link">Snacks</a></li>
                     </ul>
                     <div class="iconos-portatil">
-                        <a href="#" class="link"><span class="material-symbols-outlined">forum</span></a>
-                        <a href="/carrito" class="link"><span class="material-symbols-outlined">shopping_cart</span></a>
-                        <a href="/login" class="link" id="userIcon">
+                        <a class="link"><span class="material-symbols-outlined">forum</span></a>
+                        <a href=/api/carrito class="link" id="carrito"><span class="material-symbols-outlined">shopping_cart</span></a>
+                        <a href=# class="link" id="userIcon">
                             <span class="material-symbols-outlined">account_circle</span>
                         </a>
                     </div>

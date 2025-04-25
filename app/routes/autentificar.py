@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint, render_template, redirect, url_for, flash
+from flask import Flask, request, jsonify, Blueprint, render_template, redirect, url_for, flash, make_response
 import jwt
 from datetime import datetime, timedelta
 from app.models.Usuario import Usuario, UsuarioDB
@@ -25,10 +25,29 @@ def search_usuario_db(email:str) -> UsuarioDB:
 
     return UsuarioDB(**usuario_schema_db(user)) if user else None
 
+# Función para verificar si el token es válido (solo para el login)
+def verificar_token_login():
+    token = request.cookies.get('authToken')
+    if token:
+        try:
+            token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
+            return token_decode  # Token válido, devuelve la decodificación
+        except jwt.ExpiredSignatureError:
+            return None  # Token expirado
+        except jwt.InvalidTokenError:
+            return None  # Token inválido
+    return None  # No hay token
+
 #Endpoit para obtener el html del login y del registro
 @autentificar_usuarios.route('/login', methods=['GET'])
 def login():
-    return render_template('inicioSesion.html')
+    # Verificar si el usuario ya está autenticado
+    if verificar_token_login():
+        # Si el token es válido, redirigir a la página principal o cualquier otra página
+        return redirect('/')  # Cambia '/' por la página a la que deseas redirigir
+    else:
+        # Si no hay token o el token es inválido, mostrar la página de inicio de sesión
+        return render_template('inicioSesion.html')
 
 @autentificar_usuarios.route('/registro', methods=['GET'])
 def registro():
@@ -79,7 +98,7 @@ def registro_post():
     if type(search_usuario("dni", email)) == Usuario or type(search_usuario("email", email)) == Usuario:
         #return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         flash("El usuario con este DNI o email ya existe.")
-        return redirect(url_for('registro'))
+        return redirect(url_for('autentificar.registro'))
     
     usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
     
@@ -93,7 +112,7 @@ def registro_post():
         success_execution=conn.execute_db(query, success_id)
         
         if success_execution:
-            return redirect(url_for('login'))
+            return redirect(url_for('autentificar.login'))
     
     return jsonify({"message": "Hubo un error al registrar el usuario."}), 500
 
@@ -136,7 +155,10 @@ def login_post():
     expire = datetime.utcnow() + timedelta(minutes=40) #establecer un tiempo de expiración
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
-    return jsonify({"token": token, "token_type":"bearer"}), 200 #añadir el token en la sesion mediante javascript
+    resp = make_response(jsonify({"message": "Autenticado exitosamente."}), 200)
+    resp.set_cookie('authToken', token, httponly=True, secure=True,  samesite='Strict')
+
+    return resp
 
 
 @autentificar_usuarios.route('/me', methods=['GET'])

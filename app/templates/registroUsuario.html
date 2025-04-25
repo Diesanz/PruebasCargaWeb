@@ -4,17 +4,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Registro Usuario</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <link rel="stylesheet" href="../static/css/registroUsuario.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/registroUsuario.css') }}">
     </head>
     <body>
-        <header><a class="material-symbols-outlined" href="/login">arrow_back</a></header>
+        <header><a class="material-symbols-outlined" href="/api/login">arrow_back</a></header>
 
         <div class="caja">
 
             <h2>Bienvenido a EATTHIS!!</h2>
             <p>Complete las siguietes casillas con sus datos personales</p>
 
-            <form action="/registro" method="POST">
+            <form action="/api/registro" method="POST">
 
                 <p class="titulo">
                     <label for="nombre">Nombre</label>

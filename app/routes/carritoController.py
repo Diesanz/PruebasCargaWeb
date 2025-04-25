@@ -33,7 +33,7 @@ def get_carrito_items_usuario(usuario_id: str) -> Carrito:
     query_db = "SELECT * FROM Carrito WHERE usuario_id = %s"
     conn = Conexion()
     carrito = conn.select_db(query_db, (usuario_id,), one=True)
-    
+
     #obtner los items
     query_db_items = "SELECT * FROM CarritoItem WHERE carrito_id = %s"
     conn = Conexion()
@@ -46,23 +46,17 @@ def get_carrito_items_usuario(usuario_id: str) -> Carrito:
 @carrito.route('/', methods=['GET'])
 @verificar_token
 def get_items_carrito(usuario_id):
+    print(usuario_id)
     carrito = get_carrito_items_usuario(usuario_id)
+    print(carrito)
     if isinstance(carrito, Carrito):
-        # Obtener el total del carrito
         total_carrito = carrito.getTotalCarrito()
+        items_json = [item_carrito_schema(item, True) for item in carrito.items]
+        
+        return render_template("carrito.html", items=items_json, total=total_carrito)
 
-        # Convertir los ítems a JSON usando el esquema
-        items_json = [item_carrito_schema(item, True) for item in carrito.items] #indicar que se van a para al schema objetos
+    return render_template("index.html", error="Carrito no encontrado", items=[], total=0)
 
-        # Crear el objeto de respuesta con el total y los ítems
-        response_data = {
-            "total": total_carrito,  # Total con dos decimales
-            "items": items_json  # Lista de ítems convertidos con el esquema
-        }
-
-        return jsonify(response_data)
-    
-    return jsonify({"error": "Carrito no encontrado"}), 404
 
 @carrito.route('/vaciar', methods=['DELETE'])
 @verificar_token

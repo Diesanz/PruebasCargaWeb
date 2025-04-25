@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify,url_for, redirect
 from functools import wraps
 import jwt
 
@@ -8,18 +8,22 @@ ALGORITHM = 'HS256'
 def verificar_token(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        token = request.headers.get('Authorization')  # Obtener el token del header
+        # Obtener el token desde las cookies
+        token = request.cookies.get('authToken')  # Obtener el token de la cookie
+        
         if token:
             try:
-                token = token.split(" ")[1]  # Eliminar 'Bearer' del token
-                token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])  # Verificar el token
+                # Verificar el token
+                token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
                 usuario_id = token_decode['id']
-                return f(usuario_id,*args, **kwargs)  # Permitir acceso si es válido y devuelve el id de usuario
+                
+                # Permitir acceso si es válido y pasa el id de usuario
+                return f(usuario_id, *args, **kwargs)
+            
             except jwt.ExpiredSignatureError:
                 return jsonify({"message": "Token expirado."}), 401
             except jwt.InvalidTokenError:
                 return jsonify({"message": "Token inválido."}), 401
         else:
-            return jsonify({"message": "Token no proporcionado."}), 401
-    
+            return redirect(url_for('autentificar.login'), False)
     return wrapper
