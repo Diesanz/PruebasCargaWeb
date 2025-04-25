@@ -50,38 +50,61 @@
         </div>
     </header>
             
-    <div class="container">
-        <h1>Cesta</h1>
-        <div id="products-container">
-            <div class="product">
-                <input type="checkbox" class="check-product"  id="#" nombreidentificadopr="#" precioidentificadopr="#" cantidadidentificadapr="#">
-                <img src="../static/img/albondigas.jpg">
-                <span class="product-name">Albondigas</span>
-                <p class="money">10€</p>
-                <button class="delete-product-btn" id="#" cantidad-identificada-Pr="#">Eliminar</button>
+    <main>
+        <div class="container">
+            <h1>Cesta</h1>
+            <div id="products-container">
+                <div class="product">
+                    <input type="checkbox" class="check-product" data-nombre="Albondigas" data-precio="10" data-cantidad="1">
+                    <label>
+                        <img src="../static/img/albondigas.jpg" alt="Albondigas">
+                    </label>
+                    <span class="product-name">Albondigas</span>
+                    <p class="money">10€</p>
+                    <select class="quantity-selector" data-product="albondigas">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button class="delete-product-btn" data-product="albondigas">Eliminar</button>
+                </div>
+                <div class="product">
+                    <input type="checkbox" class="check-product" data-nombre="Almejas con alubias" data-precio="12" data-cantidad="1">
+                    <label>
+                        <img src="../static/img/almejasconalubias.jpg" alt="Almejas con alubias">
+                    </label>
+                    
+                    <span class="product-name">Almejas con alubias</span>
+                    <p class="money">12€</p>
+                    <select class="quantity-selector" data-product="almejasconalubias">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button class="delete-product-btn" data-product="almejasconalubias">Eliminar</button>
+                </div>
             </div>
-            <div class="product">
-                <input type="checkbox" class="check-product"  id="#" nombreidentificadopr="#" precioidentificadopr="#" cantidadidentificadapr="#">
-                <img src="../static/img/almejasconalubias.jpg">
-                <span class="product-name">Almejas con alubias</span>
-                <p class="money">12€</p>
-                <button class="delete-product-btn" id="#" cantidad-identificada-Pr="#">Eliminar</button>
-            </div>
-        </div>
             <div class="total">
                 <p>Precio final productos: <span class="price-final-Prs">22.00€</span></p>
-                <p>Gastos de gestión: <span class="price-envio">3.00 €</span></p>
+                <p>Gastos de gestión: <span class="price-envio">3.00€</span></p>
                 <p>Total: <span class="price-total">25.00€</span></p>
             </div>
-        <div class="buttons">
-            <div class="delete-select-buttons">
-                <button class="select-all-btn">Seleccionar todo</button>
-                <button class="delete-btn">Eliminar productos seleccionados</button>
-                <button class="deselect-all-btn">Quitar selección</button>
+        
+            <div class="buttons">
+                <div class="delete-select-buttons">
+                    <button class="select-all-btn">Seleccionar todo</button>
+                    <button class="delete-btn">Eliminar productos seleccionados</button>
+                    <button class="deselect-all-btn">Quitar selección</button>
+                </div>
+                <button class="submit-btn">Tramitar pedido</button>
             </div>
-            <button class="submit-btn">Tramitar pedido</button>
-        </div> 
-    </div>
+ 
+        </div>
+    </main>
                     
     <footer>
         <div class="footerdiv">
