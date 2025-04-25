@@ -44,7 +44,7 @@ def login():
     # Verificar si el usuario ya está autenticado
     if verificar_token_login():
         # Si el token es válido, redirigir a la página principal o cualquier otra página
-        return redirect('/')  # Cambia '/' por la página a la que deseas redirigir
+        return redirect('/api')  # Cambia '/' por la página a la que deseas redirigir
     else:
         # Si no hay token o el token es inválido, mostrar la página de inicio de sesión
         return render_template('inicioSesion.html')
@@ -160,6 +160,13 @@ def login_post():
 
     return resp
 
+@autentificar_usuarios.route('/logout')
+def logout():
+    token = request.cookies.get('authToken')
+    if token:
+        resp = make_response(redirect(url_for('autentificar.login')))
+        resp.set_cookie('authToken', '', expires=0)  # Borra la cookie
+        return resp
 
 @autentificar_usuarios.route('/me', methods=['GET'])
 @verificar_token

@@ -46,9 +46,7 @@ def get_carrito_items_usuario(usuario_id: str) -> Carrito:
 @carrito.route('/', methods=['GET'])
 @verificar_token
 def get_items_carrito(usuario_id):
-    print(usuario_id)
     carrito = get_carrito_items_usuario(usuario_id)
-    print(carrito)
     if isinstance(carrito, Carrito):
         total_carrito = carrito.getTotalCarrito()
         items_json = [item_carrito_schema(item, True) for item in carrito.items]

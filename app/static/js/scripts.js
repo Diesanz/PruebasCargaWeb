@@ -6,6 +6,21 @@ function getCarrito() {
     window.location.href = '/api/carrito';
 }
 
+function borrar_items_carrito(){
+    fetch('/api/carrito/vaciar', {
+        method: 'DELETE',
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Productos eliminados:', data);
+        getCarrito()
+        // Aquí podrías actualizar la UI o mostrar un mensaje de éxito
+      })
+      .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 async function hacerLogin(login){
     login.addEventListener('submit', async(e) => {
         e.preventDefault();
@@ -44,25 +59,32 @@ async function hacerLogin(login){
 
 document.addEventListener('DOMContentLoaded', function(){
     const login = document.getElementById('loginForm');
-    const userIcon = document.getElementById('userIcon')
-    const carrito = document.getElementById('carrito')
-
+    const carrito = document.getElementById('carrito');
+    const delete_btn = document.getElementById('delete_btn');
+    const logout_btn =  document.getElementById('logoutButton')
     if(login){
         hacerLogin(login)
     }
-    
-    if (userIcon) {
-        // Evento para manejar el clic en el ícono
-        userIcon.addEventListener('click', function() {
-            // Si no hay token, redirige al login
-            window.location.href = '/api/login';
-        });
-    }
-
+ 
     if(carrito){
         carrito.addEventListener('click', function (e) {
             e.preventDefault(); // Previene salto si es <a href="#">
             getCarrito();
         });    
     }
+
+    if(delete_btn){
+        delete_btn.addEventListener('click', function(e) {
+            e.preventDefault
+            borrar_items_carrito()
+        })
+    }
+
+    if(logout_btn){
+        logout_btn.addEventListener('click', function() {
+            // Redirigir a la ruta de logout para eliminar el token y redirigir al login
+            window.location.href = '/api/logout';
+        });
+    }
+
 });

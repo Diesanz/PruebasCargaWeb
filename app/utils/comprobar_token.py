@@ -25,5 +25,5 @@ def verificar_token(f):
             except jwt.InvalidTokenError:
                 return jsonify({"message": "Token inválido."}), 401
         else:
-            return redirect(url_for('autentificar.login'), False)
+            return redirect(url_for('autentificar.login'))
     return wrapper
