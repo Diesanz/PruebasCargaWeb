@@ -6,7 +6,7 @@ from app.schemas.Usuario import usuario_schema, usuario_schema_db
 from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
 
-autentificar_usuarios = Blueprint('autentificar', __name__)
+autentificar_usuarios = Blueprint('autentificar', __name__, url_prefix="/api") #blueprint para el controladoir (añadir en init.py)
 
 SECRET = 'mi_clave_secreta'  
 ALGORITHM = 'HS256'  # Algoritmo de firma por defecto
@@ -25,6 +25,14 @@ def search_usuario_db(email:str) -> UsuarioDB:
 
     return UsuarioDB(**usuario_schema_db(user)) if user else None
 
+#Endpoit para obtener el html del login y del registro
+@autentificar_usuarios.route('/login', methods=['GET'])
+def login():
+    return render_template('inicioSesion.html')
+
+@autentificar_usuarios.route('/registro', methods=['GET'])
+def registro():
+    return render_template('registroUsuario.html')
 
 #Endpoint para registrar un nuevo Usuario
 @autentificar_usuarios.route('/registro', methods=['POST'])
@@ -125,7 +133,7 @@ def login_post():
         return jsonify({"error": "Email o contraseña incorrectas."}), 401
 
     #Creación de un token de autentificación
-    expire = datetime.utcnow() + timedelta(minutes=1) #establecer un tiempo de expiración
+    expire = datetime.utcnow() + timedelta(minutes=40) #establecer un tiempo de expiración
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
     return jsonify({"token": token, "token_type":"bearer"}), 200 #añadir el token en la sesion mediante javascript

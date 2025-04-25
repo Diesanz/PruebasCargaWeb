@@ -1,3 +1,4 @@
+-- Active: 1743866200358@@127.0.0.1@3306@Carga_web
 -- EQUILIBRADO
 INSERT INTO Producto (nombre, descripcion, precio, stock, tipo, imagen_url) VALUES
 ('Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria', 10.5, 1, 'Equilibrado', '../static/img/ensaladaPavoPina.jpg'),

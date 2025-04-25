@@ -1,25 +1,18 @@
 from app import create_app
-from flask import render_template
+from flask import render_template, redirect, url_for
 
 # Crear la aplicación usando la función de fábrica
 app = create_app()
-
 @app.route('/')
 def hello_world():
-    return render_template('index.html')
+    return redirect(url_for('api_index'))  # Referencia la función api_index en el blueprint api
 
-@app.get('/login')
-def login():
-    return render_template('inicioSesion.html')
+# Ruta de la API
+@app.route('/api')
+def api_index():
+    return render_template("index.html")  # Renderiza el template para /api
 
-@app.get('/registro')
-def registro():
-    return render_template('registroUsuario.html')
-
-@app.get('/carrito')
-def carrito():
-    return render_template('carrito.html')
-
+#esto quitalo y ponlo como un get de su controlador
 @app.get('/platos')
 def platos():
     return render_template('platos.html')
