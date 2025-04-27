@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const login = document.getElementById('loginForm');
     const carrito = document.getElementById('carrito');
     const delete_btn = document.getElementById('delete_btn');
-    const logout_btn =  document.getElementById('logoutButton')
+    const logout_btn =  document.getElementById('logoutButton');
+    
     if(login){
         hacerLogin(login)
     }
