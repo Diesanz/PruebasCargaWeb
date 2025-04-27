@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS `Producto`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Producto` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `precio` decimal(10,2) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `Producto` (
   `tipo` varchar(100) NOT NULL,
   `imagen_url` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,36 +82,20 @@ LOCK TABLES `Producto` WRITE;
 /*!40000 ALTER TABLE `Producto` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `Producto` VALUES
-(17,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','../static/img/ensaladaPavoPina.jpg'),
-(18,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero',9.80,80,'Equilibrado','../static/img/pastacarbonara.jpg'),
-(19,'Guisantes con Jamon y Sepia','3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados',11.20,60,'Equilibrado','../static/img/guisantesconjamonysepia.jpg'),
-(20,'Calabacines rellenos','4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar',8.90,90,'Equilibrado','../static/img/calabacinesrellenos.jpg'),
-(21,'Arroz tres delicias','400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.',9.30,70,'Equilibrado','../static/img/arroztresdelicias.jpg'),
-(22,'Potaje de Garbanzos con Espinacas','200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.',8.70,75,'Vegano','../static/img/potajedegarbanzosconespinacas.jpg'),
-(23,'Ratatouille','350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva',9.50,90,'Vegano','../static/img/ratatouille.jpg'),
-(24,'Arroz con Verduras','4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.',7.90,100,'Vegano','../static/img/arrozconverduras.jpg'),
-(25,'Tortilla vegana de Calabacin','60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.',6.50,110,'Vegano','../static/img/tortillaveganadecalabacin.jpg'),
-(26,'Dahl de Lentejas rojas y Boniato','200 gr de lentejas rojas. 300 gr de boniato. 1 litro de caldo de verduras. 1 cebolla. 2 dientes de ajo. 2 cucharadas de aceite de oliva virgen extra.',8.20,85,'Vegano','../static/img/dahldelentejasrojasyboniato.jpg'),
-(27,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado',12.50,70,'Proteico','../static/img/alubiasconalmejas.jpg'),
-(28,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','../static/img/garbanzosespinacasbacalao.jpg'),
-(29,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','../static/img/lentejaspollomanzana.jpg'),
-(30,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','../static/img/estofadodeternera.jpg'),
-(31,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.',9.20,100,'Proteico','../static/img/tortillavegana.jpg'),
-(32,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','../static/img/ensaladaPavoPina.jpg'),
-(33,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero',9.80,80,'Equilibrado','../static/img/pastacarbonara.jpg'),
-(34,'Guisantes con Jamon y Sepia','3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados',11.20,60,'Equilibrado','../static/img/guisantesconjamonysepia.jpg'),
-(35,'Calabacines rellenos','4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar',8.90,90,'Equilibrado','../static/img/calabacinesrellenos.jpg'),
-(36,'Arroz tres delicias','400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.',9.30,70,'Equilibrado','../static/img/arroztresdelicias.jpg'),
-(37,'Potaje de Garbanzos con Espinacas','200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.',8.70,75,'Vegano','../static/img/potajedegarbanzosconespinacas.jpg'),
-(38,'Ratatouille','350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva',9.50,90,'Vegano','../static/img/ratatouille.jpg'),
-(39,'Arroz con Verduras','4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.',7.90,100,'Vegano','../static/img/arrozconverduras.jpg'),
-(40,'Tortilla vegana de Calabacin','60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.',6.50,110,'Vegano','../static/img/tortillaveganadecalabacin.jpg'),
-(41,'Dahl de Lentejas rojas y Boniato','200 gr de lentejas rojas. 300 gr de boniato. 1 litro de caldo de verduras. 1 cebolla. 2 dientes de ajo. 2 cucharadas de aceite de oliva virgen extra.',8.20,85,'Vegano','../static/img/dahldelentejasrojasyboniato.jpg'),
-(42,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado',12.50,70,'Proteico','../static/img/alubiasconalmejas.jpg'),
-(43,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','../static/img/garbanzosespinacasbacalao.jpg'),
-(44,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','../static/img/lentejaspollomanzana.jpg'),
-(45,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','../static/img/estofadodeternera.jpg'),
-(46,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.',9.20,100,'Proteico','../static/img/tortillavegana.jpg');
+(1,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','ensaladaPavoPina.jpg'),
+(2,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero',9.80,80,'Equilibrado','pastacarbonara.jpg'),
+(3,'Guisantes con Jamon y Sepia','3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados',11.20,60,'Equilibrado','guisantesconjamonysepia.jpg'),
+(4,'Calabacines rellenos','4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar',8.90,90,'Equilibrado','calabacinesrellenos.jpg'),
+(5,'Arroz tres delicias','400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.',9.30,70,'Equilibrado','arroztresdelicias.jpg'),
+(6,'Potaje de Garbanzos con Espinacas','200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.',8.70,75,'Vegano','potajedegarbanzosconespinacas.jpg'),
+(7,'Ratatouille','350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva',9.50,90,'Vegano','ratatouille.jpg'),
+(8,'Arroz con Verduras','4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.',7.90,100,'Vegano','arrozconverduras.jpg'),
+(9,'Tortilla vegana de Calabacin','60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.',6.50,110,'Vegano','tortillaveganadecalabacin.jpg'),
+(10,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado',12.50,70,'Proteico','alubiasconalmejas.jpg'),
+(11,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','garbanzosespinacasbacalao.jpg'),
+(12,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','lentejaspollomanzana.jpg'),
+(13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','estofadodeternera.jpg'),
+(14,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.',9.20,100,'Proteico','tortillavegana.jpg');
 /*!40000 ALTER TABLE `Producto` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -170,7 +154,7 @@ CREATE TABLE `CarritoItem` (
   KEY `producto_id` (`producto_id`),
   CONSTRAINT `CarritoItem_ibfk_1` FOREIGN KEY (`carrito_id`) REFERENCES `Carrito` (`id`) ON DELETE CASCADE,
   CONSTRAINT `CarritoItem_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,9 +164,6 @@ CREATE TABLE `CarritoItem` (
 LOCK TABLES `CarritoItem` WRITE;
 /*!40000 ALTER TABLE `CarritoItem` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `CarritoItem` VALUES
-(11,7,22,'Potaje de Garbanzos con Espinacas',1,8.7),
-(12,1,22,'Potaje de Garbanzos con Espinacas',1,8.7);
 /*!40000 ALTER TABLE `CarritoItem` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -202,7 +183,7 @@ CREATE TABLE `Pedido` (
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `Pedido_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,6 +193,7 @@ CREATE TABLE `Pedido` (
 LOCK TABLES `Pedido` WRITE;
 /*!40000 ALTER TABLE `Pedido` DISABLE KEYS */;
 set autocommit=0;
+
 /*!40000 ALTER TABLE `Pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -224,17 +206,17 @@ DROP TABLE IF EXISTS `PedidoItem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `PedidoItem` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pedido_id` int(11) DEFAULT NULL,
-  `producto_id` int(11) DEFAULT NULL,
+  `id` int(110) NOT NULL AUTO_INCREMENT,
+  `pedido_id` int(110) NOT NULL,
+  `producto_id` int(110) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `precio_unitario` decimal(10,2) NOT NULL,
+  `precio` float NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pedido_id` (`pedido_id`),
   KEY `producto_id` (`producto_id`),
   CONSTRAINT `PedidoItem_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `Pedido` (`id`) ON DELETE CASCADE,
   CONSTRAINT `PedidoItem_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,6 +226,17 @@ CREATE TABLE `PedidoItem` (
 LOCK TABLES `PedidoItem` WRITE;
 /*!40000 ALTER TABLE `PedidoItem` DISABLE KEYS */;
 set autocommit=0;
+INSERT INTO `PedidoItem` VALUES
+(97,78,2,11,12),
+(98,78,3,11,12),
+(101,79,2,11,12),
+(102,79,3,11,12),
+(103,80,2,11,12),
+(104,80,3,11,12),
+(113,82,2,11,1),
+(114,82,2,11,1),
+(115,85,2,1,2),
+(116,86,3,1,2);
 /*!40000 ALTER TABLE `PedidoItem` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -257,7 +250,7 @@ commit;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-04-27 12:58:56
+-- Dump completed on 2025-04-28  1:19:53
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.8.1-MariaDB, for debian-linux-gnu (x86_64)
 --
@@ -302,9 +295,6 @@ commit;
 LOCK TABLES `CarritoItem` WRITE;
 /*!40000 ALTER TABLE `CarritoItem` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `CarritoItem` VALUES
-(11,7,22,'Potaje de Garbanzos con Espinacas',1,8.7),
-(12,1,22,'Potaje de Garbanzos con Espinacas',1,8.7);
 /*!40000 ALTER TABLE `CarritoItem` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -316,6 +306,64 @@ commit;
 LOCK TABLES `Pedido` WRITE;
 /*!40000 ALTER TABLE `Pedido` DISABLE KEYS */;
 set autocommit=0;
+INSERT INTO `Pedido` VALUES
+(30,39,'2025-04-27 22:04:23','Pendiente'),
+(31,39,'2025-04-27 22:04:24','Pendiente'),
+(32,39,'2025-04-27 22:07:38','Pendiente'),
+(33,39,'2025-04-27 22:07:39','Pendiente'),
+(34,39,'2025-04-27 22:07:40','Pendiente'),
+(35,39,'2025-04-27 22:07:41','Pendiente'),
+(36,39,'2025-04-27 22:07:51','Pendiente'),
+(37,39,'2025-04-27 22:08:41','Pendiente'),
+(38,39,'2025-04-27 22:08:42','Pendiente'),
+(39,39,'2025-04-27 22:09:14','Pendiente'),
+(40,39,'2025-04-27 22:09:15','Pendiente'),
+(41,39,'2025-04-27 22:10:24','Pendiente'),
+(42,39,'2025-04-27 22:10:24','Pendiente'),
+(43,39,'2025-04-27 22:10:25','Pendiente'),
+(44,39,'2025-04-27 22:10:25','Pendiente'),
+(45,39,'2025-04-27 22:12:12','Pendiente'),
+(46,39,'2025-04-27 22:12:14','Pendiente'),
+(47,39,'2025-04-27 22:13:22','Pendiente'),
+(48,39,'2025-04-27 22:13:23','Pendiente'),
+(49,39,'2025-04-27 22:15:11','Pendiente'),
+(50,39,'2025-04-27 22:17:57','Pendiente'),
+(51,39,'2025-04-27 22:19:18','Pendiente'),
+(52,39,'2025-04-27 22:20:13','Pendiente'),
+(53,39,'2025-04-27 22:21:26','Pendiente'),
+(54,39,'2025-04-27 22:21:29','Pendiente'),
+(55,39,'2025-04-27 22:21:30','Pendiente'),
+(56,39,'2025-04-27 22:23:13','Pendiente'),
+(57,39,'2025-04-27 22:23:48','Pendiente'),
+(58,39,'2025-04-27 22:24:11','Pendiente'),
+(59,39,'2025-04-27 22:25:44','Pendiente'),
+(60,39,'2025-04-27 22:25:45','Pendiente'),
+(61,39,'2025-04-27 22:26:27','Pendiente'),
+(62,39,'2025-04-27 22:30:27','Pendiente'),
+(63,39,'2025-04-27 22:31:21','Pendiente'),
+(64,39,'2025-04-27 22:31:40','Pendiente'),
+(65,39,'2025-04-27 22:31:53','Pendiente'),
+(66,39,'2025-04-27 22:32:22','Pendiente'),
+(67,39,'2025-04-27 22:32:30','Pendiente'),
+(68,39,'2025-04-27 22:33:21','Pendiente'),
+(69,39,'2025-04-27 22:33:40','Pendiente'),
+(70,39,'2025-04-27 22:33:43','Pendiente'),
+(71,39,'2025-04-27 22:34:48','Pendiente'),
+(72,39,'2025-04-27 22:34:54','Pendiente'),
+(73,39,'2025-04-27 22:40:19','Pendiente'),
+(74,39,'2025-04-27 22:40:25','Pendiente'),
+(75,39,'2025-04-27 22:42:02','Pendiente'),
+(76,39,'2025-04-27 22:43:09','Pendiente'),
+(77,39,'2025-04-27 22:43:16','Pendiente'),
+(78,39,'2025-04-27 22:43:30','Pendiente'),
+(79,39,'2025-04-27 22:43:58','Pendiente'),
+(80,39,'2025-04-27 22:51:12','Pendiente'),
+(81,39,'2025-04-27 22:53:12','Pendiente'),
+(82,39,'2025-04-27 22:53:24','Pendiente'),
+(83,39,'2025-04-27 23:00:32','Pendiente'),
+(84,39,'2025-04-27 23:00:33','Pendiente'),
+(85,39,'2025-04-27 23:13:52','Pendiente'),
+(86,39,'2025-04-27 23:17:46','Pendiente');
 /*!40000 ALTER TABLE `Pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -327,6 +375,17 @@ commit;
 LOCK TABLES `PedidoItem` WRITE;
 /*!40000 ALTER TABLE `PedidoItem` DISABLE KEYS */;
 set autocommit=0;
+INSERT INTO `PedidoItem` VALUES
+(97,78,2,11,12),
+(98,78,3,11,12),
+(101,79,2,11,12),
+(102,79,3,11,12),
+(103,80,2,11,12),
+(104,80,3,11,12),
+(113,82,2,11,1),
+(114,82,2,11,1),
+(115,85,2,1,2),
+(116,86,3,1,2);
 /*!40000 ALTER TABLE `PedidoItem` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -339,21 +398,20 @@ LOCK TABLES `Producto` WRITE;
 /*!40000 ALTER TABLE `Producto` DISABLE KEYS */;
 set autocommit=0;
 INSERT INTO `Producto` VALUES
-(1,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria', 10.5, 1, 'Equilibrado', 'ensaladaPavoPina.jpg'),
-(2,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero', 9.8, 80, 'Equilibrado', 'pastacarbonara.jpg'),
-(3,'Guisantes con Jamon y Sepia','3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados', 11.2, 60, 'Equilibrado', 'guisantesconjamonysepia.jpg'),
-(4,'Calabacines rellenos','4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar', 8.9, 90, 'Equilibrado', 'calabacinesrellenos.jpg'),
-(5,'Arroz tres delicias','400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.', 9.3, 70, 'Equilibrado', 'arroztresdelicias.jpg'),
-(6,'Potaje de Garbanzos con Espinacas','200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.', 8.7, 75, 'Vegano', 'potajedegarbanzosconespinacas.jpg'),
-(7,'Ratatouille','350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva', 9.5, 90, 'Vegano', 'ratatouille.jpg'),
-(8,'Arroz con Verduras','4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.', 7.9, 100, 'Vegano', 'arrozconverduras.jpg'),
-(9,'Tortilla vegana de Calabacin','60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.', 6.5, 110, 'Vegano', 'tortillaveganadecalabacin.jpg'),
-(10,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado', 12.5, 70, 'Proteico', 'alubiasconalmejas.jpg'),
-(11,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.', 11.3, 90, 'Proteico', 'garbanzosespinacasbacalao.jpg'),
-(12,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra', 10.9, 60, 'Proteico', 'lentejaspollomanzana.jpg'),
-(13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.', 13.0, 55, 'Proteico', 'estofadodeternera.jpg'),
-(14,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.', 9.2, 100, 'Proteico', 'tortillavegana.jpg');
-
+(1,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','ensaladaPavoPina.jpg'),
+(2,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero',9.80,80,'Equilibrado','pastacarbonara.jpg'),
+(3,'Guisantes con Jamon y Sepia','3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados',11.20,60,'Equilibrado','guisantesconjamonysepia.jpg'),
+(4,'Calabacines rellenos','4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar',8.90,90,'Equilibrado','calabacinesrellenos.jpg'),
+(5,'Arroz tres delicias','400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.',9.30,70,'Equilibrado','arroztresdelicias.jpg'),
+(6,'Potaje de Garbanzos con Espinacas','200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.',8.70,75,'Vegano','potajedegarbanzosconespinacas.jpg'),
+(7,'Ratatouille','350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva',9.50,90,'Vegano','ratatouille.jpg'),
+(8,'Arroz con Verduras','4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.',7.90,100,'Vegano','arrozconverduras.jpg'),
+(9,'Tortilla vegana de Calabacin','60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.',6.50,110,'Vegano','tortillaveganadecalabacin.jpg'),
+(10,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado',12.50,70,'Proteico','alubiasconalmejas.jpg'),
+(11,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','garbanzosespinacasbacalao.jpg'),
+(12,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','lentejaspollomanzana.jpg'),
+(13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','estofadodeternera.jpg'),
+(14,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.',9.20,100,'Proteico','tortillavegana.jpg');
 /*!40000 ALTER TABLE `Producto` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -474,4 +532,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-04-27 13:00:21
+-- Dump completed on 2025-04-28  1:20:44

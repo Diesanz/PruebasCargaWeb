@@ -1,0 +1,15 @@
+<div class="order-summary">
+    <h2>Resumen del Pedido</h2>
+    <p class="productos">Productos:</p>
+    <ul>
+        <li><span class="bullet">&#8226;</span> Producto 1, Cantidad: 2, Precio: 20.00€</li>
+        <li><span class="bullet">&#8226;</span> Producto 2, Cantidad: 1, Precio: 15.50€</li>
+        <!-- Agrega más productos aquí según sea necesario -->
+    </ul>
+    <p class="subtotal">Subtotal: 35.50€</p>
+    <p class="envio">Gastos de gestión: 3.00€</p>
+    <p class="total">Total: 38.50€</p>
+    <div id="mensaje" style="color:rgb(15, 123, 165); font-size: 16px; font-weight: bold;">
+        <!-- Aquí puede ir un mensaje dinámico si es necesario -->
+    </div>
+</div>

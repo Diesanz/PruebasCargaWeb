@@ -21,6 +21,24 @@ function borrar_items_carrito(){
     });
 }
 
+function tramitar_pedido(btn){
+    fetch('/api/checkout', {
+        method: 'POST',
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Pedido realizado:', data);
+
+        borrar_items_carrito()
+
+
+        // Aquí podrías actualizar la UI o mostrar un mensaje de éxito
+      })
+      .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 async function hacerLogin(login){
     login.addEventListener('submit', async(e) => {
         e.preventDefault();
@@ -62,7 +80,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const carrito = document.getElementById('carrito');
     const delete_btn = document.getElementById('delete_btn');
     const logout_btn =  document.getElementById('logoutButton');
-    
+    const tramitar_btn = document.getElementById('tramitar_btn');
+
     if(login){
         hacerLogin(login)
     }
@@ -85,6 +104,19 @@ document.addEventListener('DOMContentLoaded', function(){
         logout_btn.addEventListener('click', function() {
             // Redirigir a la ruta de logout para eliminar el token y redirigir al login
             window.location.href = '/api/logout';
+        });
+    }
+
+    if(tramitar_btn){
+        tramitar_btn.addEventListener('click', function(e){
+            tramitar_btn.disabled = true;
+            tramitar_btn.innerHTML = "Procesando...";
+            setTimeout(function() {
+                tramitar_btn.disabled = false;
+                tramitar_btn.innerHTML = "Procesar Compra";
+            }, 5000); // 5000 milisegundos = 5 segundos
+            e.preventDefault
+            tramitar_pedido(tramitar_btn)
         });
     }
 

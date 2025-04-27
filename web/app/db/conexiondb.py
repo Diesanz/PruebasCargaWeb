@@ -87,34 +87,44 @@ class Conexion:
         finally:
             self.close_connection()
 
-    def execute_db(self, query: str, args: tuple = ()):
+    def execute_db(self, query: str, args: tuple = (), return_last_id: bool = False):
         """
         Ejecuta una consulta de modificación (INSERT, UPDATE, DELETE) en la base de datos.
 
         Parámetros:
-        - query (str): Consulta SQL a ejecutar
-        - args (tuple): Tupla con los valores a insertar en la consulta
+        - query (str): Consulta SQL a ejecutar.
+        - args (tuple): Tupla con los valores a insertar en la consulta.
+        - return_last_id (bool): Si es True, devuelve el ID del último registro insertado.
 
         Return:
-        - bool: True si la operación fue exitosa, False si ocurrió algún error
+        - True si la operación fue exitosa (y no se pidió last_id).
+        - lastrowid si return_last_id=True y la operación fue exitosa.
+        - False si ocurrió algún error.
 
         Excepciones:
-        - Exception: Captura errores en la ejecución y los imprime
+        - Exception: Captura errores en la ejecución y los imprime.
         """
         if not self.connection:
             self.get_connection()
 
         try:
             with self.connection.cursor() as cursor:
-                
+                print(query, args)
                 cursor.execute(query, args)
+                last_id = cursor.lastrowid
+                
                 self.connection.commit()
-                return True
+
+                if return_last_id:
+                    return last_id
+                else:
+                    return True
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             return False
         finally:
             self.close_connection()
+
 
     def procedure(self, procedimiento: str, args: tuple = ()):
         """

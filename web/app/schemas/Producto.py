@@ -4,6 +4,7 @@ Por ejemplo, si la consulta SQL devuelve claves que no coinciden directamente co
 puedes reestructurarlas para asegurarte de que coincidan antes de crear el objeto. 
 Esto permite usar el modelo de una forma más flexible y no tener que preocuparte por las diferencias de nombres de claves.
 """
+
 def producto_schema(producto) -> dict:
     return {
         "id": int(producto["id"]) if producto["id"] else None,
