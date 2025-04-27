@@ -83,126 +83,22 @@
     <section id="seccion3">
         <h2>Recomendaciones</h2>
         <div class="secciondiv">
-            <!-- Plato 1 -->
-            <div class="plato">
-                <a href="#" style="text-decoration: none; color:black;">
-                    <img src="../static/img/platoSaludable.jpg" alt="Ensalada de quinoa">
-                    <div class="descripcion">
-                        <h4 class="nombre">Ensalada de quinoa</h4>
-                        <div class="precio"><h4>6.50 €</h4></div>
-                        <div class="nutrientes">
-                            <div class="nutrientes1">
-                                <div class="nut"><p>350</p></div>
-                                <div class="nut"><p>12g</p></div>
-                                <div class="nut"><p>40g</p></div>
-                                <div class="nut"><p>1g</p></div>
-                                <div class="nut"><p>3g</p></div>
-                            </div>
-                            <div class="nutrientes2">
-                                <div class="nut"><p>KgCal</p></div>
-                                <div class="nut"><p>Proteína</p></div>
-                                <div class="nut"><p>Hidratos</p></div>
-                                <div class="nut"><p>Sales</p></div>
-                                <div class="nut"><p>Azúcares</p></div>
+            {% for producto in productos %}
+                <div class="plato">
+                    <a href="#" style="text-decoration: none; color:black;">
+                        <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}" alt="{{ producto.nombre }}">
+                        <div class="descripcion">
+                            <h4 class="nombre">{{producto.nombre}}</h4>
+                            <div class="precio"><h4>{{producto.precio}} €</h4></div>
+                            <div class="tipo">
+                                <p>Tipo de produto: {{producto.tipo}}</p>  <!-- Mostrar la descripción completa del producto -->
                             </div>
                         </div>
-                        <div class="botonCarro">
-                            <button class="boton1">Añadir al carro</button>
-                        </div>
-                    </div>
-                </a>    
-            </div>
-    
-            <!-- Plato 2 -->
-            <div class="plato">
-                <a href="#" style="text-decoration: none; color:black;">
-                    <img src="../static/img/pechugasPollo.jpeg" alt="Pollo teriyaki con arroz">
-                    <div class="descripcion">
-                        <h4 class="nombre">Pollo teriyaki con arroz</h4>
-                        <div class="precio"><h4>7.20 €</h4></div>
-                        <div class="nutrientes">
-                            <div class="nutrientes1">
-                                <div class="nut"><p>480</p></div>
-                                <div class="nut"><p>30g</p></div>
-                                <div class="nut"><p>50g</p></div>
-                                <div class="nut"><p>2g</p></div>
-                                <div class="nut"><p>5g</p></div>
-                            </div>
-                            <div class="nutrientes2">
-                                <div class="nut"><p>KgCal</p></div>
-                                <div class="nut"><p>Proteína</p></div>
-                                <div class="nut"><p>Hidratos</p></div>
-                                <div class="nut"><p>Sales</p></div>
-                                <div class="nut"><p>Azúcares</p></div>
-                            </div>
-                        </div>
-                        <div class="botonCarro">
-                            <button class="boton1">Añadir al carro</button>
-                        </div>
-                    </div>
-                </a>    
-            </div>
-    
-            <!-- Plato 3 -->
-            <div class="plato">
-                <a href="#" style="text-decoration: none; color:black;">
-                    <img src="../static/img/tortillavegana.jpg" alt="Tortilla de espinacas">
-                    <div class="descripcion">
-                        <h4 class="nombre">Tortilla de espinacas</h4>
-                        <div class="precio"><h4>5.90 €</h4></div>
-                        <div class="nutrientes">
-                            <div class="nutrientes1">
-                                <div class="nut"><p>300</p></div>
-                                <div class="nut"><p>15g</p></div>
-                                <div class="nut"><p>25g</p></div>
-                                <div class="nut"><p>1.5g</p></div>
-                                <div class="nut"><p>2g</p></div>
-                            </div>
-                            <div class="nutrientes2">
-                                <div class="nut"><p>KgCal</p></div>
-                                <div class="nut"><p>Proteína</p></div>
-                                <div class="nut"><p>Hidratos</p></div>
-                                <div class="nut"><p>Sales</p></div>
-                                <div class="nut"><p>Azúcares</p></div>
-                            </div>
-                        </div>
-                        <div class="botonCarro">
-                            <button class="boton1">Añadir al carro</button>
-                        </div>
-                    </div>
-                </a>    
-            </div>
-    
-            <!-- Plato 4 -->
-            <div class="plato">
-                <a href="#" style="text-decoration: none; color:black;">
-                    <img src="../static/img/pastacarbonara.jpg" alt="Pasta integral con verduras">
-                    <div class="descripcion">
-                        <h4 class="nombre">Pasta carbonara</h4>
-                        <div class="precio"><h4>6.30 €</h4></div>
-                        <div class="nutrientes">
-                            <div class="nutrientes1">
-                                <div class="nut"><p>410</p></div>
-                                <div class="nut"><p>10g</p></div>
-                                <div class="nut"><p>60g</p></div>
-                                <div class="nut"><p>1.2g</p></div>
-                                <div class="nut"><p>4g</p></div>
-                            </div>
-                            <div class="nutrientes2">
-                                <div class="nut"><p>KgCal</p></div>
-                                <div class="nut"><p>Proteína</p></div>
-                                <div class="nut"><p>Hidratos</p></div>
-                                <div class="nut"><p>Sales</p></div>
-                                <div class="nut"><p>Azúcares</p></div>
-                            </div>
-                        </div>
-                        <div class="botonCarro">
-                            <button class="boton1">Añadir al carro</button>
-                        </div>
-                    </div>
-                </a>    
-            </div>
-        </div>
+                    </a>
+                </div>
+            {% else %}
+                <p>No hay productos disponibles.</p>
+            {% endfor %}
     </section>
     
 

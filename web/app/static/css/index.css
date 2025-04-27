@@ -401,3 +401,15 @@ footer .footerdiv .grupo ul li a:hover{
         margin-bottom: 10px;
     }
 }
+
+.tipo {
+    text-align: center; /* Centra el texto horizontalmente */
+    margin-top: 30px;   /* Añade espacio arriba */
+    margin-bottom: 20px; /* Añade espacio abajo */
+    font-size: 1.0em;   /* Aumenta el tamaño de la fuente si lo deseas */
+    font-weight: bold;  /* Si quieres que el texto se vea más destacado */
+}
+
+.tipo p {
+    margin: 0; /* Elimina cualquier margen adicional alrededor del párrafo */
+}

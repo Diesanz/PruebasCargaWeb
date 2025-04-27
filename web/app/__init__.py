@@ -7,8 +7,10 @@ def create_app():
     # Importas el Blueprint de autentificar
     from .routes.autentificar import autentificar_usuarios
     from .routes.carritoController import carrito
+    from .routes.menuController import menu
 
     app.register_blueprint(autentificar_usuarios)
     app.register_blueprint(carrito)
+    app.register_blueprint(menu)
 
     return app

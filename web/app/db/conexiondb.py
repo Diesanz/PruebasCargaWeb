@@ -78,6 +78,7 @@ class Conexion:
 
         try:
             with self.connection.cursor() as cursor:
+                print(query, args)
                 cursor.execute(query, args)
                 result = cursor.fetchone() if one else cursor.fetchall() #si es fetchone devuelven forma de json!!!!!
                 return result
@@ -105,6 +106,7 @@ class Conexion:
 
         try:
             with self.connection.cursor() as cursor:
+                
                 cursor.execute(query, args)
                 self.connection.commit()
                 return True
