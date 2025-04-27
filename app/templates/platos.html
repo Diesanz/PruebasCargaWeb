@@ -61,36 +61,20 @@
             <section id="seccion1">
                 <h2 class="tipoPlatos">Platos</h2>
                 <div class="platos">
-                    <div class="plato">
-                        <a href="#" style="text-decoration: none; color:black;">
-                            <img src="../static/img/albondigas.jpg" alt="#">
-                            <div class="descripcion">
-                                <h4 class="nombre">Albondigas</h4>
-                                <div class="precio">
-                                    <h4>10.00€</h4>
-                                </div>
-                                <div class="nutrientes">
-                                    <div class="nutrientes1">
-                                        <div class="nut"><p>12</p></div>
-                                        <div class="nut"><p>12</p></div>
-                                        <div class="nut"><p>12</p></div>
-                                        <div class="nut"><p>12</p></div>
-                                        <div class="nut"><p>12</p></div>
-                                    </div>
-                                    <div class="nutrientes2">
-                                        <div class="nut"><p>KgCal</p></div>
-                                        <div class="nut"><p>Proteína</p></div>
-                                        <div class="nut"><p>Hidratos</p></div>
-                                        <div class="nut"><p>Sales</p></div>
-                                        <div class="nut"><p>Azúcares</p></div>
+                    {% for plato in platos %}
+                        <div class="plato">
+                            <a href="#" style="text-decoration: none; color:black;">
+                                <img src={{plato.imagen_url}} alt="#">
+                                <div class="descripcion">
+                                    <h4 class="nombre">{{plato.nombre}}</h4>
+                                    <div class="precio"><h4>10.00€</h4></div>
+                                    <div class="botonCarro">
+                                        <button class="boton1">Añadir al carro</button>
                                     </div>
                                 </div>
-                                <div class="botonCarro">
-                                    <button class="boton1">Añadir al carro</button>
-                                </div>
-                            </div>
-                        </a>    
-                    </div>
+                            </a>    
+                        </div>
+                    {% endfor %}
                 </div>
             </section>
         </main>
