@@ -44,4 +44,8 @@ Antes de empezar, asegúrate de tener los siguientes requisitos:
   ```bash
   python run.py
   ```
-	
+### 4. **Volcado de base de datos**:
+```bash
+	mysqldump -u user_pr -p Carga_web Usuario Producto Carrito CarritoItem Pedido PedidoItem > carga_web_dump.sql
+	mysqldump -u user_pr -p --routines --no-create-info Carga_web >> carga_web_dump.sql
+```
