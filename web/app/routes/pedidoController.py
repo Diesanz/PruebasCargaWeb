@@ -4,10 +4,12 @@ from app.models.Carrito import Carrito
 from app.models.itemCarrito import ItemCarrito, ItemCarritoDB
 from app.models.Pedido import Pedido
 from app.models.itemPedido import ItemPedido, ItemPedidoDB
+from app.models.Producto import Producto
 from app.schemas.Carrito import carrito_schema
 from app.schemas.itemCarrito import item_carrito_schema
 from app.schemas.Pedido import pedido_schema
 from app.schemas.itemPedido import item_pedido_schema, item_pedido_schema_db
+from app.schemas.Producto import producto_schema
 from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
 from app.utils.carrito import get_id_carrito_usuario, get_carrito_items_usuario
@@ -23,7 +25,16 @@ def crear_pedido(usuario_id: int):
     return id
 
 def get_join_items_productos(pedido_id: int):
-    query = "SELECT p.* FROM PedidoItem as i JOIN Producto as p WHERE i.pedido_id = %s"
+    query = "SELECT * FROM PedidoItem as i JOIN Producto as p ON i.producto_id = p.id WHERE i.pedido_id = %s"
+    conn = Conexion()
+    items_productos = conn.select_db(query, (pedido_id,))
+    
+    lista_items_productos =  []
+    for i in items_productos:
+        lista_items_productos.append(ItemPedido(**item_pedido_schema(i)))
+
+    return lista_items_productos #devuelve una lista de items y estos items con iformación de sus productos
+
 
 def get_pedidos_items(usuario_id: int):
     query = "SELECT * FROM Pedido WHERE usuario_id = %s"
@@ -32,15 +43,17 @@ def get_pedidos_items(usuario_id: int):
 
     lista_pedidos_items = []
     for i in pedidos:
-        query_items = "SELECT * FROM PedidoItem WHERE pedido_id = %s"
-        conn = Conexion()
-        item_results = conn.select_db(query_items, (i['id'],))
 
-        items_formateados = [ItemPedidoDB(**item_pedido_schema_db(item)) for item in item_results]
+        get_join_items_productos(i['id'])
+        # query_items = "SELECT * FROM PedidoItem WHERE pedido_id = %s"
+        # conn = Conexion()
+        # item_results = conn.select_db(query_items, (i['id'],))
+
+        #items_formateados = [ItemPedidoDB(**item_pedido_schema_db(item)) for item in item_results]
         
-        lista_pedidos_items.append(Pedido(**pedido_schema(i, items_formateados)))
+        #lista_pedidos_items.append(Pedido(**pedido_schema(i, items_formateados)))
 
-    return lista_pedidos_items
+    return None #lista_pedidos_items
 
 @pedido.route('/pedidos', methods=['GET'])
 @verificar_token
@@ -48,7 +61,8 @@ def get_pedidos_usuario(usuario_id):
     pedidos = get_pedidos_items(usuario_id)
     for p in pedidos:
         p.getTotalPedido()
-    return render_template('pedidos.html', pedidos)
+    print(pedidos)
+    return render_template('pedidos.html', pedidos = pedidos)
 
 @pedido.route('/checkout', methods=['POST'])
 @verificar_token
