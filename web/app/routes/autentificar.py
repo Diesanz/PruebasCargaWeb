@@ -44,7 +44,7 @@ def login():
     # Verificar si el usuario ya está autenticado
     if verificar_token_login():
         # Si el token es válido, redirigir a la página principal o cualquier otra página
-        return redirect('/api')  # Cambia '/' por la página a la que deseas redirigir
+        return redirect('/')  # Cambia '/' por la página a la que deseas redirigir
     else:
         # Si no hay token o el token es inválido, mostrar la página de inicio de sesión
         return render_template('inicioSesion.html')
@@ -156,11 +156,12 @@ def login_post():
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
     resp = make_response(jsonify({"message": "Autenticado exitosamente."}), 200)
-    resp.set_cookie('authToken', token, httponly=True, secure=True,  samesite='Strict')
+    resp.set_cookie('authToken', token, httponly=True, secure=False,  samesite='Strict')
 
     return resp
 
 @autentificar_usuarios.route('/logout')
+@verificar_token
 def logout():
     token = request.cookies.get('authToken')
     if token:
