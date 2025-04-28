@@ -5,7 +5,7 @@ def pedido_schema(pedido, items: list) -> dict:
     return{
         "id": int(pedido["id"]) or None,
         "usuario_id": int(pedido["usuario_id"]), 
-        "fecha": date(pedido["fecha"]),
+        "fecha": pedido["fecha"].date(),
         "estado": str(pedido["estado"]),
         "items": items
     }

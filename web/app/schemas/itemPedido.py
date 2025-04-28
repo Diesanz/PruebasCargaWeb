@@ -10,7 +10,7 @@ def item_pedido_schema(item) -> dict:
 def item_pedido_schema_db(item) -> dict:
     return {
         "pedido_id": int(item["pedido_id"]),
-        "producto_id": int(item["producto"]["id"]),
+        "producto_id": int(item["producto_id"]),
         "cantidad": int(item["cantidad"]),
-        "precio": float(item["producto"]["precio"]),
+        "precio": float(item["precio"]),
     }

@@ -22,6 +22,35 @@ def crear_pedido(usuario_id: int):
     conn.close_connection()
     return id
 
+def get_join_items_productos(pedido_id: int):
+    query = "SELECT p.* FROM PedidoItem as i JOIN Producto as p WHERE i.pedido_id = %s"
+
+def get_pedidos_items(usuario_id: int):
+    query = "SELECT * FROM Pedido WHERE usuario_id = %s"
+    conn = Conexion()
+    pedidos = conn.select_db(query, (usuario_id))
+
+    lista_pedidos_items = []
+    for i in pedidos:
+        query_items = "SELECT * FROM PedidoItem WHERE pedido_id = %s"
+        conn = Conexion()
+        item_results = conn.select_db(query_items, (i['id'],))
+
+        items_formateados = [ItemPedidoDB(**item_pedido_schema_db(item)) for item in item_results]
+        
+        lista_pedidos_items.append(pedido_schema(i, items_formateados))
+
+    return lista_pedidos_items
+
+@pedido.route('/pedidos', methods=['GET'])
+@verificar_token
+def get_pedidos_usuario(usuario_id):
+    pedidos = get_pedidos_items(usuario_id)
+    suma = 0.0
+    for p in pedidos:
+        suma += p.getTotalPedido()
+        print(suma)
+
 @pedido.route('/checkout', methods=['POST'])
 @verificar_token
 def procesar_comprar(usuario_id):
