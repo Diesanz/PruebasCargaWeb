@@ -25,3 +25,6 @@ class ItemPedidoDB(BaseModel):
         print("Hola")
         print(self)
         return (self.pedido_id, self.producto_id, self.cantidad, self.precio)
+    
+    def subtotal(self):
+        return self.precio * self.cantidad

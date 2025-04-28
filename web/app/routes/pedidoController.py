@@ -38,7 +38,7 @@ def get_pedidos_items(usuario_id: int):
 
         items_formateados = [ItemPedidoDB(**item_pedido_schema_db(item)) for item in item_results]
         
-        lista_pedidos_items.append(pedido_schema(i, items_formateados))
+        lista_pedidos_items.append(Pedido(**pedido_schema(i, items_formateados)))
 
     return lista_pedidos_items
 
@@ -50,6 +50,7 @@ def get_pedidos_usuario(usuario_id):
     for p in pedidos:
         suma += p.getTotalPedido()
         print(suma)
+        suma = 0.0
 
 @pedido.route('/checkout', methods=['POST'])
 @verificar_token
