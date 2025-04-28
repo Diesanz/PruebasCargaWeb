@@ -9,7 +9,7 @@ class Pedido(BaseModel):
     fecha: date
     estado: str
     items: Optional[List[Union[ItemPedido, ItemPedidoDB]]] = None 
-    precio_total = Optional[float] = None
+    precio_total: Optional[float] = None
 
     # Método para convertir el objeto en una tupla
     def to_tuple(self):
@@ -19,7 +19,7 @@ class Pedido(BaseModel):
         sumaTotal = 0.0
         for item in self.items:
             sumaTotal += item.subtotal()
-            
+
         self.precio_total = sumaTotal
-        return round(sumaTotal, 2)
+        return round(self.precio_total, 2)
     

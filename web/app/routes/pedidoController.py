@@ -48,7 +48,7 @@ def get_pedidos_usuario(usuario_id):
     pedidos = get_pedidos_items(usuario_id)
     for p in pedidos:
         p.getTotalPedido()
-        print(p.precio_total)
+    return render_template('pedidos.html', pedidos)
 
 @pedido.route('/checkout', methods=['POST'])
 @verificar_token
