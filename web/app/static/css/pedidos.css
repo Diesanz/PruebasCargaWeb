@@ -403,7 +403,7 @@ footer .footerdiv .grupo ul li a:hover{
 }
 
 .imagen-producto img {
-    width: 80px; 
+    width: 100px; 
     height: auto;
     margin-right: 10px; /* Espacio entre las imágenes */
     border-radius: 20px;
@@ -433,12 +433,29 @@ footer .footerdiv .grupo ul li a:hover{
       }
     
       .imagen-producto img {
-        width: 60px; 
+        width: 100px; 
         border-radius: 10px; 
       }
   
 }
-  
+.btn-ver-pedido {
+    background-color: rgb(15, 123, 165);
+    border: 1px solid rgb(15, 123, 165);  /* Borde más delgado */
+    color: #fff;
+    padding: 8px 15px;  /* Menor tamaño de relleno */
+    cursor: pointer;
+    margin-left: auto;   /* Esto moverá el botón a la derecha */
+    margin-right: 0;     /* Elimina cualquier margen derecho si está presente */
+    text-decoration: none; /* Elimina el subrayado en el enlace */
+    display: inline-block; /* Asegura que el botón se alinee correctamente */
+    transition: background-color 0.3s;
+}
+
+.btn-ver-pedido:hover {
+    background-color: rgb(10, 100, 130);  /* Cambia el color al pasar el ratón */
+}
+
+
 
 /*--------------------
  Fin cuenta

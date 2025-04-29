@@ -14,7 +14,7 @@
                     <button id="bmenu"><span class="material-symbols-outlined">menu</span></button>
                     <div class="logo-portatil"><a href="/">EATTHIS!!</a></div>
                     <div class="link-movil">
-                        <a class="link"><span class="material-symbols-outlined">forum</span></a>
+                        <a href=/api/pedidos class="link"><span class="material-symbols-outlined">list_alt</span></a>
                         <a href=/api/carrito class="link" id="carrito"><span class="material-symbols-outlined">shopping_cart</span></a>
                         <a href=/api/login class="link" id="userIcon">
                             <span class="material-symbols-outlined">account_circle</span>
@@ -41,7 +41,7 @@
                             <li><a href="/platos" class="link">Snacks</a></li>
                         </ul>
                         <div class="iconos-portatil">
-                            <a class="link"><span class="material-symbols-outlined">forum</span></a>
+                            <a href=/api/pedidos class="link"><span class="material-symbols-outlined">list_alt</span></a>
                             <a href=/api/carrito class="link" id="carrito"><span class="material-symbols-outlined">shopping_cart</span></a>
                             <a href=/api/login class="link" id="userIcon">
                                 <span class="material-symbols-outlined">account_circle</span>
@@ -60,36 +60,37 @@
             <div class="historial-productos">  
                 <h1 class="nombre-his">Historial Compras</h1>         
                 <ul class="lista-hp">
-                    {% for orden in pedidos %}
+                    {% for orden in pedidos.lista_i %}
                     <li class="cuenta-productos">
                         <div class="data-productos">
                             <div class="order-summary">
                                 <div class="ordenes-informacion">
-                                    <p class="orden-summary"><strong>Su orden fue despachada</strong></p>
-                                    <p class="estimacion-summary"><strong>Estimación entrega ...</strong></p>
-                                </div>
-                                <div class="lista-productos">
-                                    <ul class="listaInterna-hp">
-                                        <li class="imagen-lista">
-                                            {% for imagen in orden.items %}
-                                            <div class="imagen-producto">
-                                                <img class="img" src="{{ imagen.precio }}">
-                                            </div>
-                                            {% endfor %}
-                                        </li>
-                                    </ul>
+                                    <p class="orden-summary"><strong>La orden con número de referencia {{orden.id}} fue despachada</strong></p>
+                                    <p class="estimacion-summary"><strong>Estimación entrega {{orden.fecha|suma_dias(7)}}</strong>
+                                    </p>
+                                    <a href="/api/pedidos/{{ orden.id }}" class="btn-ver-pedido">Ver pedido</a>
                                 </div>
                             </div>
                             <hr style="border: 2px dotted rgb(15, 123, 165);">
                             <div class="order-summary-info">
                                 <p class="order-summary-testo"><strong>Estado:</strong> {{ orden.estado }}</p>
                                 <p class="order-summary-testo"><strong>Fecha pedido:</strong> {{ orden.fecha }}</p>
-                                <p class="order-summary-testo"><strong>Total:</strong> {{ orden.precio_total }}</p>
+                                <p class="order-summary-testo"><strong>Total + Gastos:</strong> {{ orden.precio_total }}€</p>
                             </div>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
+                <!-- Paginación -->
+                <div class="pagination">
+                    {% if pedidos.page > 1 %}
+                        <a href="{{ url_for('pedidos', page=pedidos.page - 1) }}">Anterior</a>
+                    {% endif %}
+                    <span>Página {{ pedidos.page }} de {{ pedidos.total_pages }}</span>
+                    {% if pedidos.total_pages  > pedidos.page %}
+                        <a href="{{ url_for('pedidos', page=pedidos.page + 1) }}">Siguiente</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </main>    

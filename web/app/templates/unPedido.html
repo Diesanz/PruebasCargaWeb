@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Static Shopping Cart</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/carrito.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pedidos.css') }}">
     </head>
 
     <body>
@@ -54,65 +54,39 @@
                 </nav>
             </div>
         </header>
-                        
-        <div class="container">
-            <div class="payment-form">
-                <h2>Entrega</h2>
-                <form id="payment-form">
-                    <!-- Nombre y Apellidos -->
-                    <label for="full-name">Nombre y Apellidos:</label>
-                    <input type="text" id="full-name" name="full-name" placeholder="Nombre y Apellidos" ><br><br>
-
-                    <!-- Correo electrónico -->
-                    <label for="email">Correo electrónico:</label>
-                    <input type="email" id="email" name="email" placeholder="Correo electrónico" required><br><br>
-
-                    <!-- Dirección -->
-                    <label for="address">Dirección:</label>
-                    <input type="text" id="address" name="address" placeholder="Dirección" required minlength="5" maxlength="100"><br><br>
-
-                    <!-- Teléfono -->
-                    <label for="phone">Teléfono:</label>
-                    <input type="tel" id="phone" name="phone" placeholder="Teléfono" required pattern="[0-9]{9,15}"><br><br>
-
-                    <!-- País -->
-                    <label for="country">País:</label>
-                    <input type="text" id="country" name="country" placeholder="País" required minlength="2" maxlength="50"><br><br>
-
-                    <!-- Código Postal -->
-                    <label for="postal-code">Código Postal:</label>
-                    <input type="text" id="postal-code" name="postal-code" placeholder="Código Postal" required pattern="[0-9]{5}"><br><br>
-
-                    <!-- Ciudad -->
-                    <label for="city">Ciudad:</label>
-                    <input type="text" id="city" name="city" placeholder="Ciudad" required minlength="2" maxlength="50"><br><br>
-
-                    <!-- Provincia -->
-                    <label for="province">Provincia:</label>
-                    <input type="text" id="province" name="province" placeholder="Provincia" required minlength="2" maxlength="50"><br><br>
-
-                    <!-- Botón de Pago -->
-                    <button type="submit" class="button">Pagar</button>
-                </form>
-
-                <div class="order-summary">
-                    <h2>Resumen del Pedido</h2>
-                    <p class="productos">Productos:</p>
-                    <ul>
-                        <li><span class="bullet">&#8226;</span> Producto 1, Cantidad: 2, Precio: 20.00€</li>
-                        <li><span class="bullet">&#8226;</span> Producto 2, Cantidad: 1, Precio: 15.50€</li>
-                        <!-- Agrega más productos aquí según sea necesario -->
-                    </ul>
-                    <p class="subtotal">Subtotal: 35.50€</p>
-                    <p class="envio">Gastos de gestión: 3.00€</p>
-                    <p class="total">Total: 38.50€</p>
-                    <div id="mensaje" style="color:rgb(15, 123, 165); font-size: 16px; font-weight: bold;">
-                        <!-- Aquí puede ir un mensaje dinámico si es necesario -->
-                    </div>
-                </div>
-                
-             
-                        
+        <main>
+            <div class="historial-productos">  
+                <h1 class="nombre-his">Historial Compras</h1>         
+                <ul class="lista-hp">
+                    <li class="cuenta-productos">
+                        <div class="data-productos">
+                            <div class="order-summary">
+                                
+                                <div class="lista-productos">
+                                    <ul class="listaInterna-hp">
+                                        {% for item in items %}
+                                        <li class="producto-item">
+                                            <div class="imagen-producto">
+                                                <img class="img" src="{{ url_for('static', filename='img/' + item.producto.imagen_url) }}">
+                                            </div>
+                                            <div class="info-producto">
+                                                <p class="producto-nombre"><strong>Nombre:</strong> {{ item.producto.nombre }}</p>
+                                                <p class="producto-descripcion"><strong>Descripción:</strong> {{ item.producto.descripcion }}</p>
+                                                <p class="producto-cantidad"><strong>Cantidad:</strong> {{ item.cantidad }}</p>
+                                                <p class="producto-precio"><strong>Precio Producto:</strong> {{ item.producto.precio }} €</p>
+                                                <p><strong>Precio Total:</strong> {{ item.producto.precio * item.cantidad}} €</p>
+                                            </div>
+                                        </li>
+                                        <hr style="border: 2px dotted rgb(15, 123, 165);">
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>                     
+        </main>
         <footer>
             <div class="footerdiv">
                 <div class="grupo">
@@ -129,7 +103,7 @@
                     </ul>
                 </div>
                 <div class="grupo">
-                    <h4>Síguenos</h4>
+                    <h4>Siguenos</h4>
                     <ul>
                         <li><a href="#"><span class="material-symbols-outlined">raven</span>Twitter</a></li>
                         <li><a href="#"><span class="material-symbols-outlined">nest_heat_link_gen_3</span>Instagram</a></li>
@@ -138,6 +112,6 @@
                 </div>
             </div>
         </footer>
-        <script src="../main.js" type="module"></script>
+        
     </body>
 </html>

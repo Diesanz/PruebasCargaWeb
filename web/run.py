@@ -8,7 +8,11 @@ app = create_app()
 def hello_world():
     return redirect(url_for('menu.api_index'))    # Referencia la función api_index en el blueprint api
 
+def sumar_dias(fecha, dias):
+    from datetime import timedelta
+    return fecha + timedelta(days=dias)
 
+app.jinja_env.filters['suma_dias'] = sumar_dias
 #esto quitalo y ponlo como un get de su controlador
 # class Plato:
 
