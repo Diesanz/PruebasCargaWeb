@@ -6,6 +6,36 @@ function getCarrito() {
     window.location.href = '/api/carrito';
 }
 
+function insert_carrito(boton){
+    boton.addEventListener("click", function () {
+        const productoId = this.id;
+
+        fetch("/api/carrito/agregar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id_producto: productoId,
+                cantidad: 1  // puedes cambiarlo si necesitas permitir cantidades variables
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error al añadir al carrito");
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Producto añadido al carrito correctamente.");
+            // También podrías actualizar un contador de carrito o similar aquí
+        })
+        .catch(error => {
+            alert("Hubo un error: " + error.message);
+        });
+    });
+}
+
 function borrar_items_carrito(){
     fetch('/api/carrito/vaciar', {
         method: 'DELETE',
@@ -81,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const delete_btn = document.getElementById('delete_btn');
     const logout_btn =  document.getElementById('logoutButton');
     const tramitar_btn = document.getElementById('tramitar_btn');
+    const insert_pr_btn = document.querySelectorAll(".boton1");
 
     if(login){
         hacerLogin(login)
@@ -117,6 +148,13 @@ document.addEventListener('DOMContentLoaded', function(){
             }, 5000); // 5000 milisegundos = 5 segundos
             e.preventDefault
             tramitar_pedido(tramitar_btn)
+        });
+    }
+
+    if(insert_pr_btn){
+        insert_pr_btn.forEach(boton =>{
+            console.log("AAAAA")
+            insert_carrito(boton)
         });
     }
 

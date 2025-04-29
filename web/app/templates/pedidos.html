@@ -19,12 +19,13 @@
                         <a href=/api/login class="link" id="userIcon">
                             <span class="material-symbols-outlined">account_circle</span>
                         </a>
+                        <button id="logoutButton" class="link logout-button"><span class="material-symbols-outlined">logout</span></button>
                     </div>
                 </nav>
                 <div class="links">
-                    <a href="/platos">Menu</a>
-                    <a href="/platos">Platos</a>
-                    <a href="/platos">Snacks</a>
+                    <li><a href="/api/productos" class="link">Menu</a></li>
+                    <li><a href="/api/productos" class="link">Platos</a></li>
+                    <li><a href="/api/productos" class="link">Snacks</a></li>
                 </div>
             </div>
 
@@ -36,9 +37,9 @@
                     <div class="abajo">
                         <div></div>
                         <ul>
-                            <li><a href="/platos" class="link">Menu</a></li>
-                            <li><a href="/platos" class="link">Platos</a></li>
-                            <li><a href="/platos" class="link">Snacks</a></li>
+                            <li><a href="/api/productos" class="link">Menu</a></li>
+                            <li><a href="/api/productos" class="link">Platos</a></li>
+                            <li><a href="/api/productos" class="link">Snacks</a></li>
                         </ul>
                         <div class="iconos-portatil">
                             <a href=/api/pedidos class="link"><span class="material-symbols-outlined">list_alt</span></a>
@@ -84,11 +85,11 @@
                 <!-- Paginación -->
                 <div class="pagination">
                     {% if pedidos.page > 1 %}
-                        <a href="{{ url_for('pedidos', page=pedidos.page - 1) }}">Anterior</a>
+                        <a href="{{ url_for('pedidoController.get_pedidos_usuario', page=pedidos.page - 1) }}">Anterior</a>
                     {% endif %}
                     <span>Página {{ pedidos.page }} de {{ pedidos.total_pages }}</span>
                     {% if pedidos.total_pages  > pedidos.page %}
-                        <a href="{{ url_for('pedidos', page=pedidos.page + 1) }}">Siguiente</a>
+                        <a href="{{ url_for('pedidoController.get_pedidos_usuario', page=pedidos.page + 1) }}">Siguiente</a>
                     {% endif %}
                 </div>
             </div>

@@ -162,7 +162,7 @@ def login_post():
 
 @autentificar_usuarios.route('/logout')
 @verificar_token
-def logout():
+def logout(usuario_id):
     token = request.cookies.get('authToken')
     if token:
         resp = make_response(redirect(url_for('autentificar.login')))
