@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Static Shopping Cart</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/carrito.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pedidos.css') }}">
     </head>
 
     <body>
@@ -22,9 +22,9 @@
                     </div>
                 </nav>
                 <div class="links">
-                    <a href="/api/productos">Menu</a>
-                    <a href="/api/productos">Platos</a>
-                    <a href="/api/productos">Snacks</a>
+                    <a href="/platos">Menu</a>
+                    <a href="/platos">Platos</a>
+                    <a href="/platos">Snacks</a>
                 </div>
             </div>
 
@@ -36,70 +36,57 @@
                     <div class="abajo">
                         <div></div>
                         <ul>
-                            <li><a href="/api/productos" class="link">Menu</a></li>
-                            <li><a href="/api/productos" class="link">Platos</a></li>
-                            <li><a href="/api/productos" class="link">Snacks</a></li>
+                            <li><a href="/platos" class="link">Menu</a></li>
+                            <li><a href="/platos" class="link">Platos</a></li>
+                            <li><a href="/platos" class="link">Snacks</a></li>
                         </ul>
                         <div class="iconos-portatil">
                             <a href=/api/pedidos class="link"><span class="material-symbols-outlined">list_alt</span></a>
                             <a href=/api/carrito class="link" id="carrito"><span class="material-symbols-outlined">shopping_cart</span></a>
-                            <a href=/api/login class="link" id="userIcon"><span class="material-symbols-outlined">account_circle</span></a>
-                            <button id="logoutButton" class="link logout-button"><span class="material-symbols-outlined">logout</span></button>
+                            <a href=/api/login class="link" id="userIcon">
+                                <span class="material-symbols-outlined">account_circle</span>
+                            </a>
+                            <button id="logoutButton" class="link logout-button">
+                                <span class="material-symbols-outlined">logout</span> 
+                            </button>
                         </div>
                     </div>
                 </nav>
             </div>
         </header>
-                
         <main>
-            <div class="container">
-                <h1>Cesta</h1>
-                <div id="products-container">
-                    {% for item in items %}
-                        <div class="product">
-                            <input type="checkbox" class="check-product"
-                                data-nombre="{{ item.nombre }}"
-                                data-precio="{{ item.precio }}"
-                                data-cantidad="{{ item.cantidad }}">
-
-                            <label>
-                                <img src="{{ url_for('static', filename='img/' + item.nombre|lower|replace(' ', '') + '.jpg') }}"
-                                    alt="{{ item.nombre }}">
-                            </label>
-
-                            <span class="product-name">{{ item.nombre }}</span>
-                            <p class="money">{{ item.precio }}€</p>
-
-                            <p class="product-quantity">Cantidad: {{ item.cantidad }}</p>
-
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="total">
-                    <p>Precio final productos: <span class="price-final-Prs">{{total}}€</span></p>
-                    <p>Gastos de gestión: <span class="price-envio">3.00€</span></p>
-                    <p>Total: <span class="price-total">{{total+3.00}}€</span></p>
-                </div>
-            
-                <div class="buttons">
-                    <div class="delete-select-buttons">
-                        <button id="delete_btn" class="delete-btn">Eliminar productos</button>
-                    </div>
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            <div class="mensaje-error">
-                                {% for message in messages %}
-                                    <p>{{ message }}</p>
-                                {% endfor %}
+            <div class="historial-productos">  
+                <h1 class="nombre-his">Historial Compras</h1>         
+                <ul class="lista-hp">
+                    <li class="cuenta-productos">
+                        <div class="data-productos">
+                            <div class="order-summary">
+                                
+                                <div class="lista-productos">
+                                    <ul class="listaInterna-hp">
+                                        {% for item in items %}
+                                        <li class="producto-item">
+                                            <div class="imagen-producto">
+                                                <img class="img" src="{{ url_for('static', filename='img/' + item.producto.imagen_url) }}">
+                                            </div>
+                                            <div class="info-producto">
+                                                <p class="producto-nombre"><strong>Nombre:</strong> {{ item.producto.nombre }}</p>
+                                                <p class="producto-descripcion"><strong>Descripción:</strong> {{ item.producto.descripcion }}</p>
+                                                <p class="producto-cantidad"><strong>Cantidad:</strong> {{ item.cantidad }}</p>
+                                                <p class="producto-precio"><strong>Precio Producto:</strong> {{ item.producto.precio }} €</p>
+                                                <p><strong>Precio Total:</strong> {{ item.producto.precio * item.cantidad}} €</p>
+                                            </div>
+                                        </li>
+                                        <hr style="border: 2px dotted rgb(15, 123, 165);">
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                        {% endif %}
-                    {% endwith %}
-                    <button id="tramitar_btn" class="submit-btn">Tramitar pedido</button>
-                </div>
-    
-            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>                     
         </main>
-                        
         <footer>
             <div class="footerdiv">
                 <div class="grupo">
@@ -116,7 +103,7 @@
                     </ul>
                 </div>
                 <div class="grupo">
-                    <h4>Síguenos</h4>
+                    <h4>Siguenos</h4>
                     <ul>
                         <li><a href="#"><span class="material-symbols-outlined">raven</span>Twitter</a></li>
                         <li><a href="#"><span class="material-symbols-outlined">nest_heat_link_gen_3</span>Instagram</a></li>
@@ -125,6 +112,6 @@
                 </div>
             </div>
         </footer>
+        
     </body>
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </html>

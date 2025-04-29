@@ -1,3 +1,4 @@
+
 -- Active: 1745919767174@@127.0.0.1@3306@carga_web
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.8.1-MariaDB, for debian-linux-gnu (x86_64)
@@ -96,6 +97,7 @@ INSERT INTO `Producto` VALUES
 (11,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','garbanzosespinacasbacalao.jpg'),
 (12,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','lentejaspollomanzana.jpg'),
 (13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','estofadodeternera.jpg');
+
 /*!40000 ALTER TABLE `Producto` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
@@ -442,3 +444,4 @@ DELIMITER ;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
 -- Dump completed on 2025-04-28  1:20:44
+

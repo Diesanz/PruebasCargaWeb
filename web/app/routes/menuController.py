@@ -1,4 +1,4 @@
-# api_controller.py
+
 from flask import Blueprint, render_template, redirect, url_for
 from app.db.conexiondb import Conexion
 from app.models.Producto import Producto

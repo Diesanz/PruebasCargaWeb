@@ -156,11 +156,12 @@ def login_post():
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
     resp = make_response(jsonify({"message": "Autenticado exitosamente."}), 200)
-    resp.set_cookie('authToken', token, httponly=True, secure=True,  samesite='Strict')
+    resp.set_cookie('authToken', token, httponly=True, secure=False,  samesite='Strict')
 
     return resp
 
 @autentificar_usuarios.route('/logout')
+@verificar_token
 def logout():
     token = request.cookies.get('authToken')
     if token:
