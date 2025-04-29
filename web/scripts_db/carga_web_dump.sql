@@ -95,8 +95,7 @@ INSERT INTO `Producto` VALUES
 (10,'Alubias con almejas','400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado',12.50,70,'Proteico','alubiasconalmejas.jpg'),
 (11,'Garbanzos con Espinacas y Bacalao','200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.',11.30,90,'Proteico','garbanzosespinacasbacalao.jpg'),
 (12,'Lentejas con Pollo y Manzana','200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra',10.90,60,'Proteico','lentejaspollomanzana.jpg'),
-(13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','estofadodeternera.jpg'),
-(14,'Tortilla de patatas vegana','400 g de patata. 150 g de cebolla. 70 g de harina de garbanzos. 180 ml de agua. Aceite de oliva virgen extra y sal.',9.20,100,'Proteico','tortillavegana.jpg');
+(13,'Estofado de Ternera','500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.',13.00,55,'Proteico','estofadodeternera.jpg');
 /*!40000 ALTER TABLE `Producto` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
