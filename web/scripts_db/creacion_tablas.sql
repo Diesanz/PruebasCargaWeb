@@ -1,57 +1,80 @@
+-- Active: 1744363405273@@127.0.0.1@3306@Carga_web
+DROP TABLE IF EXISTS `PedidoItem`;
+DROP TABLE IF EXISTS `Pedido`;
+DROP TABLE IF EXISTS `CarritoItem`;
+DROP TABLE IF EXISTS `Carrito`;
+DROP TABLE IF EXISTS `Producto`;
+DROP TABLE IF EXISTS `Usuario`;
 
 -- Crear la tabla Usuario
-CREATE TABLE Usuario (
-    id INT AUTO_INCREMENT PRIMARY KEY,  
-    nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    contraseña_hash TEXT NOT NULL,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE `Usuario` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `dni` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `domicilio` varchar(255) NOT NULL,
+  `fechaCreacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `password` text NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
 -- Crear la tabla Producto
-CREATE TABLE Producto (
-    id INT AUTO_INCREMENT PRIMARY KEY,  
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    precio DECIMAL(10, 2) NOT NULL,
-    stock INTEGER NOT NULL,
-    imagen_url TEXT
+CREATE TABLE `Producto` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `stock` int NOT NULL,
+  `tipo` varchar(100) NOT NULL,
+  `imagen_url` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
 -- Crear la tabla Carrito
-CREATE TABLE Carrito (
-    id INT AUTO_INCREMENT PRIMARY KEY,  
-    usuario_id INT, 
-    FOREIGN KEY (usuario_id) REFERENCES Usuario(id) ON DELETE CASCADE
+CREATE TABLE `Carrito` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `Carrito_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`id`) ON DELETE CASCADE
 );
 
--- Tabla CarritoItem
-CREATE TABLE CarritoItem (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    carrito_id INT,  
-    producto_id INT,  
-    cantidad INTEGER NOT NULL,
-    UNIQUE(carrito_id, producto_id),  -- Evita duplicados del mismo producto
-    FOREIGN KEY (carrito_id) REFERENCES Carrito(id) ON DELETE CASCADE,  -- Clave foránea a Carrito
-    FOREIGN KEY (producto_id) REFERENCES Producto(id)  -- Clave foránea a Producto
+-- Crear la tabla CarritoItem
+CREATE TABLE `CarritoItem` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `carrito_id` int DEFAULT NULL,
+  `producto_id` int DEFAULT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `cantidad` int NOT NULL,
+  `precio` float NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `carrito_id` (`carrito_id`,`producto_id`),
+  KEY `producto_id` (`producto_id`),
+  CONSTRAINT `CarritoItem_ibfk_1` FOREIGN KEY (`carrito_id`) REFERENCES `Carrito` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `CarritoItem_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`id`)
 );
 
--- Tabla Pedido
-CREATE TABLE Pedido (
-    id INT AUTO_INCREMENT PRIMARY KEY, 
-    usuario_id INT,  -- Tipo INT para la clave foránea
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado VARCHAR(30) DEFAULT 'pendiente',
-    FOREIGN KEY (usuario_id) REFERENCES Usuario(id)  -- Clave foránea a Usuario
+-- Crear la tabla Pedido
+CREATE TABLE `Pedido` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario_id` int DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT current_timestamp(),
+  `estado` varchar(30) DEFAULT 'pendiente',
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `Pedido_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`id`)
 );
 
--- Tabla PedidoItem
-CREATE TABLE PedidoItem (
-    id INT AUTO_INCREMENT PRIMARY KEY, 
-    pedido_id INT,  
-    producto_id INT,  
-    cantidad INTEGER NOT NULL,
-    precio_unitario DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (pedido_id) REFERENCES Pedido(id) ON DELETE CASCADE,  -- Clave foránea a Pedido
-    FOREIGN KEY (producto_id) REFERENCES Producto(id)  -- Clave foránea a Producto
+-- Crear la tabla PedidoItem
+CREATE TABLE `PedidoItem` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `pedido_id` int NOT NULL,
+  `producto_id` int NOT NULL,
+  `cantidad` int NOT NULL,
+  `precio` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pedido_id` (`pedido_id`),
+  KEY `producto_id` (`producto_id`),
+  CONSTRAINT `PedidoItem_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `Pedido` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `PedidoItem_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`id`)
 );

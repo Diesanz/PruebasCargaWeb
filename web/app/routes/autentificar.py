@@ -44,7 +44,7 @@ def login():
     # Verificar si el usuario ya está autenticado
     if verificar_token_login():
         # Si el token es válido, redirigir a la página principal o cualquier otra página
-        return redirect('/')  # Cambia '/' por la página a la que deseas redirigir
+        return redirect('/') 
     else:
         # Si no hay token o el token es inválido, mostrar la página de inicio de sesión
         return render_template('inicioSesion.html')
@@ -148,11 +148,10 @@ def login_post():
     usuario_db = search_usuario_db(email)
 
     if type(usuario_db) != UsuarioDB or usuario_db.password != password: #comprobación de credenciales (falta hacer el hash)
-        #flash("Email o contraseña incorrectas.")
         return jsonify({"error": "Email o contraseña incorrectas."}), 401
 
     #Creación de un token de autentificación
-    expire = datetime.utcnow() + timedelta(minutes=40) #establecer un tiempo de expiración
+    expire = datetime.utcnow() + timedelta(minutes=1) #establecer un tiempo de expiración
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
     resp = make_response(jsonify({"message": "Autenticado exitosamente."}), 200)
@@ -166,7 +165,7 @@ def logout(usuario_id):
     token = request.cookies.get('authToken')
     if token:
         resp = make_response(redirect(url_for('autentificar.login')))
-        resp.set_cookie('authToken', '', expires=0)  # Borra la cookie
+        resp.set_cookie('authToken', '', expires=50)  # Borra la cookie
         return resp
 
 @autentificar_usuarios.route('/me', methods=['GET'])
