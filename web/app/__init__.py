@@ -8,9 +8,11 @@ def create_app():
     from .routes.autentificar import autentificar_usuarios
     from .routes.carritoController import carrito
     from .routes.menuController import menu
+    from .routes.productosController import producto
 
     app.register_blueprint(autentificar_usuarios)
     app.register_blueprint(carrito)
     app.register_blueprint(menu)
+    app.register_blueprint(producto)
 
     return app

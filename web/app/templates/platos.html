@@ -61,19 +61,21 @@
             <section id="seccion1">
                 <h2 class="tipoPlatos">Platos</h2>
                 <div class="platos">
-                    {% for plato in platos %}
+                    {% for producto in productos %}
                         <div class="plato">
                             <a href="#" style="text-decoration: none; color:black;">
-                                <img src={{plato.imagen_url}} alt="#">
+                                <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}" alt="{{ producto.nombre }}">
                                 <div class="descripcion">
-                                    <h4 class="nombre">{{plato.nombre}}</h4>
-                                    <div class="precio"><h4>10.00€</h4></div>
-                                    <div class="botonCarro">
-                                        <button class="boton1">Añadir al carro</button>
+                                    <h4 class="nombre">{{producto.nombre}}</h4>
+                                    <div class="precio"><h4>{{producto.precio}} €</h4></div>
+                                    <div class="tipo">
+                                        <p>Tipo de produto: {{producto.tipo}}</p>  <!-- Mostrar la descripción completa del producto -->
                                     </div>
                                 </div>
-                            </a>    
+                            </a>
                         </div>
+                    {% else %}
+                        <p>No hay productos disponibles.</p>
                     {% endfor %}
                 </div>
             </section>
