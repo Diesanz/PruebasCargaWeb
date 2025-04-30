@@ -159,3 +159,19 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
 });
+
+
+function abrirModalEditar(id, nombre, descripcion, precio, stock, tipo, imagen_url) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_nombre').value = nombre;
+    document.getElementById('edit_descripcion').value = descripcion;
+    document.getElementById('edit_precio').value = precio;
+    document.getElementById('edit_stock').value = stock;
+    document.getElementById('edit_tipo').value = tipo;
+    document.getElementById('edit_imagen').value = imagen_url;
+
+    document.getElementById('modalEditar').style.display = 'block';
+}
+function cerrarModal() {
+    document.getElementById('modalEditar').style.display = 'none';
+}
