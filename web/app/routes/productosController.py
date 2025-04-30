@@ -14,6 +14,15 @@ def get_produtosdb():
     
     return productos
 
+def obtener_producto_por_id(id):
+    conn = Conexion()
+    query = "SELECT * FROM Producto p WHERE p.id=%s" 
+    producto = conn.select_db(query, (id,))
+
+    if producto:
+        return producto[0]
+    return None  
+
 @producto.route('/productos', methods=['GET'])
 def api_index():
     return render_template("platos.html", productos = get_produtosdb()) # Renderiza el template para /api
@@ -21,15 +30,9 @@ def api_index():
 @producto.route('/detalles/<int:id>')
 def producto_detalle(id):
     producto = obtener_producto_por_id(id)
+    
     if producto:
         return render_template('detallesProducto.html', producto=producto)
     else:
         return "Producto no encontrado", 404
 
-def obtener_producto_por_id(id):
-    conn = Conexion()
-    query = "SELECT * FROM Producto p WHERE p.id=%s" 
-    producto = conn.select_db(query, (id,))
-    if producto:
-        return producto[0]
-    return None  

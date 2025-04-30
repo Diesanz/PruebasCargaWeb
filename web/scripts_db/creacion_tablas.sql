@@ -1,4 +1,10 @@
 -- Active: 1744363405273@@127.0.0.1@3306@Carga_web
+
+-- CREATE DATABASE Carga_web;
+-- CREATE USER 'user_pr'@'localhost' IDENTIFIED BY 'Grupo6esi';
+-- GRANT ALL PRIVILEGES ON Carga_web.* TO 'user_pr'@'localhost';
+-- FLUSH PRIVILEGES;
+
 DROP TABLE IF EXISTS `PedidoItem`;
 DROP TABLE IF EXISTS `Pedido`;
 DROP TABLE IF EXISTS `CarritoItem`;
