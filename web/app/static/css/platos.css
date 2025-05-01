@@ -213,6 +213,27 @@ header .portatil nav .abajo ul li .link:hover{
     color: rgb(15, 123, 165);
 }
 
+.botonDetalles{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    margin-right: 15px;
+}
+.boton2 {
+    padding: 10px 20px; /* Ajusta el relleno del botón */
+    background-color: rgb(15, 123, 165); /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Elimina el borde */
+    border-radius: 20px; /* Añade bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar por encima del botón */
+}
+
+/* Estilos cuando el cursor está sobre el botón */
+.boton2:hover {
+    background-color: white; /* Cambia el color de fondo al pasar el cursor */
+    color: rgb(15, 123, 165);
+}
+
 footer{
     background-color: rgb(153, 153, 153);
     padding: 33px;
