@@ -1,3 +1,4 @@
+-- Active: 1745747847274@@127.0.0.1@3306@carga_web
 DROP PROCEDURE AddOrUpdateItemCarrito;
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `AddOrUpdateItemCarrito`(
     IN p_carrito_id INT,

@@ -151,7 +151,7 @@ def login_post():
         return jsonify({"error": "Email o contraseña incorrectas."}), 401
 
     #Creación de un token de autentificación
-    expire = datetime.utcnow() + timedelta(minutes=1) #establecer un tiempo de expiración
+    expire = datetime.utcnow() + timedelta(minutes=50) #establecer un tiempo de expiración
     token = jwt.encode({"email": email, "id": usuario_db.id, "exp": expire}, SECRET, algorithm=ALGORITHM)
 
     resp = make_response(jsonify({"message": "Autenticado exitosamente."}), 200)

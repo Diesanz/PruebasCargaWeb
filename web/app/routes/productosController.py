@@ -27,7 +27,7 @@ def obtener_producto_por_id(id):
 def api_index():
     return render_template("platos.html", productos = get_produtosdb()) # Renderiza el template para /api
 
-@producto.route('/detalles/<int:id>')
+@producto.route('/productos/<int:id>')
 def producto_detalle(id):
     producto = obtener_producto_por_id(id)
     

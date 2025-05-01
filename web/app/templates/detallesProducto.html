@@ -82,7 +82,7 @@
                 <div class="modal-contenido">
                     <span class="cerrar" onclick="cerrarModal()">&times;</span>
                     <h3>Editar producto</h3>
-                    <form id="formEditar" method="POST" action="/actualizar_producto">
+                    <form id="formEditar" method="PUT" action="/api/productos/">
                         <input type="hidden" name="id" id="edit_id">
         
                         <label>Nombre:</label>
