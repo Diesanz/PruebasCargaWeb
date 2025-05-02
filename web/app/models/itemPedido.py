@@ -8,9 +8,11 @@ class ItemPedido(BaseModel):
     cantidad: int
     pedido_id: int
 
+    # Método para calcular el precio total del producto
     def subtotal(self):
         return self.producto.precio * self.cantidad
 
+    # Método para convertir el objeto en una tupla
     def to_tuple(self):
         return (self.producto.id, self.cantidad)
 
@@ -21,8 +23,10 @@ class ItemPedidoDB(BaseModel):
     cantidad: int
     precio: float
 
+    # Método para convertir el objeto en una tupla
     def to_tuple(self):
         return (self.pedido_id, self.producto_id, self.cantidad, self.precio)
     
+    # Método para calcular el precio total del producto
     def subtotal(self):
         return self.precio * self.cantidad

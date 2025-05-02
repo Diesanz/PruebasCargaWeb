@@ -1,4 +1,4 @@
-
+#Método para la validación de un usuario
 def usuario_schema(usuario) -> dict:
     return{
         "id": int(usuario["id"]) or None,
@@ -8,6 +8,7 @@ def usuario_schema(usuario) -> dict:
         "domicilio": usuario["domicilio"]
     }
 
+#Método para la validación de un usuario
 def usuario_schema_db(usuario) -> dict:
     return{
         "id": int(usuario["id"]) or  None,

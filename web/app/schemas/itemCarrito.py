@@ -1,4 +1,4 @@
-
+#Método para la validación de un producto del carrito
 def item_carrito_schema(item, objeto = False) -> dict: #Si es true accede a los parametros como si fuera un objeto y si es false accede como si fuera un json
     if objeto:
         return {
@@ -16,6 +16,7 @@ def item_carrito_schema(item, objeto = False) -> dict: #Si es true accede a los 
             "precio": float(item["precio"]),
         }
 
+#Método para la validación de un producto del carrito
 def item_carrito_schema_db(item) -> dict:
     return {
         "producto_id": int(item["producto_id"]),

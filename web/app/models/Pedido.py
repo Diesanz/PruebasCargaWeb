@@ -15,6 +15,7 @@ class Pedido(BaseModel):
     def to_tuple(self):
         return (self.usuario_id, self.fecha, self.estado, self.items)
     
+    # Método para calcular el precio total del pedido
     def getTotalPedido(self):
         sumaTotal = 0.0
         for item in self.items:

@@ -12,12 +12,14 @@ class Carrito(BaseModel):
     def to_tuple(self):
         return (self.id, self.usuario_id, self.items)
     
+    # Método para calcular el total de precio del carrito
     def getTotalCarrito(self):
         sumaTotal = 0.0
         for item in self.items:
             sumaTotal += item.subtotal()
         return round(sumaTotal, 2)
     
+    # Método para vaciar el carrito
     def vaciarCarrito(self):
         self.items = []
 

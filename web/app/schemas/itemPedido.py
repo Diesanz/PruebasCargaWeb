@@ -1,5 +1,6 @@
 from app.schemas.Producto import producto_schema
 
+#Método para la validación de un producto del pedido
 def item_pedido_schema(item) -> dict:
     return {
         "pedido_id": int(item["pedido_id"]),
@@ -7,6 +8,7 @@ def item_pedido_schema(item) -> dict:
         "cantidad": int(item["cantidad"]),
     }
 
+#Método para la validación de un producto del pedido
 def item_pedido_schema_db(item) -> dict:
     return {
         "pedido_id": int(item["pedido_id"]),

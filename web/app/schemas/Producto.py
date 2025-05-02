@@ -5,6 +5,7 @@ puedes reestructurarlas para asegurarte de que coincidan antes de crear el objet
 Esto permite usar el modelo de una forma más flexible y no tener que preocuparte por las diferencias de nombres de claves.
 """
 
+#Método para la validación de un producto
 def producto_schema(producto) -> dict:
     return {
         "id": int(producto["id"]) if producto["id"] else None,

@@ -17,7 +17,7 @@ from time import sleep
 
 pedido = Blueprint('pedidoController', __name__, url_prefix="/api")
 
-
+#Método que crea un pedido al usuario
 def crear_pedido(usuario_id: int):
     query = "INSERT INTO Pedido (usuario_id, estado) VALUES (%s, %s)"
     conn = Conexion()
@@ -25,6 +25,7 @@ def crear_pedido(usuario_id: int):
     conn.close_connection()
     return id
 
+#Método que muestra el numero total de pedidos de un usuario
 def get_total_pedidos(usuario_id: int):
     query_total = "SELECT COUNT(*) as num FROM Pedido WHERE usuario_id = %s"
     conn = Conexion()
@@ -32,6 +33,7 @@ def get_total_pedidos(usuario_id: int):
 
     return total_pedidos [0]["num"]
 
+#Método que muetsra la lista de productos de los pedidos
 def get_pedidos_items(usuario_id: int, page:int):
     items_por_pagina = 4  # Número de productos por página
     # Cálculo para obtener los pedidos de la página actual
@@ -64,6 +66,7 @@ def get_pedidos_items(usuario_id: int, page:int):
         'total_pages': total_paginas
     }
 
+#Endpoint que se encarga de mostrar los detalles de un pedido especifico
 @pedido.route('/pedidos/<int:id>', methods=['GET'])
 @verificar_token
 def get_join_items_productos(usuario_id: int, id: int):
@@ -77,6 +80,7 @@ def get_join_items_productos(usuario_id: int, id: int):
 
     return render_template('unPedido.html', items = lista_items_productos) #devuelve una lista de items y estos items con iformación de sus productos
 
+#Endpoint que se encarga de mostrar el histrial de pedidos de un usuario
 @pedido.route('/pedidos', methods=['GET'])
 @verificar_token
 def get_pedidos_usuario(usuario_id):
@@ -88,6 +92,7 @@ def get_pedidos_usuario(usuario_id):
 
     return render_template('pedidos.html', pedidos = pedidos)
 
+#Endpoint que simula la compra y el registro de la venta de productos
 @pedido.route('/checkout', methods=['POST'])
 @verificar_token
 def procesar_comprar(usuario_id):

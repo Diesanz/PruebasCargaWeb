@@ -10,7 +10,7 @@ from app.utils.carrito import get_id_carrito_usuario, get_carrito_items_usuario
 
 carrito = Blueprint('carritoController', __name__, url_prefix="/api/carrito")
 
-
+#Método que devuelve el producto según su identificador
 def get_datos_producto(id_producto: str): #cambiar esto para que devuelva un objeto
     query_db = "SELECT nombre, precio FROM Producto WHERE id = %s"
     conn = Conexion()
@@ -21,7 +21,7 @@ def get_datos_producto(id_producto: str): #cambiar esto para que devuelva un obj
 
     return producto
 
-
+#Endpoint encargado de mostrar el estado actual del caarrito
 @carrito.route('/', methods=['GET'])
 @verificar_token
 def get_items_carrito(usuario_id):
@@ -34,7 +34,7 @@ def get_items_carrito(usuario_id):
 
     return render_template("index.html", error="Carrito no encontrado", items=[], total=0)
 
-
+#Endpoint encargado de vaciar el carrito del usuario
 @carrito.route('/vaciar', methods=['DELETE'])
 @verificar_token
 def delete_items_carrito(usuario_id):
@@ -53,7 +53,7 @@ def delete_items_carrito(usuario_id):
 
     return jsonify({"error": "No se encontró el carrito del usuario"}), 404
 
-
+#Endpoint encargado de agregar un producto al carrito
 @carrito.route('/agregar', methods=['POST'])
 @verificar_token
 def add_item_carrito(usuario_id):
@@ -92,5 +92,3 @@ def add_item_carrito(usuario_id):
         "message": "Item añadido al carrito",
         "item": item_carrito_db.dict()  # Devuelve los datos del ítem recién agregado o actualizado
     }), 200
-
-

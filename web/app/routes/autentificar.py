@@ -38,7 +38,7 @@ def verificar_token_login():
             return None  # Token inválido
     return None  # No hay token
 
-#Endpoit para obtener el html del login y del registro
+#Endpoit para obtener el html del login del usuario
 @autentificar_usuarios.route('/login', methods=['GET'])
 def login():
     # Verificar si el usuario ya está autenticado
@@ -49,6 +49,7 @@ def login():
         # Si no hay token o el token es inválido, mostrar la página de inicio de sesión
         return render_template('inicioSesion.html')
 
+#Endpoint para obtener el html del registro de usuario
 @autentificar_usuarios.route('/registro', methods=['GET'])
 def registro():
     return render_template('registroUsuario.html')
@@ -159,6 +160,7 @@ def login_post():
 
     return resp
 
+#Endpoint para realizar el cierre de sesion del usuario
 @autentificar_usuarios.route('/logout')
 @verificar_token
 def logout(usuario_id):

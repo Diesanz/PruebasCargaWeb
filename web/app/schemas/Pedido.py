@@ -1,6 +1,6 @@
-
 from datetime import date
 
+#Método para la validación de un pedido
 def pedido_schema(pedido, items: list) -> dict:
     return{
         "id": int(pedido["id"]) or None,
