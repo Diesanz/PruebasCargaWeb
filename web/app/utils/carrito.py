@@ -5,17 +5,19 @@ from app.models.itemCarrito import ItemCarrito, ItemCarritoDB
 from app.schemas.Carrito import carrito_schema
 from app.schemas.itemCarrito import item_carrito_schema
 
-def get_id_carrito_usuario(usuario_id: str):
-    query_db = "SELECT id FROM Carrito WHERE usuario_id = %s"
-    conn = Conexion()
-    id_carrito = conn.select_db(query_db, (usuario_id,), one=True)
 
-    if not id_carrito:
-        return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 
-
-    return id_carrito['id']
 
 def get_carrito_items_usuario(usuario_id: str) -> Carrito:
+    """
+    Obtiene el objeto `Carrito` completo, incluyendo todos los ítems agregados por el usuario.
+
+    Args:
+        usuario_id (str): ID del usuario.
+
+    Returns:
+        Carrito: Objeto `Carrito` con su información y los productos contenidos.
+    """
+    
     query_db = "SELECT * FROM Carrito WHERE usuario_id = %s"
     conn = Conexion()
     carrito = conn.select_db(query_db, (usuario_id,), one=True)

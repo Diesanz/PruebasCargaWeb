@@ -1,18 +1,18 @@
-"""
-Un diccionario de datos (como el resultado de una consulta SQL) y transformarlo para que coincida con el formato esperado por el objeto de tu modelo.
-Por ejemplo, si la consulta SQL devuelve claves que no coinciden directamente con los atributos del modelo Producto, 
-puedes reestructurarlas para asegurarte de que coincidan antes de crear el objeto. 
-Esto permite usar el modelo de una forma más flexible y no tener que preocuparte por las diferencias de nombres de claves.
-"""
-
-#Método para la validación de un producto
 def producto_schema(producto) -> dict:
+    """Convierte un diccionario de datos (como el resultado de una consulta SQL) en un formato adecuado para el modelo Producto.
+
+    Args:
+        producto: Diccionario con los datos del producto, como el resultado de una consulta SQL.
+
+    Returns:
+        dict: Un diccionario con los atributos del producto, con los valores convertidos al tipo correcto.
+    """
     return {
-        "id": int(producto["id"]) if producto["id"] else None,
-        "nombre": producto["nombre"],
-        "descripcion": producto["descripcion"],
-        "precio": float(producto["precio"]),
-        "stock": int(producto["stock"]),
-        "tipo": producto["tipo"],
-        "imagen_url": producto["imagen_url"]
+        "id": int(producto["id"]) if producto["id"] else None,  # Convierte el id a int, o None si es vacío
+        "nombre": producto["nombre"],  # El nombre del producto, sin cambios
+        "descripcion": producto["descripcion"],  # Descripción del producto, sin cambios
+        "precio": float(producto["precio"]),  # Convierte el precio a float
+        "stock": int(producto["stock"]),  # Convierte el stock a int
+        "tipo": producto["tipo"],  # Tipo del producto, sin cambios
+        "imagen_url": producto["imagen_url"]  # URL de la imagen del producto, sin cambios
     }

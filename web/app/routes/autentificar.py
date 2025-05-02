@@ -12,6 +12,17 @@ SECRET = 'mi_clave_secreta'
 ALGORITHM = 'HS256'  # Algoritmo de firma por defecto
 
 def search_usuario(busqueda:str, valor:str) -> Usuario:
+    """
+    Busca un usuario en la base de datos utilizando un campo específico.
+
+    Args:
+        busqueda (str): Nombre del campo por el que se quiere buscar (por ejemplo: 'id', 'email').
+        valor (str): Valor que debe tener el campo para encontrar al usuario.
+
+    Returns:
+        Usuario: Objeto Usuario si se encuentra el usuario, None en caso contrario.
+    """
+
     conn = Conexion()
     query_db = f"SELECT * FROM Usuario WHERE {busqueda} = %s"
     user = conn.select_db(query_db, (valor,), one=True)
@@ -19,6 +30,16 @@ def search_usuario(busqueda:str, valor:str) -> Usuario:
     return Usuario(**usuario_schema(user)) if user else None
 
 def search_usuario_db(email:str) -> UsuarioDB:
+    """
+    Busca un usuario en la base de datos a partir de su correo electrónico.
+
+    Args:
+        email (str): Correo electrónico del usuario.
+
+    Returns:
+        UsuarioDB: Objeto UsuarioDB si se encuentra el usuario, None en caso contrario.
+    """
+
     conn = Conexion()
     query_db = "SELECT * FROM Usuario WHERE email = %s"
     user = conn.select_db(query_db, (email,), one=True)
@@ -27,6 +48,18 @@ def search_usuario_db(email:str) -> UsuarioDB:
 
 # Función para verificar si el token es válido (solo para el login)
 def verificar_token_login():
+    """
+    Verifica si el token JWT almacenado en la cookie 'authToken' es válido.
+
+    Esta función se utiliza durante el proceso de login para determinar
+    si el usuario ya está autenticado.
+
+    Returns:
+        dict | None: 
+            - Diccionario con los datos decodificados del token si es válido.
+            - None si el token está ausente, expirado o es inválido.
+    """
+    
     token = request.cookies.get('authToken')
     if token:
         try:
@@ -41,6 +74,16 @@ def verificar_token_login():
 #Endpoit para obtener el html del login del usuario
 @autentificar_usuarios.route('/login', methods=['GET'])
 def login():
+    """
+    Muestra el formulario de inicio de sesión.
+
+    Si el usuario ya está autenticado mediante un token válido, se redirige a la página principal.
+    En caso contrario, se muestra la plantilla de inicio de sesión.
+
+    Returns:
+        Response: Redirección a la página principal o renderizado del HTML de login.
+    """
+
     # Verificar si el usuario ya está autenticado
     if verificar_token_login():
         # Si el token es válido, redirigir a la página principal o cualquier otra página
@@ -52,6 +95,13 @@ def login():
 #Endpoint para obtener el html del registro de usuario
 @autentificar_usuarios.route('/registro', methods=['GET'])
 def registro():
+    """
+    Muestra el formulario de registro para nuevos usuarios.
+
+    Returns:
+        Response: Renderiza la plantilla HTML del formulario de registro.
+    """
+
     return render_template('registroUsuario.html')
 
 #Endpoint para registrar un nuevo Usuario
@@ -73,7 +123,7 @@ def registro_post():
     Method:
     POST
 
-    Request Form Parameters:
+    Args from parametres:
     - nombre (str): Nombre del usuario.
     - dni (str): DNI del usuario.
     - email (str): Correo electrónico del usuario.
@@ -128,10 +178,7 @@ def login_post():
     por 1 minuto, y se envía como parte de la respuesta para que el usuario pueda realizar 
     peticiones autenticadas.
 
-    Method:
-    POST
-
-    Request Form Parameters:
+    Args:
     - email (str): Correo electrónico del usuario.
     - password (str): Contraseña del usuario.
 
@@ -164,13 +211,19 @@ def login_post():
 @autentificar_usuarios.route('/logout')
 @verificar_token
 def logout(usuario_id):
+    """
+    Cierra la sesión del usuario autenticado.
+
+    Elimina la cookie que contiene el token de autenticación y redirige al login.
+
+    Args:
+        usuario_id (int): ID del usuario autenticado (extraído del token).
+
+    Returns:
+        Response: Redirección al formulario de login con la cookie 'authToken' eliminada.
+    """
     token = request.cookies.get('authToken')
     if token:
         resp = make_response(redirect(url_for('autentificar.login')))
         resp.set_cookie('authToken', '', expires=50)  # Borra la cookie
         return resp
-
-@autentificar_usuarios.route('/me', methods=['GET'])
-@verificar_token
-def me():
-    return jsonify({"message": "ruta disponible"}), 200

@@ -7,6 +7,7 @@ function getCarrito() {
 }
 
 function insert_carrito(boton){
+    
     boton.addEventListener("click", function () {
         const productoId = this.id;
 
@@ -25,10 +26,6 @@ function insert_carrito(boton){
                 throw new Error("Error al añadir al carrito");
             }
             return response.json();
-        })
-        .then(data => {
-            alert("Producto añadido al carrito correctamente.");
-            // También podrías actualizar un contador de carrito o similar aquí
         })
         .catch(error => {
             alert("Hubo un error: " + error.message);

@@ -1,6 +1,15 @@
-#Método para la validación de un producto del carrito
-def item_carrito_schema(item, objeto = False) -> dict: #Si es true accede a los parametros como si fuera un objeto y si es false accede como si fuera un json
+def item_carrito_schema(item, objeto=False) -> dict:
+    """Convierte un ítem de carrito en un diccionario, dependiendo de si es un objeto o un diccionario.
+
+    Args:
+        item: El ítem del carrito, que puede ser un objeto de tipo `ItemCarrito` o un diccionario.
+        objeto (bool, optional): Si es `True`, se asume que `item` es un objeto; si es `False`, es un diccionario.
+
+    Returns:
+        dict: Un diccionario con los atributos del ítem del carrito.
+    """
     if objeto:
+        # Si item es un objeto (probablemente una instancia de ItemCarrito)
         return {
             "producto_id": int(item.producto_id),
             "nombre": item.nombre,
@@ -8,22 +17,10 @@ def item_carrito_schema(item, objeto = False) -> dict: #Si es true accede a los 
             "precio": float(item.precio),
         }
     else:
-        # Si item no es un objeto de tipo ItemCarrito, asume que es un diccionario
+        # Si item es un diccionario (ejemplo: de base de datos o JSON)
         return {
             "producto_id": int(item["producto_id"]),
             "nombre": item["nombre"],
             "cantidad": int(item["cantidad"]),
             "precio": float(item["precio"]),
         }
-
-#Método para la validación de un producto del carrito
-def item_carrito_schema_db(item) -> dict:
-    return {
-        "producto_id": int(item["producto_id"]),
-        "carrito_id": int(item["carrito_id"]),
-        "nombre": item["nombre"],
-        "cantidad": int(item["cantidad"]),
-        "precio": float(item["precio"]),
-    }
-
-

@@ -20,6 +20,7 @@ class Conexion:
         - self.connection_params (dict): Diccionario con los parámetros de conexión
         - self.connection (pymysql.Connection | None): Objeto de conexión
         """
+        
         self.connection_params = {
             "host": host,
             "port": port,
@@ -42,6 +43,7 @@ class Conexion:
         Excepciones:
         - pymysql.MySQLError: Captura errores de conexión y los imprime
         """
+
         try:
             self.connection = pymysql.connect(**self.connection_params)
             return self.connection
@@ -54,6 +56,7 @@ class Conexion:
         """
         Cierra la conexión activa con la base de datos si existe.
         """
+
         if self.connection:
             self.connection.close()
             self.connection = None
@@ -104,6 +107,7 @@ class Conexion:
         Excepciones:
         - Exception: Captura errores en la ejecución y los imprime.
         """
+
         if not self.connection:
             self.get_connection()
 
@@ -141,6 +145,7 @@ class Conexion:
         Excepciones:
         - Exception: Captura errores en la ejecución del procedimiento
         """
+
         if not self.connection:
             self.get_connection()
 

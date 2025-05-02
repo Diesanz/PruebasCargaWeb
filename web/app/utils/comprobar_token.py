@@ -6,6 +6,24 @@ SECRET = 'mi_clave_secreta'
 ALGORITHM = 'HS256'
 
 def verificar_token(f):
+    """
+    Decorador que protege rutas requeridas para usuarios autenticados.
+    Verifica la validez de un token JWT almacenado en una cookie llamada 'authToken'.
+
+    Si el token es válido, extrae el `usuario_id` y lo pasa como primer argumento
+    a la función decorada.
+
+    - Si el token ha expirado, borra la cookie y redirige al login.
+    - Si el token es inválido, devuelve un error JSON 401.
+    - Si no hay token, redirige al login.
+
+    Args:
+        f (function): Función de vista (endpoint) que requiere autenticación.
+
+    Returns:
+        function: Función decorada que incluye verificación del token.
+    """
+    
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = request.cookies.get('authToken')  # Obtener el token de la cookie
