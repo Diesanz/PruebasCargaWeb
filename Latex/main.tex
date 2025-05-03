@@ -1,11 +1,51 @@
-\documentclass{article}
+\documentclass[10pt]{book}
 \usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{subcaption} % Para subfiguras
+\usepackage{wrapfig}
+\usepackage[hidelinks]{hyperref} %con 
 \usepackage[spanish]{babel}
 \usepackage{float}
 \usepackage{minted}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{titlesec}
+\hypersetup{ colorlinks=true,                     %habilitar colorear enlaces
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+% Sangría para subsections
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\hspace{1em}\thesubsection }{1em}{}
+
+% Sangría para subsubsections
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\hspace{2em}\thesubsubsection }{1em}{}
+
+%Para código bash
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    language=bash,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{green!60!black},
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
 
 \lstset{
     language=bash,
@@ -28,32 +68,51 @@
     stringstyle=\color{red}\ttfamily,
 }
 
+
+\title{\textbf{Práctica 2 Pruebas de carga web}}
+\author{\textbf{Fernández Sánchez, Victor}\\\textbf{Sánchez Maroto, Gonzalo}\\\textbf{Sanz Santos, Diego}\\\textbf{Verduras Cavada, Rubén}
+\date{\today}}
+
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{Práctica 2} 
+\fancyhead[R]{ESI} 
+\fancyfoot[R]{\thepage} 
+\fancyfoot[L]{24-25} 
+
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
 \begin{document}
-
-% Portada
 \begin{titlepage}
-    \centering
-    \includegraphics[width=0.4\textwidth]{logo.png} % Ajusta el nombre de la imagen según corresponda
-    \\[2cm]
-    {\Huge \textbf{Práctica 1: Grafana}}\\[1.5cm]
-    {\Large \textit{Evaluación de Sistemas Informáticos}}\\[1cm]
-    {\large 3º Grado en Informática. Mención de TI}\\[1cm]
-    {\large Grupo 6}\\[1.5cm]
-    \textbf{Autores:}\\[0.7cm]
-    Víctor Fernández Sánchez\\
-    Gonzalo Sánchez Maroto\\
-    Diego Sanz Santos\\
-    Rubén Verduras Cavada\\[2cm]
-    \vfill
-    \today
-\end{titlepage}
+	\centering
+    \includegraphics[scale = 0.8]{uva.jpg}\\[0.5 cm]	% Logo Universidad
 
-\tableofcontents % Componer y mostar el índice
-\listoffigures % Componer y mostrar el índice de tablas
-\listoftables % Componer y mostrar el índice de figuras
+    \rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}\\      % Título
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+
+    { \Large \bfseries Escuela de Ingeniería Informática}\\[0.3 cm]
+    { \Large \bfseries EVALUACIÓN DE SISTEMAS INFORMÁTICOS}\\[1 cm]
+    
+    \Large \theauthor
+    \vspace{1.5cm}
+    \Large \thedate
+
+\end{titlepage}
+\renewcommand{\contentsname}{Tabla de contenidos}
+
+
+\tableofcontents
+
 \newpage
 
-\section{Flask}
+\chapter{Página web}
+
+\section{Introducción Flask}
     Flask es un microframework escrto en Python y desarrollado para simplificar y hacer más fácil la creación de aplicaciones web bajo el patrón modelo vista controlador (MVC). Las pricipales ventajas de usar Flask son:
         \begin{itemize}
             \item Microframework: perfecto si se quiere desarrollar una app básica de manera rápida y ágil, ya que no se necesitarán muchas extensiones, y con Flask es suficiente.
@@ -83,9 +142,10 @@
                 \item Portabilidad: puedes compartir tu proyecto fácilmente.
             \end{itemize}
         Para crear el entorno virtual ejecutamos el comando \lstinline{python3 -m venv env_pruebas}, para activarlo \lstinline{source env_pruebas/bin/activate}, y para desactivarlo \lstinline{deactivate}. 
-        Con el entorno virtual activado, habría que instalar el paquete de Flask con el comando \lstinline{pip install flask}, y comprobarlo con \lstinline{pip show flask}.
+        Con el entorno virtual activado, habría que instalar el paquete de Flask con el comando \lstinline{pip install flask}, y comprobarlo con \lstinline{pip show flask}, además de instalar otros paquetes encontrados en el fichero \textbf{requirements.txt} de nuestra carpeta d la práctica.
 
-    \subsection{Estructura de carpetas}
+\section{Contenido y estructura página web}
+\subsection{Estructura de carpetas}
         Para mantener un código limpio, modular y escalable, se ha utilizado una estructura específica de carpetas con las siguientes funcionalidades:
             \begin{itemize}
                 \item db: utilizada para la gestión de la base de datos.
@@ -97,12 +157,15 @@
                 \item utils: utilizada para almacenar funciones o clases auxiliares que se reutilizan en diferentes partes de la app.
             \end{itemize}
 
-    \subsection{Contenido de las carpetas}
-        La carpeta db está formada por:
+\subsection{Contenido de las carpetas}
+    \begin{enumerate}
+        \item La carpeta db está formada por:
             \begin{itemize}
                 \item conexiondb.py $\rightarrow$ crea la clase Conexion, que se encarga de gestionar la conexión y operaciones con la base de datos MySQL utilizando la libreria pymysql. Hay diferentes métodos creados como el ''\_\_init\_\_'' (inicializa la configuración de la conexión con la base de datos), ''get\_connection'' (establece la conexión con la base de datos), ''close\_connection'' (cierra la conexión con la base de datos), ''select\_db'', ''execute\_db'' y ''procedure'', para ejecutar consultas SELECT, de modificación o un procedimiento respectivamente.
+                \item El objetivo de esta clase es mantener un código más escalable, pero sobre todo se buscó que fuera más legible y que facilitara la realización de consultas a la base de datos.
             \end{itemize}
-        La carpeta models está formada por:
+
+        \item  La carpeta models está formada por:
             \begin{itemize}
                 \item Usuario.py $\rightarrow$ crea la clase Usuario, que representa a una persona registrada en la página web.
                 \item Producto.py $\rightarrow$ crea la clase Producto, que representa un producto que se puede comprar.
@@ -111,15 +174,15 @@
                 \item Pedido.py $\rightarrow$ crea la clase Pedido, que representa una compra de productos que se ha realizado.
                 \item itemPedido.py $\rightarrow$ crea la clase ItemPedido, que representa un producto que forma el pedido.
             \end{itemize}
-        La carpeta routes está formada por:
+        \item  La carpeta routes está formada por:
             \begin{itemize}
                 \item autenticar.py $\rightarrow$ es el controlador de la autenticación de los usuarios, es el encargado de controlar el registro, login y logout de los usuarios de la página web.
                 \item menuController.py $\rightarrow$ es el controlador de la página principal de la web, es el encargado de mostrar toda la información de dicha página.
-                \item productosController.py $\rightarrow$ es el controlador de los productos en venta, es el encargado de mostrar la lista de productos junto con una breve información.
+                \item productosController.py $\rightarrow$ es el controlador de los productos en venta, es el encargado de mostrar la lista de productos junto con una breve información y actualizar la información de los productos.
                 \item carritoController.py $\rightarrow$ es el controlador del carrito de la compra, es el encargado de mostrar, actualizar y vaciar el carrito.
                 \item pedidoController.py $\rightarrow$ es el controlador de los pedidos, es el encargado de mostrar el hisotrial de pedidos, los detalles de cada uno y procesar el pedido.
             \end{itemize}
-        La carpeta schemas está formada por:
+        \item La carpeta schemas está formada por:
             \begin{itemize}
                 \item Usuario.py $\rightarrow$ crea los métodos para la validación de los usuarios para la api.
                 \item Producto.py $\rightarrow$ crea el método para la validación de los productos para la api.
@@ -128,13 +191,14 @@
                 \item Pedido.py $\rightarrow$ crea el método para la validación del pedido para la api.
                 \item itemPedido.py $\rightarrow$ crea los métodos para la validación de los productos del pedido para la api.
             \end{itemize}
-        La carpeta static está formada por:
+        \item  La carpeta static está formada por:
             \begin{itemize}
                 \item La carpeta de los css de la página web.
                 \item La carpeta de las imágenes que se han utilizado en la página web.
                 \item La carpeta del javascript utilizado en la página web.
             \end{itemize}
-        La carpeta templates está formada por:
+            
+        \item La carpeta templates está formada por:
             \begin{itemize}
                 \item index.html $\rightarrow$ representa la vista de la página principal.
                 \item inicioSesion.html $\rightarrow$ representa la vista de inicio de sesión para el usuario.
@@ -145,21 +209,28 @@
                 \item pedidos.html $\rightarrow$ representa la vista del historial de pedidos del usuario.
                 \item unPedido.html $\rightarrow$ representa la vista de los detalles de un pedido.
             \end{itemize}
-        La carpeta utils está formada por:
+
+        \item La carpeta utils está formada por:
             \begin{itemize}
                 \item comprobar\_token.py $\rightarrow$ que crea el método de comprobación del token de inicio de sesión del usuario.
+                \item carrito.py $\rightarrow$ se crea este metodo dentro de la carpeta utils ya que erea utilizado tanto por el controlador de los pedidos como el del carrito, su función es obtener los items del carrito de un usuario.
             \end{itemize}
-
-\section{Página web}
+    \end{enumerate} 
+        
+\section{Especificaciones Página web}
     La página web que se va a crear para esta parte de la página será una tienda online de platos de comida, en donde los usuarios podrán consultar y realizar pedidos a través de su cuenta. Las principales funcionalidades de la página web son:
         \begin{itemize}
             \item Los usuarios deben de ser capaces de registrarse e identificarse en la web.
+            \item Los usuarios deben de ser capaces de cerrar sesión.
             \item Los usuarios deben de ser capaces de consultar una descripción del producto que se vende y un menú de acceso a las distintas vistas desde una página principal.
             \item Los usuarios deben de ser capaces de consultar una lista de productos que se venden, y ser capaces de añadirlos a su carrito de la compra.
             \item Los usuarios deben de ser capaces de consultar los productos que tienen en su carrito de la compra y realizar un pedido de todos ellos.
+            \item Los usuarios deben de ser capaces de eleminar los productos que tienen añadidos en sus carritos.
             \item Los usuarios deben de ser capaces de consultar con más detalle cada uno de los productos.
             \item Los usuarios deben de ser capaces de consultar un historial de todos los pedidos realizados y sus detalles.
         \end{itemize}
+
+    \subsection{Vistas y html}
     En base a las especificaciones de la web anteriores se han detectado una serie de vistas que debe de tener la página web, y son las siguientes:
     \begin{itemize}
         \item Página principal: en esta vista, se presenta el propósito de la web y da la posibilidad de navegar por toda ella.
@@ -175,7 +246,7 @@
     \subsection{Modelo de dominio}
         \begin{figure}[H]
             \centering
-            \includegraphics[width=1\linewidth]{modelo_dominio.drawio.png}
+            \includegraphics[width=1\linewidth]{./img/modelo_dominio.drawio.png}
             \caption{Modelado de dominio}
             \label{fig:dom-mod}
         \end{figure}
@@ -183,27 +254,162 @@
     \subsection{Mapa del sitio web}
         \begin{figure}[H]
             \centering
-            \includegraphics[width=1\linewidth]{mapa_sitio_web.drawio.png}
+            \includegraphics[width=1\linewidth]{./img/mapa_sitio_web.drawio.png}
             \caption{Mapa del sitio web}
             \label{fig:web-map}
         \end{figure}
+    
+\section{Base de datos}
+    \subsection{Diagrama base de datos}
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=1\linewidth]{./img/Carga_web.png}
+            \caption{Modelo base de datos}
+            \label{fig:web-map}
+        \end{figure}
 
-\section{Locust}
-    Locust es una herramienta de código abierto escrita en Python para realizar pruebas de carga y rendimiento sobre sitios o aplicaciones web, APIs, o cualquier otro sistema que pueda ser probado mediante peticiones HTTP u otras.\\
+\subsection{Conexión a la base de datos}
+
+    Para \textbf{iniciar} la base de datos en el servidor, es necesario acceder como root con el comando \lstinline{sudo -i}. A continuación, se deben ejecutar los siguientes pasos:
     
-    Debido a que está desarrollado en Python, lo hace una herramienta flexible, potente y fácil de entender capaz de ser un sistema distribuido y escalable que puede ejecutarse sobre varias máquinas. Además, dispone de una interfaz web en tiempo real que muestra métricas como el número de usuarios activos, número de peticiones por segundo, o tiempos de respuesta y tasas de error.\\
-    
-    Su principal función es generar tráfico simulado hacia el sistema para medir cómo se comporta bajo diferentes niveles de carga. Otras funcionalidades son:
+    \begin{enumerate}
+        \item \textbf{Acceso a MySQL como root sin usar \texttt{sudo -i}:}
         \begin{itemize}
-            \item Identificar cuellos de botella en el rendimiento.
-            \item Evaluar la escalabilidad.
-            \item Optimizar el rendimiento.
-            \item Planificar la capacidad.
-            \item Validar la infraestructura.
-            \item Pruebas de estrés.
-            \item Pruebas de resistencia.
+            \item Ejecutar el comando: \lstinline{sudo mysql -u root -p}
         \end{itemize}
+    
+        \item \textbf{Creación del usuario \texttt{user\_pr}:}
+        \begin{itemize}
+            \item Ejecutar el comando: \lstinline{CREATE USER 'user_pr'@'localhost' IDENTIFIED BY 'Grupo6esi';}
+            \item Este comando crea un nuevo usuario llamado \texttt{user\_pr} que solo puede conectarse desde el mismo servidor (\texttt{localhost}) y le asigna la contraseña \texttt{Grupo6esi}.
+        \end{itemize}
+    
+        \item \textbf{Creación de la base de datos \texttt{Carga\_web}:}
+        \begin{itemize}
+            \item Ejecutar el comando: \lstinline{CREATE DATABASE Carga_web;}
+            \item Este comando crea una nueva base de datos llamada \texttt{Carga\_web}.
+        \end{itemize}
+    
+        \item \textbf{Selección de la base de datos \texttt{Carga\_web}:}
+        \begin{itemize}
+            \item Ejecutar el comando: \lstinline{USE Carga_web;}
+            \item Este comando selecciona la base de datos \texttt{Carga\_web} para que todas las operaciones posteriores se realicen en ella.
+        \end{itemize}
+    
+        \item \textbf{Ejecución de los scripts SQL para crear las tablas y los procedimientos:}
+        \begin{itemize}
+            \item Ejecutar: \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/creacion_tablas.sql;}
+            \item Este archivo contiene las instrucciones para crear las tablas necesarias en la base de datos.
+            \item Asegurarse de que el archivo \texttt{creacion\_tablas.sql} existe en la ruta especificada.
+            
+            \item Ejecutar: \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/procedimientos.sql;}
+            \item Este archivo contiene las instrucciones para crear los procedimientos almacenados necesarios.
+            \item Verificar que el archivo \texttt{procedimientos.sql} esté presente en la ubicación indicada.
+        \end{itemize}
+    
+        \item \textbf{Población de la tabla de productos:}
+        \begin{itemize}
+            \item Ejecutar: \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/insert_productos.sql;}
+            \item Este archivo contiene las instrucciones para poblar la tabla de productos con datos de prueba.
+            \item Asegurarse de que el archivo \texttt{insert\_productos.sql} existe en la ruta especificada.
+        \end{itemize}
+    
+        \item \textbf{Otorgar privilegios al usuario \texttt{user\_pr}:}
+        \begin{itemize}
+            \item Ejecutar el comando: \lstinline{GRANT ALL PRIVILEGES ON Carga_web.* TO 'user_pr'@'localhost';}
+            \item Este comando otorga al usuario \texttt{user\_pr} permisos completos sobre la base de datos \texttt{Carga\_web}, necesarios para leer e insertar datos.
+        \end{itemize}
+    
+        \item \textbf{Actualizar los privilegios:}
+        \begin{itemize}
+            \item Ejecutar el comando: \lstinline{FLUSH PRIVILEGES;}
+            \item Este comando recarga los privilegios de MySQL para aplicar los cambios inmediatamente.
+        \end{itemize}
+    \end{enumerate}
 
+        
+\subsection{Descripción y relaciones entre tablas}
+
+    La base de datos del sistema está compuesta por seis tablas principales: \texttt{Usuario}, \texttt{Producto}, \texttt{Carrito}, \texttt{CarritoItem}, \texttt{Pedido} y \texttt{PedidoItem}. A continuación, se detalla el propósito de cada tabla y las relaciones que mantienen entre ellas.
+    
+    \begin{itemize}
+        \item \textbf{Usuario}: Almacena la información de los usuarios registrados en el sistema. Cada usuario tiene un \texttt{id} único, y se registran datos como el \texttt{nombre}, \texttt{DNI}, \texttt{email}, \texttt{domicilio}, y \texttt{password}. Además, se guarda la \texttt{fechaCreacion} con una marca de tiempo actualizada automáticamente. Esta tabla está relacionada con las tablas \texttt{Carrito} y \texttt{Pedido}, ya que un usuario puede tener varios carritos o pedidos asociados.
+        
+        \item \textbf{Producto}: Contiene todos los productos disponibles para ser añadidos al carrito o incluidos en un pedido. Incluye campos como \texttt{nombre}, \texttt{descripcion}, \texttt{precio}, \texttt{stock}, \texttt{tipo} (para clasificar los productos) y \texttt{imagen\_url}. Esta tabla está relacionada con \texttt{CarritoItem} y \texttt{PedidoItem}, permitiendo identificar qué productos se añaden al carrito o se incluyen en un pedido.
+        
+        \item \textbf{Carrito}: Representa el carrito de compras temporal de un usuario antes de confirmar un pedido. Cada carrito está relacionado con un único usuario mediante \texttt{usuario\_id}. Al eliminar un usuario, sus carritos asociados se eliminan automáticamente (\texttt{ON DELETE CASCADE}).
+        
+        \item \textbf{CarritoItem}: Registra los productos que un usuario ha añadido a su carrito. Contiene claves foráneas hacia \texttt{Carrito} y \texttt{Producto}, e incluye campos como \texttt{nombre}, \texttt{cantidad} y \texttt{precio}. Cada combinación \texttt{carrito\_id} y \texttt{producto\_id} debe ser única, es decir, no puede haber dos líneas iguales con el mismo producto en el mismo carrito.
+        
+        \item \textbf{Pedido}: Almacena información sobre los pedidos realizados por los usuarios. Contiene una relación con \texttt{Usuario} a través de \texttt{usuario\_id}. Incluye también la \texttt{fecha} de creación y el \texttt{estado} del pedido (por ejemplo, pendiente, enviado, completado, etc.).
+        
+        \item \textbf{PedidoItem}: Detalla los productos incluidos en un pedido. Se relaciona con la tabla \texttt{Pedido} mediante \texttt{pedido\_id} y con \texttt{Producto} mediante \texttt{producto\_id}. Almacena la \texttt{cantidad} y el \texttt{precio} con que fue adquirido el producto en ese pedido, permitiendo un historial consistente aunque el precio cambie posteriormente en la tabla \texttt{Producto}.
+    \end{itemize}
+    
+    \subsubsection*{Relaciones entre tablas}
+    
+    \begin{itemize}
+        \item \texttt{Usuario} $\rightarrow$ \texttt{Carrito} (1:1): Un usuario puede tener un carrito.
+        \item \texttt{Usuario} $\rightarrow$ \texttt{Pedido} (1:N): Un usuario puede haber realizado varios pedidos.
+        \item \texttt{Carrito} $\rightarrow$ \texttt{CarritoItem} (1:N): Cada carrito puede contener múltiples productos.
+        \item \texttt{Pedido} $\rightarrow$ \texttt{PedidoItem} (1:N): Cada pedido puede contener varios productos.
+        \item \texttt{Producto} $\rightarrow$ \texttt{CarritoItem} y \texttt{PedidoItem} (1:N): Un producto puede estar presente en múltiples carritos o pedidos.
+    \end{itemize}
+    
+    Estas relaciones permiten modelar un sistema de compras en línea completo, desde la navegación y selección de productos hasta la confirmación del pedido y su almacenamiento.
+    
+\subsection{Procedimientos almacenados}
+
+\subsubsection{Procedimiento \texttt{AddOrUpdateItemCarrito}}
+
+    Este procedimiento se encarga de \textbf{gestionar los ítems del carrito de compra} de un usuario. Su funcionamiento permite que si un producto ya existe en el carrito, se actualice la cantidad; y si no existe, se inserte como un nuevo ítem.
+    
+    \begin{itemize}
+        \item \textbf{Parámetros de entrada:}
+        \begin{itemize}
+            \item \texttt{p\_carrito\_id}: ID del carrito.
+            \item \texttt{p\_producto\_id}: ID del producto.
+            \item \texttt{p\_nombre}: Nombre del producto.
+            \item \texttt{p\_cantidad}: Cantidad del producto.
+            \item \texttt{p\_precio}: Precio del producto.
+        \end{itemize}
+        
+        \item \textbf{Funcionamiento:}
+        \begin{enumerate}
+            \item Se consulta si el producto ya está en el carrito.
+            \item Si ya existe, se actualiza la cantidad sumando la nueva cantidad.
+            \item Si no existe, se inserta como nuevo ítem en la tabla \texttt{CarritoItem}.
+        \end{enumerate}
+        
+        \item \textbf{Caso de uso:} se utiliza al añadir productos al carrito desde la aplicación, evitando duplicados y facilitando la actualización.
+    \end{itemize}
+    
+\subsubsection{Procedimiento \texttt{CreateUser}}
+
+    Este procedimiento permite \textbf{crear un nuevo usuario en la base de datos}, asegurando que la operación sea atómica gracias a una transacción.
+    
+    \begin{itemize}
+        \item \textbf{Parámetros de entrada:}
+        \begin{itemize}
+            \item \texttt{p\_nombre}: Nombre del usuario.
+            \item \texttt{p\_dni}: DNI del usuario.
+            \item \texttt{p\_email}: Correo electrónico del usuario.
+            \item \texttt{p\_domicilio}: Domicilio del usuario.
+            \item \texttt{p\_password}: Contraseña del usuario.
+        \end{itemize}
+        
+        \item \textbf{Funcionamiento:}
+        \begin{enumerate}
+            \item Se inicia una transacción.
+            \item Se inserta el usuario en la tabla \texttt{Usuario}.
+            \item Se recupera el ID del nuevo usuario insertado.
+            \item Se hace \texttt{COMMIT} para confirmar los cambios.
+            \item Si ocurre un error, se ejecuta un manejador que realiza \texttt{ROLLBACK} y lanza un mensaje de error.
+        \end{enumerate}
+        
+        \item \textbf{Caso de uso:} se ejecuta al registrar un nuevo usuario desde la aplicación. Garantiza que no se guarden datos parciales si algo falla.
+    \end{itemize}
+    
 \section{API}
     API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
     Los tipos de API son:
@@ -244,6 +450,7 @@
             \begin{itemize}
                 \item POST /api/login $\rightarrow$ verificar credenciales y devuelve un token o sesión.
                 \item POST /api/registro $\rightarrow$ crea una nueva cuenta de usuario.
+                \item DELETE /api/logout $\rightarrow$ cierra sesión de un usuario y eleimina su token.
             \end{itemize}
             \item Menú principal
             \begin{itemize}
@@ -276,5 +483,23 @@
             \end{itemize}
         \end{itemize}
 
+\chapter{Pruebas de carga con Locust}
+\section{Locust}
+    Locust es una herramienta de código abierto escrita en Python para realizar pruebas de carga y rendimiento sobre sitios o aplicaciones web, APIs, o cualquier otro sistema que pueda ser probado mediante peticiones HTTP u otras.\\
+    
+    Debido a que está desarrollado en Python, lo hace una herramienta flexible, potente y fácil de entender capaz de ser un sistema distribuido y escalable que puede ejecutarse sobre varias máquinas. Además, dispone de una interfaz web en tiempo real que muestra métricas como el número de usuarios activos, número de peticiones por segundo, o tiempos de respuesta y tasas de error.\\
+    
+    Su principal función es generar tráfico simulado hacia el sistema para medir cómo se comporta bajo diferentes niveles de carga. Otras funcionalidades son:
+        \begin{itemize}
+            \item Identificar cuellos de botella en el rendimiento.
+            \item Evaluar la escalabilidad.
+            \item Optimizar el rendimiento.
+            \item Planificar la capacidad.
+            \item Validar la infraestructura.
+            \item Pruebas de estrés.
+            \item Pruebas de resistencia.
+        \end{itemize}
+        
+\chapter{Monitorización del servidor}
 
 \end{document}
