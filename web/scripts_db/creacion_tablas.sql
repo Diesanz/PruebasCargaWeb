@@ -21,7 +21,8 @@ CREATE TABLE `Usuario` (
   `domicilio` varchar(255) NOT NULL,
   `fechaCreacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `password` text NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 );
 
 -- Crear la tabla Producto
@@ -41,6 +42,7 @@ CREATE TABLE `Carrito` (
   `id` int NOT NULL AUTO_INCREMENT,
   `usuario_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`,`usuario_id`),
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `Carrito_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`id`) ON DELETE CASCADE
 );
@@ -66,6 +68,7 @@ CREATE TABLE `Pedido` (
   `usuario_id` int DEFAULT NULL,
   `fecha` timestamp NULL DEFAULT current_timestamp(),
   `estado` varchar(30) DEFAULT 'pendiente',
+  `total` int, 
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `Pedido_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`id`)

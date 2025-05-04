@@ -17,6 +17,7 @@ def get_produtosdb():
     conn = Conexion()
     query = "SELECT * FROM Producto" 
     productos = conn.select_db(query)
+    conn.close_connection()
     
     return [Producto(**producto_schema(p)) for p in productos]
 
@@ -35,6 +36,7 @@ def obtener_producto_por_id(id):
     conn = Conexion()
     query = "SELECT * FROM Producto p WHERE p.id=%s" 
     producto = conn.select_db(query, (id,), one=True)
+    conn.close_connection()
 
     return Producto(**producto_schema(producto)) if producto else None 
 

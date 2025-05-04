@@ -78,8 +78,8 @@
                 </div>
                 <div class="total">
                     <p>Precio final productos: <span class="price-final-Prs">{{total}}€</span></p>
-                    <p>Gastos de gestión fijos: <span class="price-envio">2.00€</span></p>
-                    <p>Total: <span class="price-total">{{total+2.00}}€</span></p>
+                    <p>Gastos de gestión fijos: <span class="price-envio">{%if total %} 2.00 {%else%} 0.00€ {%endif%}</span></p>
+                    <p>Total: <span class="price-total">{%if total %} {{total+ 2.00}}  {%else%} 0.00€ {%endif%}€</span></p>
                 </div>
             
                 <div class="buttons">

@@ -15,5 +15,6 @@ def pedido_schema(pedido, items: list) -> dict:
         "usuario_id": int(pedido["usuario_id"]),  # Convierte el usuario_id en un entero
         "fecha": pedido["fecha"].date(),  # Convierte la fecha a un objeto de tipo date
         "estado": str(pedido["estado"]),  # Convierte el estado a cadena de texto
-        "items": items  # La lista de ítems ya validada
+        "total": float(pedido['total']),
+        "items": items or []  # La lista de ítems ya validada
     }

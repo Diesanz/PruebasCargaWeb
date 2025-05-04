@@ -1,15 +1,9 @@
-from flask import Flask, request, jsonify, Blueprint, render_template, redirect, url_for, flash
-from datetime import datetime, timedelta
-from app.models.Carrito import Carrito
-from app.models.itemCarrito import ItemCarrito, ItemCarritoDB
+from flask import request, jsonify, Blueprint, render_template, redirect, url_for, flash
+
 from app.models.Pedido import Pedido
-from app.models.itemPedido import ItemPedido, ItemPedidoDB
-from app.models.Producto import Producto
-from app.schemas.Carrito import carrito_schema
-from app.schemas.itemCarrito import item_carrito_schema
+from app.models.itemPedido import ItemPedido
 from app.schemas.Pedido import pedido_schema
-from app.schemas.itemPedido import item_pedido_schema, item_pedido_schema_db
-from app.schemas.Producto import producto_schema
+from app.schemas.itemPedido import item_pedido_schema
 from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
 from app.utils.carrito import get_carrito_items_usuario
@@ -33,6 +27,7 @@ def crear_pedido(usuario_id: int):
     conn = Conexion()
     id = conn.execute_db(query, (usuario_id,"Pendiente",),return_last_id=True)
     conn.close_connection()
+
     return id
 
 #Método que muestra el numero total de pedidos de un usuario
@@ -50,11 +45,12 @@ def get_total_pedidos(usuario_id: int):
     query_total = "SELECT COUNT(*) as num FROM Pedido WHERE usuario_id = %s"
     conn = Conexion()
     total_pedidos = conn.select_db(query_total, (usuario_id,))
+    conn.close_connection()
 
     return total_pedidos [0]["num"]
 
 #Método que muetsra la lista de productos de los pedidos
-def get_pedidos_items(usuario_id: int, page:int):
+def get_pedidos(usuario_id: int, page:int):
     """
     Obtiene los pedidos paginados de un usuario, junto con los productos de cada pedido.
 
@@ -77,25 +73,15 @@ def get_pedidos_items(usuario_id: int, page:int):
     query = "SELECT * FROM Pedido WHERE usuario_id = %s LIMIT %s OFFSET %s"
     conn = Conexion()
     pedidos = conn.select_db(query, (usuario_id, items_por_pagina, offset))
+    conn.close_connection()
 
-    lista_pedidos_items = []
-    for i in pedidos:
-        #get_join_items_productos(i['id'])
-        query_items = "SELECT * FROM PedidoItem WHERE pedido_id = %s"
-        conn = Conexion()
-        item_results = conn.select_db(query_items, (i['id'],))
+    lista_p = [Pedido(**pedido_schema(p, [])) for p in pedidos]
 
-        items_formateados = [ItemPedidoDB(**item_pedido_schema_db(item)) for item in item_results]
-
-        p = Pedido(**pedido_schema(i, items_formateados))
-        p.getTotalPedido()
-
-        lista_pedidos_items.append(p)
-
-    total_paginas = (get_total_pedidos(usuario_id) // items_por_pagina) + (1 if get_total_pedidos(usuario_id) % items_por_pagina > 0 else 0)
+    num_pedidos = get_total_pedidos(usuario_id)
+    total_paginas = (num_pedidos // items_por_pagina) + (1 if num_pedidos % items_por_pagina > 0 else 0)
 
     return {
-        'lista_i': lista_pedidos_items,
+        'lista_p': lista_p,
         'page': page,
         'total_pages': total_paginas
     }
@@ -103,7 +89,7 @@ def get_pedidos_items(usuario_id: int, page:int):
 #Endpoint que se encarga de mostrar los detalles de un pedido especifico
 @pedido.route('/pedidos/<int:id>', methods=['GET'])
 @verificar_token
-def get_join_items_productos(usuario_id: int, id: int):
+def get_info_pedido_usuario(usuario_id: int, id: int):
     """
     Muestra los detalles de un pedido específico, incluyendo los productos del pedido.
 
@@ -117,7 +103,8 @@ def get_join_items_productos(usuario_id: int, id: int):
     query = "SELECT * FROM PedidoItem as i JOIN Producto as p ON i.producto_id = p.id WHERE i.pedido_id = %s"
     conn = Conexion()
     items_productos = conn.select_db(query, (id,))
-    
+    conn.close_connection()
+
     lista_items_productos =  []
     for i in items_productos:
         lista_items_productos.append(item_pedido_schema(i))
@@ -141,8 +128,7 @@ def get_pedidos_usuario(usuario_id):
     # Obtén la página actual de la URL (por defecto la página 1)
     page = request.args.get('page', 1, type=int)
 
-    pedidos = get_pedidos_items(usuario_id, page)
-    print(f'pedidos{pedidos}')
+    pedidos = get_pedidos(usuario_id, page)
 
     return render_template('pedidos.html', pedidos = pedidos)
 
@@ -176,13 +162,24 @@ def procesar_comprar(usuario_id):
         
     # 2. Crear los items del pedido
     obj_items_pedido = [
-        ItemPedidoDB(pedido_id=id_pedido, producto_id=i.producto_id, cantidad=i.cantidad, precio=i.precio).to_tuple()
+        ItemPedido(pedido_id=id_pedido, producto_id=i.producto_id, cantidad=i.cantidad, precio=i.precio)
         for i in carrito.items
     ]
-    
-    for item in obj_items_pedido:
+
+    p = Pedido(id_pedido= id_pedido,  usuario_id=  usuario_id, items= obj_items_pedido)
+
+    conn = Conexion()
+    query = "INSERT into PedidoItem (pedido_id, producto_id, cantidad, precio) VALUES (%s, %s, %s, %s)"
+    bien = conn.many(query, [i.to_tuple() for i in obj_items_pedido])
+    conn.close_connection()
+
+    if bien: 
+        p.getTotalPedido()
+
         conn = Conexion()
-        query = "INSERT into PedidoItem (pedido_id, producto_id, cantidad, precio) VALUES (%s, %s, %s, %s)"
-        bien = conn.execute_db(query, (item))
+        query =  """UPDATE Pedido SET total = (%s)
+        WHERE id = (%s)"""
+        conn.execute_db(query, (p.total, id_pedido))
+        
 
     return jsonify({"message": "Pedido realizado exitosamente"}), 200

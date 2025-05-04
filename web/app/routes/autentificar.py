@@ -24,8 +24,10 @@ def search_usuario(busqueda:str, valor:str) -> Usuario:
     """
 
     conn = Conexion()
+    
     query_db = f"SELECT * FROM Usuario WHERE {busqueda} = %s"
     user = conn.select_db(query_db, (valor,), one=True)
+    conn.close_connection()
 
     return Usuario(**usuario_schema(user)) if user else None
 
@@ -39,10 +41,11 @@ def search_usuario_db(email:str) -> UsuarioDB:
     Returns:
         UsuarioDB: Objeto UsuarioDB si se encuentra el usuario, None en caso contrario.
     """
-
+    
     conn = Conexion()
     query_db = "SELECT * FROM Usuario WHERE email = %s"
     user = conn.select_db(query_db, (email,), one=True)
+    conn.close_connection()
 
     return UsuarioDB(**usuario_schema_db(user)) if user else None
 
@@ -146,25 +149,23 @@ def registro_post():
     domicilio = request.form.get('domicilio')
     password = request.form.get('password')
 
-    if type(search_usuario("dni", email)) == Usuario or type(search_usuario("email", email)) == Usuario:
+    if isinstance(search_usuario("email", email), Usuario):
         #return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         flash("El usuario con este DNI o email ya existe.")
         return redirect(url_for('autentificar.registro'))
-    
+
+
     usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
+
     
     conn = Conexion()
     success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
+    conn.close_connection()
+
     
     if success_id:
-        query = "INSERT INTO Carrito (usuario_id) VALUES (%s)" #Crea el carrito para ese usuario
-
-        conn = Conexion()
-        success_execution=conn.execute_db(query, success_id)
-        
-        if success_execution:
-            return redirect(url_for('autentificar.login'))
-    
+        return redirect(autentificar_usuarios.login)
+            
     return jsonify({"message": "Hubo un error al registrar el usuario."}), 500
 
 #Endpoint para el login de Usuarios

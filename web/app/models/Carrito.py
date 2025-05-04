@@ -43,5 +43,6 @@ class Carrito(BaseModel):
         sumaTotal = 0.0
         for item in self.items:
             sumaTotal += item.subtotal()
+            
         return round(sumaTotal, 2)
     

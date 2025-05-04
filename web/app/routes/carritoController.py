@@ -24,6 +24,7 @@ def get_id_carrito_usuario(usuario_id: str):
     query_db = "SELECT id FROM Carrito WHERE usuario_id = %s"
     conn = Conexion()
     id_carrito = conn.select_db(query_db, (usuario_id,), one=True)
+    conn.close_connection()
 
     if not id_carrito:
         return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 
@@ -45,6 +46,7 @@ def get_datos_producto(id_producto: str): #cambiar esto para que devuelva un obj
     query_db = "SELECT nombre, precio FROM Producto WHERE id = %s"
     conn = Conexion()
     producto = conn.select_db(query_db, (id_producto,), one=True)
+    conn.close_connection()
 
     if not producto:
         return jsonify({"error": "Producto no encontrado."}), 404
@@ -99,6 +101,7 @@ def delete_items_carrito(usuario_id):
         conn = Conexion()
         query_db = "DELETE FROM CarritoItem WHERE carrito_id = %s"
         borrado_exitoso = conn.execute_db(query_db, (carrito_id,))
+        conn.close_connection()
 
         if borrado_exitoso:
             return jsonify({"message": "Carrito vaciado exitosamente"}), 200
@@ -148,7 +151,8 @@ def add_item_carrito(usuario_id):
     # Paso 3: Añadir item al carrito o actualizar su cantidad
     conn = Conexion()
     success_id=conn.procedure('AddOrUpdateItemCarrito', item_carrito_db.to_tuple())
-
+    conn.close_connection()
+    
     # Devolver el ítem agregado o actualizado como una respuesta JSON
     return jsonify({
         "message": "Item añadido al carrito",

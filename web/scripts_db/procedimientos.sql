@@ -60,6 +60,8 @@ BEGIN
     -- Obtenemos el ID del nuevo usuario insertado
     SET id_U = LAST_INSERT_ID();  -- Recupera el último ID insertado (el del nuevo usuario)
 
+    INSERT INTO Carrito (usuario_id) VALUES (id_U);
+
     -- Confirmamos la transacción
     COMMIT;
     

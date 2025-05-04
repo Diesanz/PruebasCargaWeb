@@ -35,6 +35,7 @@ def get_produtos(ids=None):
     conn = Conexion()
     query = "SELECT * FROM Producto WHERE id IN %s" 
     productos = conn.select_db(query, (tuple(ids),))  # Pasa los IDs como una tupla
+    conn.close_connection()
     
     productos_obj = [Producto(**producto_schema(p)) for p in productos] # Validamos datos y tipamos
     

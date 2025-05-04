@@ -74,7 +74,7 @@
                                                 <p class="producto-descripcion"><strong>Descripción:</strong> {{ item.producto.descripcion }}</p>
                                                 <p class="producto-cantidad"><strong>Cantidad:</strong> {{ item.cantidad }}</p>
                                                 <p class="producto-precio"><strong>Precio Producto:</strong> {{ item.producto.precio }} €</p>
-                                                <p><strong>Precio Total:</strong> {{ item.producto.precio * item.cantidad}} €</p>
+                                                <p><strong>Precio Total:</strong> {{ '%.1f' | format(item.producto.precio * item.cantidad) }} €</p>
                                             </div>
                                         </li>
                                         <hr style="border: 2px dotted rgb(15, 123, 165);">

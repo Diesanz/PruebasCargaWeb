@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import date
 from typing import Optional, List, Union
-from app.models.itemPedido import ItemPedido, ItemPedidoDB
+from app.models.itemPedido import ItemPedido
 
 class Pedido(BaseModel):
     """Representa un pedido realizado por un usuario.
@@ -21,10 +21,10 @@ class Pedido(BaseModel):
     
     id: Optional[int] = None  # Identificador único del pedido, opcional
     usuario_id: int  # Identificador del usuario que realizó el pedido
-    fecha: date  # Fecha de creación del pedido
-    estado: str  # Estado del pedido (e.g., 'Pendiente', 'Enviado', etc.)
-    items: Optional[List[Union[ItemPedido, ItemPedidoDB]]] = None  # Lista de artículos en el pedido
-    precio_total: Optional[float] = None  # Precio total del pedido, calculado a partir de los ítems
+    fecha: Optional[date] = None  # Fecha de creación del pedido
+    estado: Optional[str] = None  # Estado del pedido (e.g., 'Pendiente', 'Enviado', etc.)
+    items: Optional[List[ItemPedido]] = None  # Lista de artículos en el pedido
+    total: Optional[float] = None  # Precio total del pedido, calculado a partir de los ítems
 
     def to_tuple(self):
         """Convierte el objeto `Pedido` en una tupla, útil para ser almacenado en la base de datos.
@@ -32,7 +32,7 @@ class Pedido(BaseModel):
         Returns:
             tuple: Tupla con los valores del pedido (usuario_id, fecha, estado, items).
         """
-        return (self.usuario_id, self.fecha, self.estado, self.items)  # Devuelve los datos principales del pedido como tupla
+        return (self.usuario_id, self.fecha, self.estado, self.total, self.items)  # Devuelve los datos principales del pedido como tupla
 
     def getTotalPedido(self):
         """Calcula el precio total del pedido sumando el precio de todos los artículos.
@@ -46,5 +46,5 @@ class Pedido(BaseModel):
         for item in self.items:
             sumaTotal += item.subtotal()  # Sumamos el subtotal de cada ítem al total
         
-        self.precio_total = round(sumaTotal, 2)  # Asignamos el precio total calculado al atributo precio_total
-        return round(self.precio_total, 2)  # Retornamos el precio total redondeado a dos decimales
+        self.total = round(sumaTotal, 2) + 2.00  # Asignamos el precio total calculado al atributo precio_total
+        return self.total  # Retornamos el precio total redondeado a dos decimales

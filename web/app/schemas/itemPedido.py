@@ -14,6 +14,7 @@ def item_pedido_schema(item) -> dict:
         "producto": producto_schema(item),  # Usa producto_schema para obtener el producto
         "cantidad": int(item["cantidad"]),
     }
+
 def item_pedido_schema_db(item) -> dict:
     """Convierte un ítem de pedido en un diccionario para la base de datos.
 
@@ -24,6 +25,7 @@ def item_pedido_schema_db(item) -> dict:
         dict: Un diccionario con los atributos del ítem para la base de datos, incluyendo el `pedido_id` y `producto_id`.
     """
     return {
+        "id": int(item['id']),
         "pedido_id": int(item["pedido_id"]),
         "producto_id": int(item["producto_id"]),
         "cantidad": int(item["cantidad"]),

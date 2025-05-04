@@ -87,8 +87,19 @@ class Conexion:
                 return result
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
-        finally:
-            self.close_connection()
+
+    def many(self, query: str, args: list):
+        if not self.connection:
+            self.get_connection()
+
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.executemany(query, args)
+                self.connection.commit()
+                print(args, query)
+                return True
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
 
     def execute_db(self, query: str, args: tuple = (), return_last_id: bool = False):
         """
@@ -126,8 +137,6 @@ class Conexion:
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             return False
-        finally:
-            self.close_connection()
 
 
     def procedure(self, procedimiento: str, args: tuple = ()):
@@ -162,5 +171,4 @@ class Conexion:
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             return False
-        finally:
-            self.close_connection()
+

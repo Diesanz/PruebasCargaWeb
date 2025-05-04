@@ -61,7 +61,7 @@
             <div class="historial-productos">  
                 <h1 class="nombre-his">Historial Compras</h1>         
                 <ul class="lista-hp">
-                    {% for orden in pedidos.lista_i %}
+                    {% for orden in pedidos.lista_p %}
                     <li class="cuenta-productos">
                         <div class="data-productos">
                             <div class="order-summary">
@@ -76,7 +76,7 @@
                             <div class="order-summary-info">
                                 <p class="order-summary-testo"><strong>Estado:</strong> {{ orden.estado }}</p>
                                 <p class="order-summary-testo"><strong>Fecha pedido:</strong> {{ orden.fecha }}</p>
-                                <p class="order-summary-testo"><strong>Total + Gastos:</strong> {{ orden.precio_total }}€</p>
+                                <p class="order-summary-testo"><strong>Total + Gastos:</strong> {{ orden.total }}€</p>
                             </div>
                         </div>
                     </li>
