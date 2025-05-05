@@ -1,4 +1,107 @@
+function abrirModalEditar(id, nombre, descripcion, precio, stock, tipo) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_nombre').value = nombre;
+    document.getElementById('edit_descripcion').value = descripcion;
+    document.getElementById('edit_precio').value = precio;
+    document.getElementById('edit_stock').value = stock;
+    document.getElementById('edit_tipo').value = tipo;
 
+    document.getElementById('modalEditar').style.display = 'block';
+}
+function cerrarModal() {
+    document.getElementById('modalEditar').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('formEditar');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // ✅ Evita el comportamiento por defecto del form
+        actualizarProducto();
+    });
+});
+
+
+function actualizarProducto() {
+    const id = document.getElementById('edit_id').value;
+
+    const datos = {
+        nombre: document.getElementById('edit_nombre').value,
+        descripcion: document.getElementById('edit_descripcion').value,
+        precio: document.getElementById('edit_precio').value,
+        stock: document.getElementById('edit_stock').value,
+        tipo: document.getElementById('edit_tipo').value
+    };
+
+    fetch(`/api/productos/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else if (data.error) {
+            alert("Error: " + data.error);
+        }
+    })
+
+    .catch(error => {
+        console.error("Error en la actualización:", error);
+    });
+}
+
+function mostrarSelectTipo() {
+    // Ocultar el texto del tipo y mostrar el select
+    
+    document.getElementById('nuevo_tipo').style.display = 'block';
+    // También ocultamos el icono para no tenerlo visible mientras estamos seleccionando
+    document.getElementById('editar-tipo').style.display = 'none';
+}
+
+function cambiarTipo() {
+    var tipoSeleccionado = document.getElementById('nuevo_tipo').value;
+    // Actualizar el texto del span con el valor seleccionado
+    document.getElementById('tipo-plato').innerText = tipoSeleccionado;
+    // Volver a mostrar el span y ocultar el select
+    document.getElementById('nuevo_tipo').style.display = 'none';
+    document.getElementById('tipo-plato').style.display = 'inline';
+    // Volver a mostrar el icono
+    document.getElementById('editar-tipo').style.display = 'inline';
+    
+    // Llamar a la función para actualizar el tipo de plato en el backend
+    actualizarTipo(tipoSeleccionado);
+}
+
+function actualizarTipo(tipo) {
+    const id = document.getElementById('tipo-plato').dataset.id;
+
+    const datos = {
+        tipo: tipo
+    };
+
+    fetch(`/api/productos/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else if (data.error) {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Error al actualizar el tipo de plato:", error);
+    });
+}
 
 function getCarrito() {
     // Redirige directamente a la ruta del carrito
@@ -150,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if(insert_pr_btn){
         insert_pr_btn.forEach(boton =>{
-            console.log("AAAAA")
             insert_carrito(boton)
         });
     }
@@ -158,107 +260,4 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 
-function abrirModalEditar(id, nombre, descripcion, precio, stock, tipo) {
-    document.getElementById('edit_id').value = id;
-    document.getElementById('edit_nombre').value = nombre;
-    document.getElementById('edit_descripcion').value = descripcion;
-    document.getElementById('edit_precio').value = precio;
-    document.getElementById('edit_stock').value = stock;
-    document.getElementById('edit_tipo').value = tipo;
 
-    document.getElementById('modalEditar').style.display = 'block';
-}
-function cerrarModal() {
-    document.getElementById('modalEditar').style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('formEditar');
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault(); // ✅ Evita el comportamiento por defecto del form
-        actualizarProducto();
-    });
-});
-
-
-function actualizarProducto() {
-    const id = document.getElementById('edit_id').value;
-
-    const datos = {
-        nombre: document.getElementById('edit_nombre').value,
-        descripcion: document.getElementById('edit_descripcion').value,
-        precio: document.getElementById('edit_precio').value,
-        stock: document.getElementById('edit_stock').value,
-        tipo: document.getElementById('edit_tipo').value
-    };
-
-    fetch(`/api/productos/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams(datos)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-        } else if (data.error) {
-            alert("Error: " + data.error);
-        }
-    })
-
-    .catch(error => {
-        console.error("Error en la actualización:", error);
-    });
-}
-
-function mostrarSelectTipo() {
-    // Ocultar el texto del tipo y mostrar el select
-    
-    document.getElementById('nuevo_tipo').style.display = 'block';
-    // También ocultamos el icono para no tenerlo visible mientras estamos seleccionando
-    document.getElementById('editar-tipo').style.display = 'none';
-}
-
-function cambiarTipo() {
-    var tipoSeleccionado = document.getElementById('nuevo_tipo').value;
-    // Actualizar el texto del span con el valor seleccionado
-    document.getElementById('tipo-plato').innerText = tipoSeleccionado;
-    // Volver a mostrar el span y ocultar el select
-    document.getElementById('nuevo_tipo').style.display = 'none';
-    document.getElementById('tipo-plato').style.display = 'inline';
-    // Volver a mostrar el icono
-    document.getElementById('editar-tipo').style.display = 'inline';
-    
-    // Llamar a la función para actualizar el tipo de plato en el backend
-    actualizarTipo(tipoSeleccionado);
-}
-
-function actualizarTipo(tipo) {
-    const id = document.getElementById('tipo-plato').dataset.id;
-
-    const datos = {
-        tipo: tipo
-    };
-
-    fetch(`/api/productos/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datos)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-        } else if (data.error) {
-            alert("Error: " + data.error);
-        }
-    })
-    .catch(error => {
-        console.error("Error al actualizar el tipo de plato:", error);
-    });
-}

@@ -52,7 +52,7 @@ def api_index():
     return render_template("platos.html", productos = get_produtosdb()) # Renderiza el template para /api
 
 #Endpoint encargado de mostrar los detalles de un producto seleccionado
-@producto.route('/productos/<int:id>')
+@producto.route('/productos/<int:id>', methos=['GET'])
 def producto_detalle(id: int):
     """
     Renderiza la vista con los detalles de un producto específico.
@@ -90,6 +90,7 @@ def actualizarProductoEntero(id:int):
         conn = Conexion()
         query = " UPDATE Producto SET nombre = %s,descripcion = %s, precio = %s, stock = %s, tipo = %s WHERE id = %s"
         resultado = conn.execute_db(query,(nombre,descripcion,precio,stock,tipo,id))
+        conn.close_connection()
 
     if resultado:
         return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
@@ -111,8 +112,8 @@ def actualizarTipo(id: int):
     if tipo != producto_anterior_tipo:
         conn = Conexion()
         query = "UPDATE Producto SET tipo = %s WHERE id = %s"
-
         resultado = conn.execute_db(query, (tipo, id))
+        conn.close_connection()
 
     if resultado:
         return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
