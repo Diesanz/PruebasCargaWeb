@@ -71,7 +71,6 @@
                             '{{ producto.precio }}',
                             '{{ producto.stock }}',
                             '{{ producto.tipo }}',
-                            '{{ producto.imagen_url }}'
                         )">Editar producto</button>
                     </div>
                 </div>
@@ -82,7 +81,7 @@
                 <div class="modal-contenido">
                     <span class="cerrar" onclick="cerrarModal()">&times;</span>
                     <h3>Editar producto</h3>
-                    <form id="formEditar" method="PUT" action="/api/productos/">
+                    <form id="formEditar" action="/api/productos/{{ producto.id }}" method="POST">
                         <input type="hidden" name="id" id="edit_id">
         
                         <label>Nombre:</label>
@@ -99,9 +98,6 @@
         
                         <label>Tipo:</label>
                         <input type="text" name="tipo" id="edit_tipo" required>
-        
-                        <label>Imagen URL:</label>
-                        <input type="text" name="imagen_url" id="edit_imagen" required>
         
                         <button type="submit">Guardar cambios</button>
                     </form>

@@ -70,3 +70,28 @@ def producto_detalle(id: int):
     else:
         return "Producto no encontrado", 404
 
+@producto.route('/productos/<int:id>',methods=['POST'])
+def actualizarProductoEntero(id:int):
+    
+    nombre = request.form.get('nombre')
+    descripcion = request.form.get('descripcion')
+    precio = request.form.get('precio')
+    stock = request.form.get('stock')
+    tipo = request.form.get('tipo')
+
+    valores = (nombre, descripcion, precio, stock, tipo, id)
+    
+
+    conn = Conexion()
+    query = " UPDATE Producto SET nombre = %s,descripcion = %s, precio = %s, stock = %s, tipo = %s WHERE id = %s"
+    resultado = conn.execute_db(query,valores)
+
+    if resultado:
+        return redirect(url_for('producto.producto_detalle', id=id))
+    else:
+        return jsonify({'error': 'No se pudo actualizar el producto'}), 500
+
+
+
+
+
