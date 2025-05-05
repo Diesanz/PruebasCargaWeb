@@ -12,16 +12,6 @@ function cerrarModal() {
     document.getElementById('modalEditar').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('formEditar');
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault(); // ✅ Evita el comportamiento por defecto del form
-        actualizarProducto();
-    });
-});
-
-
 function actualizarProducto() {
     const id = document.getElementById('edit_id').value;
 
@@ -212,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const logout_btn =  document.getElementById('logoutButton');
     const tramitar_btn = document.getElementById('tramitar_btn');
     const insert_pr_btn = document.querySelectorAll(".boton1");
+    const form = document.getElementById('formEditar');
 
     if(login){
         hacerLogin(login)
@@ -233,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if(logout_btn){
         logout_btn.addEventListener('click', function() {
+            console.log("Hola")
             // Redirigir a la ruta de logout para eliminar el token y redirigir al login
             window.location.href = '/api/logout';
         });
@@ -257,6 +249,12 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     }
 
+    if (form){
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); 
+            actualizarProducto();
+        });
+    }
 });
 
 

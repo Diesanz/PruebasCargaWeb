@@ -52,7 +52,7 @@ def api_index():
     return render_template("platos.html", productos = get_produtosdb()) # Renderiza el template para /api
 
 #Endpoint encargado de mostrar los detalles de un producto seleccionado
-@producto.route('/productos/<int:id>', methos=['GET'])
+@producto.route('/productos/<int:id>', methods=['GET'])
 def producto_detalle(id: int):
     """
     Renderiza la vista con los detalles de un producto específico.

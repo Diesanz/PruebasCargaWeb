@@ -162,9 +162,8 @@ def registro_post():
     success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
     conn.close_connection()
 
-    
     if success_id:
-        return redirect(autentificar_usuarios.login)
+        return redirect(url_for('autentificar.login'))
             
     return jsonify({"message": "Hubo un error al registrar el usuario."}), 500
 
