@@ -1,4 +1,4 @@
--- Active: 1745747847274@@127.0.0.1@3306@carga_web
+-- Active: 1744363405273@@127.0.0.1@3306@Carga_web
 -- EQUILIBRADO
 DELETE FROM producto;
 INSERT INTO Producto (id,nombre, descripcion, precio, stock, tipo, imagen_url) VALUES

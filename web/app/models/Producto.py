@@ -23,7 +23,7 @@ class Producto(BaseModel):
     precio: float  # Precio del producto
     stock: int  # Cantidad disponible en inventario
     tipo: str  # Tipo o categoría del producto (e.g., 'Comida', 'Bebida')
-    imagen_url: str  # URL de la imagen asociada al producto
+    imagen_url: Optional[str] = None  # URL de la imagen asociada al producto
 
     def to_tuple(self):
         """Convierte el objeto `Producto` en una tupla, útil para ser almacenado en la base de datos.
@@ -32,3 +32,6 @@ class Producto(BaseModel):
             tuple: Tupla con los valores del producto (id, nombre, descripcion, precio, stock, tipo, imagen_url).
         """
         return (self.id, self.nombre, self.descripcion, self.precio, self.stock, self.tipo, self.imagen_url)
+    
+    def equal(self, p2):
+        return self.nombre == p2.nombre and self.descripcion == p2.descripcion and self.precio == p2.precio and self.stock == p2.stock and self.tipo == p2.tipo

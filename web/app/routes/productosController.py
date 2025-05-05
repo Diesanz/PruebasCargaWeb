@@ -79,12 +79,15 @@ def actualizarProductoEntero(id:int):
     stock = request.form.get('stock')
     tipo = request.form.get('tipo')
 
-    valores = (nombre, descripcion, precio, stock, tipo, id)
-    
+    producto_nuevo = Producto(id=id, nombre=nombre, descripcion=descripcion, precio=precio, stock=stock, tipo=tipo)
+    producto_anterior = obtener_producto_por_id(id)
+    iguales = producto_anterior.equal(producto_nuevo)
 
-    conn = Conexion()
-    query = " UPDATE Producto SET nombre = %s,descripcion = %s, precio = %s, stock = %s, tipo = %s WHERE id = %s"
-    resultado = conn.execute_db(query,valores)
+    resultado = True
+    if not iguales:
+        conn = Conexion()
+        query = " UPDATE Producto SET nombre = %s,descripcion = %s, precio = %s, stock = %s, tipo = %s WHERE id = %s"
+        resultado = conn.execute_db(query,(nombre,descripcion,precio,stock,tipo,id))
 
     if resultado:
         return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
@@ -100,11 +103,14 @@ def actualizarTipo(id: int):
 
     tipo = data['tipo']
 
-    conn = Conexion()
-    query = "UPDATE Producto SET tipo = %s WHERE id = %s"
-    params = (tipo, id)
+    producto_anterior_tipo = obtener_producto_por_id(id).tipo
 
-    resultado = conn.execute_db(query, params)
+    resultado = True
+    if tipo != producto_anterior_tipo:
+        conn = Conexion()
+        query = "UPDATE Producto SET tipo = %s WHERE id = %s"
+
+        resultado = conn.execute_db(query, (tipo, id))
 
     if resultado:
         return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
