@@ -62,7 +62,16 @@
                         <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
                         <p><strong>Precio:</strong> {{ producto.precio }} €</p>
                         <p><strong>Stock:</strong> {{ producto.stock }}</p>
-                        <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <strong>Tipo:</strong> 
+                            <span id="tipo-plato" data-id="{{ producto.id }}">{{ producto.tipo }}</span>
+                            <i id="editar-tipo" class="fas fa-edit" style="cursor: pointer;" onclick="mostrarSelectTipo()"></i>
+                            <select id="nuevo_tipo" style="display: none;" onchange="cambiarTipo()">
+                                <option value="Equilibrado" {{ 'selected' if producto.tipo == 'Equilibrado' else '' }}>Equilibrado</option>
+                                <option value="Vegano" {{ 'selected' if producto.tipo == 'Vegano' else '' }}>Vegano</option>
+                                <option value="Proteico" {{ 'selected' if producto.tipo == 'Proteico' else '' }}>Proteico</option>
+                            </select>
+                        </div>
         
                         <button onclick="abrirModalEditar(
                             '{{ producto.id }}',
@@ -81,7 +90,7 @@
                 <div class="modal-contenido">
                     <span class="cerrar" onclick="cerrarModal()">&times;</span>
                     <h3>Editar producto</h3>
-                    <form id="formEditar" action="/api/productos/{{ producto.id }}" method="POST">
+                    <form id="formEditar">
                         <input type="hidden" name="id" id="edit_id">
         
                         <label>Nombre:</label>
