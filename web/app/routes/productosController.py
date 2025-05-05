@@ -72,3 +72,54 @@ def producto_detalle(id: int):
     else:
         return "Producto no encontrado", 404
 
+@producto.route('/productos/<int:id>',methods=['PUT'])
+def actualizarProductoEntero(id:int):
+    
+    nombre = request.form.get('nombre')
+    descripcion = request.form.get('descripcion')
+    precio = request.form.get('precio')
+    stock = request.form.get('stock')
+    tipo = request.form.get('tipo')
+
+    producto_nuevo = Producto(id=id, nombre=nombre, descripcion=descripcion, precio=precio, stock=stock, tipo=tipo)
+    producto_anterior = obtener_producto_por_id(id)
+    iguales = producto_anterior.equal(producto_nuevo)
+
+    resultado = True
+    if not iguales:
+        conn = Conexion()
+        query = " UPDATE Producto SET nombre = %s,descripcion = %s, precio = %s, stock = %s, tipo = %s WHERE id = %s"
+        resultado = conn.execute_db(query,(nombre,descripcion,precio,stock,tipo,id))
+
+    if resultado:
+        return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
+    else:
+        return jsonify({'error': 'No se pudo actualizar el producto'}), 500
+
+@producto.route('/productos/<int:id>', methods=['PATCH'])
+def actualizarTipo(id: int):
+    data = request.get_json()
+
+    if not data or 'tipo' not in data:
+        return jsonify({'error': 'Tipo de plato no proporcionado'}), 400
+
+    tipo = data['tipo']
+
+    producto_anterior_tipo = obtener_producto_por_id(id).tipo
+
+    resultado = True
+    if tipo != producto_anterior_tipo:
+        conn = Conexion()
+        query = "UPDATE Producto SET tipo = %s WHERE id = %s"
+
+        resultado = conn.execute_db(query, (tipo, id))
+
+    if resultado:
+        return jsonify({'redirect_url': url_for('producto.producto_detalle', id=id)})
+    else:
+        return jsonify({'error': 'No se pudo actualizar el tipo de producto'}), 500
+
+
+
+
+
