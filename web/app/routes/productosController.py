@@ -18,8 +18,11 @@ def get_produtosdb():
     query = "SELECT * FROM Producto" 
     productos = conn.select_db(query)
     conn.close_connection()
+
+    if productos:
+        return [Producto(**producto_schema(p)) for p in productos]
     
-    return [Producto(**producto_schema(p)) for p in productos]
+    return []
 
 #Método que se encarga de obtener el producto de la base de datos según su identificador
 def obtener_producto_por_id(id):

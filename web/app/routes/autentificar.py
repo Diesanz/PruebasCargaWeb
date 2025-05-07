@@ -194,7 +194,7 @@ def login_post():
 
     usuario_db = search_usuario_db(email)
 
-    if type(usuario_db) != UsuarioDB or usuario_db.password != password: #comprobación de credenciales (falta hacer el hash)
+    if not isinstance(usuario_db, UsuarioDB) or usuario_db.password != password: #comprobación de credenciales (falta hacer el hash)
         return jsonify({"error": "Email o contraseña incorrectas."}), 401
 
     #Creación de un token de autentificación

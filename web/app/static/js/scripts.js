@@ -159,11 +159,11 @@ function tramitar_pedido(btn){
 }
 
 function hacerRegistro(registro){
-    console.log("aaaba")
+
     registro.addEventListener('submit', async(e) => {
         
         e.preventDefault();
-        console.log("aaaaa")
+
         const datos = {
             nombre: document.getElementById('nombre').value,
             dni: document.getElementById('dni').value,
@@ -171,7 +171,7 @@ function hacerRegistro(registro){
             domicilio: document.getElementById('domicilio').value,
             password: document.getElementById('password').value
         };
-        console.log(datos)
+
         fetch(`/api/registro`, {
             method: 'POST',
             headers: {
@@ -182,7 +182,6 @@ function hacerRegistro(registro){
         .then(response => response.json())
         .then(data => {
             if (data.redirect_url) {
-                console.log(data.redirect_url)
                 window.location.href = data.redirect_url;
             } else if (data.error) {
                 alert("Error: " + data.error);
@@ -264,7 +263,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if(logout_btn){
         logout_btn.addEventListener('click', function() {
-            console.log("Hola")
             // Redirigir a la ruta de logout para eliminar el token y redirigir al login
             window.location.href = '/api/logout';
         });
