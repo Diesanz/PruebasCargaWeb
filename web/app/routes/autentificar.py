@@ -152,8 +152,7 @@ def registro_post():
     if isinstance(search_usuario("email", email), Usuario):
         #return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         flash("El usuario con este DNI o email ya existe.")
-        return redirect(url_for('autentificar.registro'))
-
+        return jsonify({'redirect_url': url_for('autentificar.registro')})
 
     usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
 
@@ -163,8 +162,8 @@ def registro_post():
     conn.close_connection()
 
     if success_id:
-        return redirect(url_for('autentificar.login'))
-            
+        return jsonify({'redirect_url': url_for('autentificar.login')})
+     
     return jsonify({"message": "Hubo un error al registrar el usuario."}), 500
 
 #Endpoint para el login de Usuarios

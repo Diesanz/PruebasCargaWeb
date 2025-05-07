@@ -38,7 +38,6 @@ function actualizarProducto() {
             alert("Error: " + data.error);
         }
     })
-
     .catch(error => {
         console.error("Error en la actualización:", error);
     });
@@ -159,6 +158,42 @@ function tramitar_pedido(btn){
     });
 }
 
+function hacerRegistro(registro){
+    console.log("aaaba")
+    registro.addEventListener('submit', async(e) => {
+        
+        e.preventDefault();
+        console.log("aaaaa")
+        const datos = {
+            nombre: document.getElementById('nombre').value,
+            dni: document.getElementById('dni').value,
+            email: document.getElementById('email').value,
+            domicilio: document.getElementById('domicilio').value,
+            password: document.getElementById('password').value
+        };
+        console.log(datos)
+        fetch(`/api/registro`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
+                console.log(data.redirect_url)
+                window.location.href = data.redirect_url;
+            } else if (data.error) {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Error en el registro:", error);
+        });
+    });
+}
+
 async function hacerLogin(login){
     login.addEventListener('submit', async(e) => {
         e.preventDefault();
@@ -197,6 +232,7 @@ async function hacerLogin(login){
 
 document.addEventListener('DOMContentLoaded', function(){
     const login = document.getElementById('loginForm');
+    const registro = document.getElementById('formRegistro');
     const carrito = document.getElementById('carrito');
     const delete_btn = document.getElementById('delete_btn');
     const logout_btn =  document.getElementById('logoutButton');
@@ -206,6 +242,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if(login){
         hacerLogin(login)
+    }
+
+    if(registro){
+        hacerRegistro(registro)
     }
  
     if(carrito){
