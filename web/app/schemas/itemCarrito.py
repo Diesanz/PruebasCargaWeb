@@ -15,6 +15,7 @@ def item_carrito_schema(item, objeto=False) -> dict:
             "nombre": item.nombre,
             "cantidad": int(item.cantidad),
             "precio": float(item.precio),
+            "url": str(item.url),
         }
     else:
         # Si item es un diccionario (ejemplo: de base de datos o JSON)
@@ -23,4 +24,5 @@ def item_carrito_schema(item, objeto=False) -> dict:
             "nombre": item["nombre"],
             "cantidad": int(item["cantidad"]),
             "precio": float(item["precio"]),
+            "url": str(item["imagen_url"])
         }

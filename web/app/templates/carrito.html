@@ -58,13 +58,9 @@
                 <div id="products-container">
                     {% for item in items %}
                         <div class="product">
-                            <input type="checkbox" class="check-product"
-                                data-nombre="{{ item.nombre }}"
-                                data-precio="{{ item.precio }}"
-                                data-cantidad="{{ item.cantidad }}">
-
+                        
                             <label>
-                                <img src="{{ url_for('static', filename='img/' + item.nombre|lower|replace(' ', '') + '.jpg') }}"
+                                <img src="{{ url_for('static', filename='img/' + item.url) }}"
                                     alt="{{ item.nombre }}">
                             </label>
 
@@ -77,9 +73,7 @@
                     {% endfor %}
                 </div>
                 <div class="total">
-                    <p>Precio final productos: <span class="price-final-Prs">{{total}}€</span></p>
-                    <p>Gastos de gestión fijos: <span class="price-envio">{%if total %} 2.00 {%else%} 0.00€ {%endif%}</span></p>
-                    <p>Total: <span class="price-total">{%if total %} {{total+ 2.00}}  {%else%} 0.00€ {%endif%}€</span></p>
+                    <p>Total: <span class="price-total">{%if total %} {{total}}€  {%else%} 0.0€ {%endif%}</span></p>
                 </div>
             
                 <div class="buttons">

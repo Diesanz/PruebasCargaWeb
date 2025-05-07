@@ -1,6 +1,6 @@
 -- Active: 1744363405273@@127.0.0.1@3306@Carga_web
 -- EQUILIBRADO
-DELETE FROM producto;
+DELETE FROM Producto;
 INSERT INTO Producto (id,nombre, descripcion, precio, stock, tipo, imagen_url) VALUES
 (1,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','ensaladadePavoyPina.jpg'),
 (2,'Pasta carbonara','400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero',9.80,80,'Equilibrado','pastacarbonara.jpg'),

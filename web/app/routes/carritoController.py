@@ -142,9 +142,7 @@ def add_item_carrito(usuario_id):
 
     item_carrito_db = ItemCarritoDB(
         producto_id=id_producto,
-        nombre=producto['nombre'],
         cantidad=1,
-        precio=producto['precio'],
         carrito_id=get_id_carrito_usuario(usuario_id)
     )
 

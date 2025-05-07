@@ -6,9 +6,7 @@ DROP PROCEDURE AddOrUpdateItemCarrito;
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `AddOrUpdateItemCarrito`(
     IN p_carrito_id INT,          -- ID del carrito
     IN p_producto_id INT,         -- ID del producto
-    IN p_nombre VARCHAR(255),     -- Nombre del producto
-    IN p_cantidad INT,            -- Cantidad del producto
-    IN p_precio DECIMAL(10,2)     -- Precio del producto
+    IN p_cantidad INT            -- Cantidad del producto
 )
 BEGIN
     DECLARE cantidad_existente INT;  -- Variable para almacenar la cantidad existente del producto en el carrito
@@ -25,8 +23,8 @@ BEGIN
         WHERE carrito_id = p_carrito_id AND producto_id = p_producto_id;
     ELSE
         -- Si el producto no está en el carrito, lo insertamos como nuevo ítem
-        INSERT INTO CarritoItem (carrito_id, producto_id, nombre, cantidad, precio)
-        VALUES (p_carrito_id, p_producto_id, p_nombre, p_cantidad, p_precio);  -- Insertamos los datos proporcionados
+        INSERT INTO CarritoItem (carrito_id, producto_id, cantidad)
+        VALUES (p_carrito_id, p_producto_id, p_cantidad);  -- Insertamos los datos proporcionados
     END IF;
 END;
 

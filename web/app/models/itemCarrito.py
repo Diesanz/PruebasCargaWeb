@@ -17,9 +17,10 @@ class ItemCarrito(BaseModel):
     """
     
     producto_id: int  # Identificador del producto en el carrito.
-    nombre: str  # Nombre del producto.
+    nombre: Optional[str] = None  # Nombre del producto.
     cantidad: int  # Cantidad de productos en el carrito.
-    precio: float  # Precio unitario del producto.
+    precio: Optional[float] = None  # Precio unitario del producto.
+    url: Optional[str] = None
 
     def subtotal(self):
         """Calcula el precio total de este artículo (cantidad * precio).
@@ -27,7 +28,7 @@ class ItemCarrito(BaseModel):
         Returns:
             float: El total del artículo (cantidad * precio).
         """
-        return self.cantidad * self.precio  # Multiplica la cantidad por el precio unitario
+        return round(self.cantidad * self.precio,2)  # Multiplica la cantidad por el precio unitario
 
     def to_tuple(self):
         """Convierte el objeto `ItemCarrito` en una tupla.
@@ -60,4 +61,4 @@ class ItemCarritoDB(ItemCarrito):
         Returns:
             tuple: Tupla con la información del artículo, incluyendo carrito_id (carrito_id, producto_id, nombre, cantidad, precio).
         """
-        return (self.carrito_id, self.producto_id, self.nombre, self.cantidad, self.precio)  # Incluye carrito_id en la tupla
+        return (self.carrito_id, self.producto_id, self.cantidad)  # Incluye carrito_id en la tupla

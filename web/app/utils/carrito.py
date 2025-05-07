@@ -23,10 +23,12 @@ def get_carrito_items_usuario(usuario_id: str) -> Carrito:
     carrito = conn.select_db(query_db, (usuario_id,), one=True)
 
     #obtner los items
-    query_db_items = "SELECT * FROM CarritoItem WHERE carrito_id = %s"
+    query_db_items = "SELECT c.producto_id, p.nombre, c.cantidad, p.precio, p.imagen_url  FROM CarritoItem as c JOIN Producto as p ON c.producto_id = p.id WHERE carrito_id =  %s"
     conn = Conexion()
     items = conn.select_db(query_db_items, (carrito['id'],), one=False)
     
     lista_items = [ItemCarrito(**item_carrito_schema(i)) for i in items]
+
+    print(lista_items)
    
     return Carrito(**carrito_schema(carrito, lista_items))

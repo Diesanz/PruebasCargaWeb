@@ -46,5 +46,5 @@ class Pedido(BaseModel):
         for item in self.items:
             sumaTotal += item.subtotal()  # Sumamos el subtotal de cada ítem al total
         
-        self.total = round(sumaTotal, 2) + 2.00  # Asignamos el precio total calculado al atributo precio_total
+        self.total = round(sumaTotal, 2)  # Asignamos el precio total calculado al atributo precio_total
         return self.total  # Retornamos el precio total redondeado a dos decimales
