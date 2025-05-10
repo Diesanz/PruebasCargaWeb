@@ -1,7 +1,8 @@
 from locust import HttpUser, task, between
-import random, json
-import string
-import time
+import random, json, string, os
+
+# Ruta del archivo donde se almacenan los usuarios registrados
+ARCHIVO_USUARIOS = "usuarios_registrados.json"
 
 # Función para generar datos aleatorios de usuario
 def generar_usuario():
@@ -14,47 +15,61 @@ def generar_usuario():
         "password": "1234"
     }
 
-class MiUsuario(HttpUser):
-    wait_time = between(1, 2)  # Espera entre 1 y 2 segundos entre tareas
+# Cargar usuarios ya registrados del archivo (si existe)
+def cargar_usuarios():
+    if os.path.exists(ARCHIVO_USUARIOS):
+        with open(ARCHIVO_USUARIOS, "r") as f:
+            return [json.loads(line.strip()) for line in f if line.strip()]
+    return []
 
-    
+# Guardar nuevo usuario en el archivo
+def guardar_usuario(usuario):
+    with open(ARCHIVO_USUARIOS, "a") as f:
+        f.write(json.dumps(usuario) + "\n")
+
+class MiUsuario(HttpUser):
+    wait_time = between(1, 2)
+
     def on_start(self):
-        # Genera un usuario aleatorio
+        # Generar un usuario nuevo y almacenarlo localmente
         self.usuario = generar_usuario()
+        self.usuarios_registrados = cargar_usuarios()
+
+    @task(2)
+    def registro_post(self):
+        response = self.client.post("/api/registro", data=self.usuario)
         
-        start = time.perf_counter()
-        # Realiza la solicitud de registro
-        response = self.client.post("/api/registro", data={
-            "nombre": self.usuario['nombre'],
-            "dni":  self.usuario['dni'],  
-            "email":  self.usuario['email'],
-            "domicilio": self.usuario['domicilio'],
-            "password": self.usuario['password']
+        if response.status_code == 200 and "redirect_url" in response.json():
+            print("✅ Usuario registrado exitosamente")
+            guardar_usuario(self.usuario)
+            self.usuarios_registrados.append(self.usuario)
+        else:
+            print(f"❌ Error al registrar: {response.status_code} - {response.text}")
+
+    @task(2)
+    def login_post(self):
+        if not self.usuarios_registrados:
+            return  # Nada que logear aún
+
+        usuario_random = random.choice(self.usuarios_registrados)
+        response = self.client.post("/api/login", data={
+            "email": usuario_random["email"],
+            "password": usuario_random["password"]
         })
 
         if response.status_code == 200:
-            print("Usuario registrado exitosamente")
-            print("Tiempo en crear usuario procedimiento:", time.perf_counter() - start)
-            with open("usuarios_registrados.json", "a") as f:
-                f.write(json.dumps(self.usuario) + "\n")
+            print("✅ Login exitoso")
         else:
-            print("Error al registrar el usuario ")
+            print(f"❌ Error en login: {response.status_code}")
 
-    @task
-    def login(self):
-        # Si ya se registraron usuarios previamente, intentar hacer login con los datos 
-        if self.usuario:
+    @task(1)
+    def register_get(self):
+        self.client.get("/api/registro")
 
-            response = self.client.post("/api/login", data={
-                "email": self.usuario['email'],
-                "password": self.usuario['password']
-            })
+    @task(1)
+    def login_get(self):
+        self.client.get("/api/login")
 
-            # Verifica si el login fue exitoso
-            if response.status_code == 200:
-                print(f"Login exitoso")
-            else:
-                print(f"Error al hacer login")
-
-
-        self.stop()
+    @task(1)
+    def menu(self):
+        self.client.get("/api/menu")
