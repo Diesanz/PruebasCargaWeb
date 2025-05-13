@@ -1,0 +1,119 @@
+[
+  {
+    "id": 1,
+    "nombre": "Ensalada de Pavo y Pina",
+    "descripcion": "1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria",
+    "precio": 10.50,
+    "stock": 1,
+    "tipo": "Equilibrado",
+    "imagen_url": "ensaladaPavoPina.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Pasta carbonara",
+    "descripcion": "400 g de spaghetti Garofalo. 200 g de panceta curada de cerdo. 50 g de queso Parmigiano Reggiano. 3 yemas y 1 huevo entero",
+    "precio": 9.80,
+    "stock": 80,
+    "tipo": "Equilibrado",
+    "imagen_url": "pastacarbonara.jpg"
+  },
+  {
+    "id": 3,
+    "nombre": "Guisantes con Jamon y Sepia",
+    "descripcion": "3 dientes de ajo. 50 g de aceite de oliva. 300 g de sepia limpia. 90 - 100 g de jamón curado en dados. 100 g de vino blanco. 500 g de guisantes congelados",
+    "precio": 11.20,
+    "stock": 60,
+    "tipo": "Equilibrado",
+    "imagen_url": "guisantesconjamonysepia.jpg"
+  },
+  {
+    "id": 4,
+    "nombre": "Calabacines rellenos",
+    "descripcion": "4 calabacines medianos. 2 cebollas. 1 diente de ajo. 300 ml de bechamel. 100 g de queso rallado para gratinar",
+    "precio": 8.90,
+    "stock": 90,
+    "tipo": "Equilibrado",
+    "imagen_url": "calabacinesrellenos.jpg"
+  },
+  {
+    "id": 5,
+    "nombre": "Arroz tres delicias",
+    "descripcion": "400 g de arroz. 1 zanahoria. 75 g de gambas. 75 g de guisantes. 75 g de jamon york. 20 ml de salsa de soja. 2 huevos.",
+    "precio": 9.30,
+    "stock": 70,
+    "tipo": "Equilibrado",
+    "imagen_url": "arroztresdelicias.jpg"
+  },
+  {
+    "id": 6,
+    "nombre": "Potaje de Garbanzos con Espinacas",
+    "descripcion": "200g de garbanzos frescos. 2 cebolletas. 1 hoja de laurel. 1 manojo de espinaca fresca. Sal y aceite de oliva virgen extra.",
+    "precio": 8.70,
+    "stock": 75,
+    "tipo": "Vegano",
+    "imagen_url": "potajedegarbanzosconespinacas.jpg"
+  },
+  {
+    "id": 7,
+    "nombre": "Ratatouille",
+    "descripcion": "350 g de Tomate frito. 300 g de calabacín. 550 g de berenjena. 600 g de tomate. 200 g de cebolla. 5 dientes de ajo. Orégano al gusto. Sal y dos cucharadas de aceite de oliva",
+    "precio": 9.50,
+    "stock": 90,
+    "tipo": "Vegano",
+    "imagen_url": "ratatouille.jpg"
+  },
+  {
+    "id": 8,
+    "nombre": "Arroz con Verduras",
+    "descripcion": "4 dientes de ajo. 1 tomate. 100 gramos de arroz integral. 1 cucharadita de pimenton dulce. Agua y aceite de oliva virgen extra.",
+    "precio": 7.90,
+    "stock": 100,
+    "tipo": "Vegano",
+    "imagen_url": "arrozconverduras.jpg"
+  },
+  {
+    "id": 9,
+    "nombre": "Tortilla vegana de Calabacin",
+    "descripcion": "60 g de harina de garbanzos. 1 calabacín grande. 1/4 cucharadita de sal. 1 cucharadita de cúrcuma molida. 120 ml de agua. Aceite de oliva virgen extra.",
+    "precio": 6.50,
+    "stock": 110,
+    "tipo": "Vegano",
+    "imagen_url": "tortillaveganadecalabacin.jpg"
+  },
+  {
+    "id": 10,
+    "nombre": "Alubias con almejas",
+    "descripcion": "400 g de alubia blanca redonda. 400 g de almejas. Media cebolla. 4 dientes de ajo. Un trozo de pimiento rojo y otro verde. Una hoja de laurel. Un puerro. Sal, pimienta y perejil picado",
+    "precio": 12.50,
+    "stock": 70,
+    "tipo": "Proteico",
+    "imagen_url": "alubiasconalmejas.jpg"
+  },
+  {
+    "id": 11,
+    "nombre": "Garbanzos con Espinacas y Bacalao",
+    "descripcion": "200 g de garbanzos frescos. 200 g de bacalao. 500 ml de caldo de pescado. 150 g de espinaca fresca o congelada. 1 huevo cocido. 2 dientes de ajo.",
+    "precio": 11.30,
+    "stock": 90,
+    "tipo": "Proteico",
+    "imagen_url": "garbanzosespinacasbacalao.jpg"
+  },
+  {
+    "id": 12,
+    "nombre": "Lentejas con Pollo y Manzana",
+    "descripcion": "200 g de lentejas. 250 g de pechuga de pollo. 150 g de manzana. 100g de cebolla. Agua y aceite de oliva virgen extra",
+    "precio": 10.90,
+    "stock": 60,
+    "tipo": "Proteico",
+    "imagen_url": "lentejaspollomanzana.jpg"
+  },
+  {
+    "id": 13,
+    "nombre": "Estofado de Ternera",
+    "descripcion": "500g de ternera. 1 cebolla. 1 zanahoria. 1 diente de ajo. 250 g de caldo de carne. Sal y pimienta al gusto.",
+    "precio": 13.00,
+    "stock": 55,
+    "tipo": "Proteico",
+    "imagen_url": "estofadodeternera.jpg"
+  }
+]
