@@ -4,8 +4,8 @@ import random, json, string, os, hashlib
 # Ruta del archivo donde se almacenan los usuarios registrados
 ARCHIVO_USUARIOS = "usuarios_registrados.json"
 
-def hash_sha256(password):
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+# Ruta del archivo donde se almacenan los productos
+ARCHIVO_PRODUCTOS = "productos_cache.json"
 
 # Función para generar datos aleatorios de usuario
 def generar_usuario():
@@ -30,6 +30,12 @@ def guardar_usuario(usuario):
     with open(ARCHIVO_USUARIOS, "a") as f:
         f.write(json.dumps(usuario) + "\n")
 
+def cargar_productos():
+    if os.path.exists(ARCHIVO_PRODUCTOS):
+        with open(ARCHIVO_PRODUCTOS, "r") as f:
+            return json.load(f)
+    return []
+
 class MiUsuario(HttpUser):
     wait_time = between(1, 2)
 
@@ -37,6 +43,9 @@ class MiUsuario(HttpUser):
         # Generar un usuario nuevo y almacenarlo localmente
         self.usuario = generar_usuario()
         self.usuarios_registrados = cargar_usuarios()
+        self.autenticado = False
+        # Crea una lista donde se almacenan los productos de la web
+        self.productos_disponibles = cargar_productos()
 
     @task(2)
     def registro_post(self):
@@ -61,6 +70,7 @@ class MiUsuario(HttpUser):
         })
 
         if response.status_code == 200:
+            self.autenticado = True
             print("✅ Login exitoso")
         else:
             print(f"❌ Error en login: {response.status_code}")
@@ -77,11 +87,13 @@ class MiUsuario(HttpUser):
     def menu(self):
         self.client.get("/api/menu")
 
-    @task(1)
+    @task(3)
     def agregar_producto_carrito(self):
+        producto = random.choice(self.productos_disponibles)
+        producto_id = producto["id"]
         # Datos que se enviarán en la solicitud POST
         data = {
-            "id_producto": 10 # Aquí pones el ID del producto que deseas agregar
+            "id_producto": producto_id # Aquí pones el ID del producto que deseas agregar
         }
 
         # Hacemos la solicitud POST al endpoint /agregar
@@ -94,3 +106,29 @@ class MiUsuario(HttpUser):
             print("✅ Producto añadido")
         else:
             print(f"❌ Error al añadir producto")
+    
+    @task(1)
+    def get_productos(self):
+        response = self.client.get("/api/productos")
+
+        if response.status_code == 200:
+            print("✅ Muestreo de productos exitoso")
+        else:
+            print(f"❌ Error en el muestreo: {response.status_code}")
+    
+    @task(2)
+    def get_producto_por_id(self):
+        #Si no hay productos en la cache, nada
+        if not self.productos_disponibles:
+            return
+
+        #Elige un producto random para ver sus detalles
+        producto = random.choice(self.productos_disponibles)
+        producto_id = producto["id"]
+        response = self.client.get(f"/api/productos/{producto_id}")
+
+        if response.status_code == 200:
+            print(f"✅ Producto {producto_id} obtenido")
+        else:
+            print(f"❌ Error al obtener producto {producto_id}: {response.status_code}")
+
