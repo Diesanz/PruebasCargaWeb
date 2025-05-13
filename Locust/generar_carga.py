@@ -1,8 +1,11 @@
 from locust import HttpUser, task, between
-import random, json, string, os
+import random, json, string, os, hashlib
 
 # Ruta del archivo donde se almacenan los usuarios registrados
 ARCHIVO_USUARIOS = "usuarios_registrados.json"
+
+def hash_sha256(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 # Función para generar datos aleatorios de usuario
 def generar_usuario():
@@ -73,3 +76,21 @@ class MiUsuario(HttpUser):
     @task(1)
     def menu(self):
         self.client.get("/api/menu")
+
+    @task(1)
+    def agregar_producto_carrito(self):
+        # Datos que se enviarán en la solicitud POST
+        data = {
+            "id_producto": 10 # Aquí pones el ID del producto que deseas agregar
+        }
+
+        # Hacemos la solicitud POST al endpoint /agregar
+        response = self.client.post(
+            f"/api/carrito/agregar", 
+            json=data
+        )
+
+        if response.status_code == 200:
+            print("✅ Producto añadido")
+        else:
+            print(f"❌ Error al añadir producto")
