@@ -122,7 +122,8 @@ class MiUsuario(HttpUser):
             #Elige un producto random para agregarlo al carrito
             producto = random.choice(self.productos_disponibles)
             producto_id = producto["id"]
-            response = self.client.post("/api/carrito/agregar")
+            data = {"id_producto":producto_id}
+            response = self.client.post(f"/api/carrito/agregar", json=data)
 
             if response.status_code == 200:
                 print(f"🛒 Producto {producto_id} añadido al carrito")
