@@ -46,6 +46,7 @@ class MiUsuario(HttpUser):
         self.autenticado = False
         # Crea una lista donde se almacenan los productos de la web
         self.productos_disponibles = cargar_productos()
+        self.lista_pedidos = list()
 
     @task(2)
     def registro_post(self):
@@ -89,24 +90,29 @@ class MiUsuario(HttpUser):
 
     @task(3)
     def agregar_producto_carrito(self):
-        producto = random.choice(self.productos_disponibles)
-        producto_id = producto["id"]
-        # Datos que se enviarán en la solicitud POST
-        data = {
-            "id_producto": producto_id # Aquí pones el ID del producto que deseas agregar
-        }
 
-        # Hacemos la solicitud POST al endpoint /agregar
-        response = self.client.post(
-            f"/api/carrito/agregar", 
-            json=data
-        )
+        if not self.productos_disponibles:
+            return 
+        
+        if self.autenticado:
+            producto = random.choice(self.productos_disponibles)
+            producto_id = producto["id"]
+            # Datos que se enviarán en la solicitud POST
+            data = {
+                "id_producto": producto_id # Aquí pones el ID del producto que deseas agregar
+            }
 
-        if response.status_code == 200:
-            print("✅ Producto añadido")
-        else:
-            print(f"❌ Error al añadir producto")
-    
+            # Hacemos la solicitud POST al endpoint /agregar
+            response = self.client.post(
+                f"/api/carrito/agregar", 
+                json=data
+            )
+
+            if response.status_code == 200:
+                print("✅ Producto añadido")
+            else:
+                print(f"❌ Error al añadir producto")
+        
     @task(1)
     def get_productos(self):
         response = self.client.get("/api/productos")
@@ -131,4 +137,42 @@ class MiUsuario(HttpUser):
             print(f"✅ Producto {producto_id} obtenido")
         else:
             print(f"❌ Error al obtener producto {producto_id}: {response.status_code}")
+
+    @task(2)
+    def checkout(self):
+        response = self.client.post("/api/checkout")
+
+        # Siempre intentamos parsear la respuesta como JSON, ya que el backend siempre devuelve JSON
+        try:
+            data = response.json()
+        except ValueError:
+            print(f"❌ Respuesta no es JSON válido - Código: {response.status_code}")
+            return
+
+        if response.status_code == 200:
+            id_pedido = data.get("id_pedido")
+            if id_pedido:
+                self.lista_pedidos.append(id_pedido)
+                print("✅ Pedido creado con ID:", id_pedido)
+            else:
+                print("⚠️ Respuesta 200 pero sin ID de pedido")
+        elif response.status_code == 401:
+            redirect_url = data.get("redirect_url")
+            if redirect_url:
+                print(f"🔒 No autorizado. Redirigiendo a: {redirect_url}")
+            else:
+                print("🔒 No autorizado sin URL de redirección")
+        else:
+            print(f"❌ Error inesperado ({response.status_code}): {data}")
+
+
+    @task(2)
+    def get_un_pedido(self):
+        if self.lista_pedidos:
+            id_random = random.choice(self.lista_pedidos)
+            response = self.client.get(f"/api/pedidos/{id_random}")
+            if response.status_code == 200:
+                print(f"Se ha accedido al pedido {id_random}")
+            else:
+                print(f"Problema al acceder al pedido {id_random}")
 
