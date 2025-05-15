@@ -140,23 +140,32 @@ function borrar_items_carrito(){
     });
 }
 
-function tramitar_pedido(btn){
+function tramitar_pedido(btn) {
     fetch('/api/checkout', {
         method: 'POST',
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Pedido realizado:', data);
-
-        borrar_items_carrito()
-
-
-        // Aquí podrías actualizar la UI o mostrar un mensaje de éxito
-      })
-      .catch(error => {
-        console.error('Error:', error);
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Respuesta no OK del servidor");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.redirect_url) {
+            // Redirigir si el backend lo indica
+            window.location.href = data.redirect_url;
+        } else if (data.id_pedido) {
+            console.log('✅ Pedido realizado:', data);
+            borrar_items_carrito();
+        } else {
+            console.warn("⚠️ Respuesta desconocida del servidor:", data);
+        }
+    })
+    .catch(error => {
+        console.error("❌ Error al tramitar pedido:", error);
     });
 }
+
 
 function hacerRegistro(registro){
 
