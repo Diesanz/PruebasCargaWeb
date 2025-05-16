@@ -232,7 +232,7 @@ class MiUsuario(HttpUser):
             print(f"❌ Error inesperado ({response.status_code}): {data}")
 
 
-    @task(2)
+    @task(1)
     def get_un_pedido(self):
         if self.lista_pedidos:
             id_random = random.choice(self.lista_pedidos)
@@ -241,4 +241,66 @@ class MiUsuario(HttpUser):
                 print(f"Se ha accedido al pedido {id_random}")
             else:
                 print(f"Problema al acceder al pedido {id_random}")
+    import random
+
+    @task(2)
+    def actualizar_producto_put(self):
+        if not self.productos_disponibles:
+            return
+
+        producto = random.choice(self.productos_disponibles)
+        producto_id = producto["id"]
+
+        # Generamos nuevos datos para reemplazar los anteriores
+        nuevo_nombre = producto["nombre"] + random.choice([" Plus", " Premium", " Especial"])
+        nueva_descripcion = (producto.get("descripcion") or "") + " (editado)"
+        nuevo_precio = round(random.uniform(5.0, 20.0), 2)
+        nuevo_stock = random.randint(1, 100)
+        nuevo_tipo = random.choice(["Vegano", "Proteico", "Equilibrado"])
+
+        data = {
+            "nombre": nuevo_nombre,
+            "descripcion": nueva_descripcion,
+            "precio": nuevo_precio,
+            "stock": nuevo_stock,
+            "tipo": nuevo_tipo
+        }
+
+        response = self.client.put(f"/api/productos/{producto_id}", data=data)
+
+        if response.status_code == 200:
+            print(f"✅ Producto {producto_id} actualizado completamente (PUT)")
+        else:
+            print(f"❌ Error al actualizar producto {producto_id} con PUT: {response.status_code}")
+
+    @task(2)
+    def actualizar_tipo_patch(self):
+        if not self.productos_disponibles:
+            return
+
+        producto = random.choice(self.productos_disponibles)
+        producto_id = producto["id"]
+        tipo_actual = producto.get("tipo", "Vegano")  # Valor por defecto si no tiene tipo
+        posibles_tipos = ["Vegano", "Proteico", "Equilibrado"]
+
+        # Seleccionar un tipo distinto del actual
+        nuevos_tipos = [t for t in posibles_tipos if t != tipo_actual]
+        nuevo_tipo = random.choice(nuevos_tipos)
+
+        data = {
+            "tipo": nuevo_tipo
+        }
+
+        response = self.client.patch(
+            f"/api/productos/{producto_id}",
+            json=data  # Se espera JSON en el cuerpo
+        )
+
+        if response.status_code == 200:
+            print(f"✅ Tipo del producto {producto_id} actualizado a '{nuevo_tipo}'")
+            # Actualizamos el tipo en caché para mantener consistencia local
+            producto["tipo"] = nuevo_tipo
+        else:
+            print(f"❌ Error al actualizar tipo del producto {producto_id}: {response.status_code}")
+
 
