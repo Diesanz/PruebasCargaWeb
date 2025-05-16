@@ -1,61 +1,66 @@
 from locust import HttpUser, task, between
-import random, json, string, os, hashlib
+import random, json, string, os
 
-# Ruta del archivo donde se almacenan los usuarios registrados
+# === Archivos de persistencia ===
 ARCHIVO_USUARIOS = "usuarios_registrados.json"
-
-# Ruta del archivo donde se almacenan los productos
 ARCHIVO_PRODUCTOS = "productos_cache.json"
 
-# Función para generar datos aleatorios de usuario
+# === Funciones auxiliares ===
 def generar_usuario():
     nombre = ''.join(random.choices(string.ascii_lowercase, k=10))
     return {
         "nombre": nombre,
-        "dni": ''.join(random.choices(string.digits, k=8)),  
+        "dni": ''.join(random.choices(string.digits, k=8)),
         "email": nombre + "@gmail.com",
         "domicilio": "Calle 123",
         "password": "1234"
     }
 
-# Cargar usuarios ya registrados del archivo (si existe)
-def cargar_usuarios():
-    if os.path.exists(ARCHIVO_USUARIOS):
-        with open(ARCHIVO_USUARIOS, "r") as f:
+def cargar_json_lines(path):
+    if os.path.exists(path):
+        with open(path, "r") as f:
             return [json.loads(line.strip()) for line in f if line.strip()]
     return []
 
-# Guardar nuevo usuario en el archivo
-def guardar_usuario(usuario):
-    with open(ARCHIVO_USUARIOS, "a") as f:
-        f.write(json.dumps(usuario) + "\n")
+def guardar_json_line(path, data):
+    with open(path, "a") as f:
+        f.write(json.dumps(data) + "\n")
 
-def cargar_productos():
-    if os.path.exists(ARCHIVO_PRODUCTOS):
-        with open(ARCHIVO_PRODUCTOS, "r") as f:
+def cargar_json(path):
+    if os.path.exists(path):
+        with open(path, "r") as f:
             return json.load(f)
     return []
 
+# === Clase principal de usuario ===
 class MiUsuario(HttpUser):
     wait_time = between(1, 2)
 
     def on_start(self):
-        # Generar un usuario nuevo y almacenarlo localmente
         self.usuario = generar_usuario()
-        self.usuarios_registrados = cargar_usuarios()
+        self.usuarios_registrados = cargar_json_lines(ARCHIVO_USUARIOS)
         self.autenticado = False
-        # Crea una lista donde se almacenan los productos de la web
-        self.productos_disponibles = cargar_productos()
-        self.lista_pedidos = list()
-        self.lista_pedidos = list()
+        self.productos_disponibles = cargar_json(ARCHIVO_PRODUCTOS)
+        self.lista_pedidos = []
+
+    def manejar_redireccion(self, response, mensaje_ok):
+        if response.status_code == 200:
+            print(mensaje_ok)
+            response.success()
+        elif response.status_code in [301, 302, 303, 307, 308]:
+            print("❌ Redirigido")
+            response.success()
+        elif response.status_code == 401:
+            response.failure("❌ No autorizado: token inválido o ausente (401)")
+        else:
+            response.failure(f"❌ Error inesperado ({response.status_code})")
 
     @task(2)
     def registro_post(self):
         response = self.client.post("/api/registro", data=self.usuario)
-        
         if response.status_code == 200 and "redirect_url" in response.json():
             print("✅ Usuario registrado exitosamente")
-            guardar_usuario(self.usuario)
+            guardar_json_line(ARCHIVO_USUARIOS, self.usuario)
             self.usuarios_registrados.append(self.usuario)
         else:
             print(f"❌ Error al registrar: {response.status_code} - {response.text}")
@@ -63,14 +68,12 @@ class MiUsuario(HttpUser):
     @task(2)
     def login_post(self):
         if not self.usuarios_registrados:
-            return  # Nada que logear aún
-
+            return
         usuario_random = random.choice(self.usuarios_registrados)
         response = self.client.post("/api/login", data={
             "email": usuario_random["email"],
             "password": usuario_random["password"]
         })
-
         if response.status_code == 200:
             self.autenticado = True
             print("✅ Login exitoso")
@@ -91,157 +94,65 @@ class MiUsuario(HttpUser):
 
     @task(3)
     def agregar_producto_carrito(self):
-
         if not self.productos_disponibles:
-            return 
-        
-        if self.autenticado:
-            producto = random.choice(self.productos_disponibles)
-            producto_id = producto["id"]
-            # Datos que se enviarán en la solicitud POST
-            data = {
-                "id_producto": producto_id # Aquí pones el ID del producto que deseas agregar
-            }
+            print("⚠️ No hay productos disponibles.")
+            return
 
-        if not self.productos_disponibles:
-            return 
-        
-        if self.autenticado:
-            producto = random.choice(self.productos_disponibles)
-            producto_id = producto["id"]
-            # Datos que se enviarán en la solicitud POST
-            data = {
-                "id_producto": producto_id # Aquí pones el ID del producto que deseas agregar
-            }
+        producto = random.choice(self.productos_disponibles)
+        data = {"id_producto": producto["id"]}
 
-            # Hacemos la solicitud POST al endpoint /agregar
-            response = self.client.post(
-                f"/api/carrito/agregar", 
-                json=data
-            )
-            # Hacemos la solicitud POST al endpoint /agregar
-            response = self.client.post(
-                f"/api/carrito/agregar", 
-                json=data
-            )
+        with self.client.post("/api/carrito/agregar", json=data, allow_redirects=False, catch_response=True) as response:
+            self.manejar_redireccion(response, "✅ Producto añadido al carrito")
 
-            if response.status_code == 200:
-                print("✅ Producto añadido")
-            else:
-                print(f"❌ Error al añadir producto")
-        
-            if response.status_code == 200:
-                print("✅ Producto añadido")
-            else:
-                print(f"❌ Error al añadir producto")
-        
     @task(1)
     def get_productos(self):
         response = self.client.get("/api/productos")
-
         if response.status_code == 200:
             print("✅ Muestreo de productos exitoso")
         else:
             print(f"❌ Error en el muestreo: {response.status_code}")
-    
+
     @task(2)
     def get_producto_por_id(self):
-        #Si no hay productos en la cache, nada
         if not self.productos_disponibles:
             return
-
-        #Elige un producto random para ver sus detalles
         producto = random.choice(self.productos_disponibles)
-        producto_id = producto["id"]
-        response = self.client.get(f"/api/productos/{producto_id}")
-
+        response = self.client.get(f"/api/productos/{producto['id']}")
         if response.status_code == 200:
-            print(f"✅ Producto {producto_id} obtenido")
+            print(f"✅ Producto {producto['id']} obtenido")
         else:
-            print(f"❌ Error al obtener producto {producto_id}: {response.status_code}")
+            print(f"❌ Error al obtener producto {producto['id']}: {response.status_code}")
+
+    @task(3)
+    def get_un_pedido(self):
+        if not self.lista_pedidos:
+            print("⚠️ No hay pedidos en la lista para consultar.")
+            return
+        id_random = random.choice(self.lista_pedidos)
+        with self.client.get(f"/api/pedidos/{id_random}", catch_response=True) as response:
+            self.manejar_redireccion(response, f"✅ Se ha accedido al pedido {id_random}")
 
     @task(2)
     def checkout(self):
-        response = self.client.post("/api/checkout")
-
-        # Siempre intentamos parsear la respuesta como JSON, ya que el backend siempre devuelve JSON
-        try:
-            data = response.json()
-        except ValueError:
-            print(f"❌ Respuesta no es JSON válido - Código: {response.status_code}")
-            return
-
-        if response.status_code == 200:
-            id_pedido = data.get("id_pedido")
-            if id_pedido:
-                self.lista_pedidos.append(id_pedido)
-                print("✅ Pedido creado con ID:", id_pedido)
-            else:
-                print("⚠️ Respuesta 200 pero sin ID de pedido")
-        elif response.status_code == 401:
-            redirect_url = data.get("redirect_url")
-            if redirect_url:
-                print(f"🔒 No autorizado. Redirigiendo a: {redirect_url}")
-            else:
-                print("🔒 No autorizado sin URL de redirección")
-        else:
-            print(f"❌ Error inesperado ({response.status_code}): {data}")
-
-
-    @task(2)
-    def get_un_pedido(self):
-        if self.lista_pedidos:
-            id_random = random.choice(self.lista_pedidos)
-            response = self.client.get(f"/api/pedidos/{id_random}")
-            if response.status_code == 200:
-                print(f"Se ha accedido al pedido {id_random}")
-            else:
-                print(f"Problema al acceder al pedido {id_random}")
-
-    @task(2)
-    def checkout(self):
-        
-        #esta funcion actua como un usuario de verdad, presiona el endpoint pero si no hay token de autentificación salta el Valueerror
-        #para quitar esto se puede hacer como en otras funciones y meterlo dentro de un if self.autenticado:, esto ya no generara errores en locust pero no queremos eso ya que un usauio de verdad generaria un error
-        # al presionmar ekl boton y no estar autenticado
-        #Añadir el bloque try en las demas que los necesiten y quitar el self.autenticado
-
-        response = self.client.post("/api/checkout")
-
-        # Siempre intentamos parsear la respuesta como JSON, ya que el backend siempre devuelve JSON
-        try:
-            data = response.json()
-        except ValueError:
-            print(f"❌ Usuario no autenticado - Código: {response.status_code}")
-            return
-
-        if response.status_code == 200:
-            id_pedido = data.get("id_pedido")
-            if id_pedido:
-                self.lista_pedidos.append(id_pedido)
-                print("✅ Pedido creado con ID:", id_pedido)
-            else:
-                print("Respuesta 200 pero sin ID de pedido") # en este entorno este caso no se da 
-        elif response.status_code == 402:
-            redirect_url = data.get("redirect_url")
-            if redirect_url:
-                print(f"Sin items de carrito: {redirect_url}")
-            else:
-                print("Sin items de carrito")
-        else:
-            print(f"❌ Error inesperado ({response.status_code}): {data}")
-
-
-    @task(1)
-    def get_un_pedido(self):
-        if self.lista_pedidos:
-            id_random = random.choice(self.lista_pedidos)
-            response = self.client.get(f"/api/pedidos/{id_random}")
-            if response.status_code == 200:
-                print(f"Se ha accedido al pedido {id_random}")
-            else:
-                print(f"Problema al acceder al pedido {id_random}")
-    import random
+        with self.client.post("/api/checkout", allow_redirects=False, catch_response=True) as response: #caso especial 
+            try:
+                if response.status_code == 200:
+                    data = response.json()
+                    id_pedido = data.get("id_pedido")
+                    if id_pedido:
+                        self.lista_pedidos.append(id_pedido)
+                        print("✅ Pedido creado con ID:", id_pedido)
+                        response.success()
+                    else:
+                        response.failure("Respuesta 200 sin 'id_pedido'")
+                elif response.status_code == 402:
+                    data = response.json()
+                    print(f"Sin items de carrito: {data.get('redirect_url', 'No redirect_url')}")
+                    response.success()
+                else:
+                    self.manejar_redireccion(response, "")
+            except ValueError as e:
+                response.failure(f"❌ Error al parsear JSON: {str(e)}")
 
     @task(2)
     def actualizar_producto_put(self):
@@ -249,29 +160,21 @@ class MiUsuario(HttpUser):
             return
 
         producto = random.choice(self.productos_disponibles)
-        producto_id = producto["id"]
-
-        # Generamos nuevos datos para reemplazar los anteriores
         nuevo_nombre = producto["nombre"] + random.choice([" Plus", " Premium", " Especial"])
         nueva_descripcion = (producto.get("descripcion") or "") + " (editado)"
-        nuevo_precio = round(random.uniform(5.0, 20.0), 2)
-        nuevo_stock = random.randint(1, 100)
-        nuevo_tipo = random.choice(["Vegano", "Proteico", "Equilibrado"])
-
         data = {
             "nombre": nuevo_nombre,
             "descripcion": nueva_descripcion,
-            "precio": nuevo_precio,
-            "stock": nuevo_stock,
-            "tipo": nuevo_tipo
+            "precio": round(random.uniform(5.0, 20.0), 2),
+            "stock": random.randint(1, 100),
+            "tipo": random.choice(["Vegano", "Proteico", "Equilibrado"])
         }
 
-        response = self.client.put(f"/api/productos/{producto_id}", data=data)
-
+        response = self.client.put(f"/api/productos/{producto['id']}", data=data)
         if response.status_code == 200:
-            print(f"✅ Producto {producto_id} actualizado completamente (PUT)")
+            print(f"✅ Producto {producto['id']} actualizado completamente (PUT)")
         else:
-            print(f"❌ Error al actualizar producto {producto_id} con PUT: {response.status_code}")
+            print(f"❌ Error al actualizar producto {producto['id']} con PUT: {response.status_code}")
 
     @task(2)
     def actualizar_tipo_patch(self):
@@ -279,28 +182,13 @@ class MiUsuario(HttpUser):
             return
 
         producto = random.choice(self.productos_disponibles)
-        producto_id = producto["id"]
-        tipo_actual = producto.get("tipo", "Vegano")  # Valor por defecto si no tiene tipo
-        posibles_tipos = ["Vegano", "Proteico", "Equilibrado"]
+        tipo_actual = producto.get("tipo", "Vegano")
+        nuevo_tipo = random.choice([t for t in ["Vegano", "Proteico", "Equilibrado"] if t != tipo_actual])
+        data = {"tipo": nuevo_tipo}
 
-        # Seleccionar un tipo distinto del actual
-        nuevos_tipos = [t for t in posibles_tipos if t != tipo_actual]
-        nuevo_tipo = random.choice(nuevos_tipos)
-
-        data = {
-            "tipo": nuevo_tipo
-        }
-
-        response = self.client.patch(
-            f"/api/productos/{producto_id}",
-            json=data  # Se espera JSON en el cuerpo
-        )
-
+        response = self.client.patch(f"/api/productos/{producto['id']}", json=data)
         if response.status_code == 200:
-            print(f"✅ Tipo del producto {producto_id} actualizado a '{nuevo_tipo}'")
-            # Actualizamos el tipo en caché para mantener consistencia local
             producto["tipo"] = nuevo_tipo
+            print(f"✅ Tipo del producto {producto['id']} actualizado a '{nuevo_tipo}'")
         else:
-            print(f"❌ Error al actualizar tipo del producto {producto_id}: {response.status_code}")
-
-
+            print(f"❌ Error al actualizar tipo del producto {producto['id']}: {response.status_code}")
