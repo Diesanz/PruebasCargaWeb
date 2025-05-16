@@ -143,6 +143,8 @@ class MiUsuario(HttpUser):
                         self.lista_pedidos.append(id_pedido)
                         print("✅ Pedido creado con ID:", id_pedido)
                         response.success()
+                        with self.client.delete("/api/carrito/vaciar", json=data, allow_redirects=False, catch_response=True) as response:
+                            self.manejar_redireccion(response, "✅ Carrito vaciado")
                     else:
                         response.failure("Respuesta 200 sin 'id_pedido'")
                 elif response.status_code == 402:
