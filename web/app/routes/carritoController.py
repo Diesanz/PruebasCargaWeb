@@ -154,5 +154,6 @@ def add_item_carrito(usuario_id):
     # Devolver el ítem agregado o actualizado como una respuesta JSON
     return jsonify({
         "message": "Item añadido al carrito",
+        "redirect_url": url_for('producto.api_index'),
         "item": item_carrito_db.dict()  # Devuelve los datos del ítem recién agregado o actualizado
     }), 200

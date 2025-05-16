@@ -113,11 +113,13 @@ function insert_carrito(boton){
                 cantidad: 1  // puedes cambiarlo si necesitas permitir cantidades variables
             })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error al añadir al carrito");
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            } else if (data.error) {
+                alert("Error: " + data.error);
             }
-            return response.json();
         })
         .catch(error => {
             alert("Hubo un error: " + error.message);
