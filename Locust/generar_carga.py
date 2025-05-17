@@ -194,3 +194,27 @@ class MiUsuario(HttpUser):
             print(f"✅ Tipo del producto {producto['id']} actualizado a '{nuevo_tipo}'")
         else:
             print(f"❌ Error al actualizar tipo del producto {producto['id']}: {response.status_code}")
+    
+    @task(1)
+    def get_carrito(self):
+        response = self.client.get("/api/carrito")
+        if response.status_code == 200:
+            print("✅ El carrito se muestra correctamente")
+        else:
+            print(f"❌ Error al mostrar el carrito: {response.status_code}")
+
+    @task(1)
+    def delete_carrito(self):
+        response = self.client.delete("/api/carrito/vaciar")
+        if response.status_code == 200:
+            print("✅ El carrito se vacia correctamente")
+        else:
+            print(f"❌ Error al vaciar el carrito: {response.status_code}")
+
+    @task(1)
+    def get_pedidos(self):
+        response = self.client.get("/api/pedidos")
+        if response.status_code == 200:
+            print("✅ Los pedidos se muestran correctamente")
+        else:
+            print(f"❌ Error al mostrar los pedidos: {response.status_code}")
