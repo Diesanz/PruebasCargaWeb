@@ -81,7 +81,6 @@ class Conexion:
 
         try:
             with self.connection.cursor() as cursor:
-                print(query, args)
                 cursor.execute(query, args)
                 result = cursor.fetchone() if one else cursor.fetchall() #si es fetchone devuelven forma de json!!!!!
                 return result
@@ -96,7 +95,7 @@ class Conexion:
             with self.connection.cursor() as cursor:
                 cursor.executemany(query, args)
                 self.connection.commit()
-                print(args, query)
+    
                 return True
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
@@ -124,7 +123,7 @@ class Conexion:
 
         try:
             with self.connection.cursor() as cursor:
-                print(query, args)
+                
                 cursor.execute(query, args)
                 last_id = cursor.lastrowid
                 
