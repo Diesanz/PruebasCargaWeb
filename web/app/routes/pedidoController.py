@@ -6,7 +6,7 @@ from app.schemas.Pedido import pedido_schema
 from app.schemas.itemPedido import item_pedido_schema
 from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
-from app.utils.carrito import get_carrito_items_usuario
+from app.utils.carrito import get_carrito_items_usuario, get_id_carrito_usuario
 from time import sleep
 
 pedido = Blueprint('pedidoController', __name__, url_prefix="/api")
@@ -180,6 +180,9 @@ def procesar_comprar(usuario_id):
         query =  """UPDATE Pedido SET total = (%s)
         WHERE id = (%s)"""
         conn.execute_db(query, (p.total, id_pedido))
-        
+
+        query_db = "DELETE FROM CarritoItem WHERE carrito_id = %s"
+        borrado_exitoso = conn.execute_db(query_db, (get_id_carrito_usuario(usuario_id),))
+        conn.close_connection()
 
     return jsonify({"message": "Pedido realizado exitosamente","id_pedido":id_pedido}), 200

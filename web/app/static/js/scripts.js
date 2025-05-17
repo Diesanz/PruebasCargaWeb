@@ -158,7 +158,7 @@ function tramitar_pedido(btn) {
             window.location.href = data.redirect_url;
         } else if (data.id_pedido) {
             console.log('✅ Pedido realizado:', data);
-            borrar_items_carrito();
+            getCarrito()
         } else {
             console.warn("⚠️ Respuesta desconocida del servidor:", data);
         }

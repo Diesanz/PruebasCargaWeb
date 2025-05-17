@@ -6,30 +6,9 @@ from app.schemas.Carrito import carrito_schema
 from app.schemas.itemCarrito import item_carrito_schema
 from app.db.conexiondb import Conexion
 from app.utils.comprobar_token import verificar_token #importar el decorador del token
-from app.utils.carrito import get_carrito_items_usuario
+from app.utils.carrito import get_carrito_items_usuario, get_id_carrito_usuario
 
 carrito = Blueprint('carritoController', __name__, url_prefix="/api/carrito")
-
-def get_id_carrito_usuario(usuario_id: str):
-    """
-    Obtiene el ID del carrito asociado a un usuario específico.
-
-    Args:
-        usuario_id (str): ID del usuario.
-
-    Returns:
-        int or Tuple: ID del carrito si existe, o una respuesta JSON con error 404 si no se encuentra.
-    """
-    
-    query_db = "SELECT id FROM Carrito WHERE usuario_id = %s"
-    conn = Conexion()
-    id_carrito = conn.select_db(query_db, (usuario_id,), one=True)
-    conn.close_connection()
-
-    if not id_carrito:
-        return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 
-
-    return id_carrito['id']
 
 def get_datos_producto(id_producto: str): #cambiar esto para que devuelva un objeto
     """
