@@ -135,7 +135,7 @@ def add_item_carrito(usuario_id):
     id_producto = data.get('id_producto')  # El ID del producto a agregar
 
     if not id_producto:
-        return jsonify({"error": "El id_producto es obligatorio."}), 400
+        return jsonify({"error": "El id_producto es obligatorio."}), 200
 
     # Paso 2: Consultar la base de datos para obtener el producto
     producto = get_datos_producto(id_producto)

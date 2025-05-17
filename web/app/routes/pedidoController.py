@@ -153,7 +153,7 @@ def procesar_comprar(usuario_id):
         print("No se encontró carrito para el usuario.")
     
     if not carrito.items:
-        return jsonify({'redirect_url': url_for('carritoController.get_items_carrito')}), 402
+        return jsonify({'redirect_url': url_for('carritoController.get_items_carrito')}), 200
 
     # 1. Crear el pedido
     id_pedido = crear_pedido(usuario_id)
