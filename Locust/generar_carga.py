@@ -188,7 +188,7 @@ class MiUsuario(HttpUser):
         else:
             print(f"❌ Error en el muestreo: {response.status_code}")
 
-    @task(2)
+    @task(1)
     def get_producto_por_id(self):
         """Tarea para obtener un producto aleatorio por ID vía GET
 
@@ -204,7 +204,7 @@ class MiUsuario(HttpUser):
         else:
             print(f"❌ Error al obtener producto {producto['id']}: {response.status_code}")
 
-    @task(3)
+    @task(1)
     def get_un_pedido(self):
         """Tarea para obtener un pedido aleatorio de la lista vía GET
 
