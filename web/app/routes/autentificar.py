@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Blueprint, render_template, redirect, url_for, flash, make_response
-import jwt
+import jwt, hashlib
 from datetime import datetime, timedelta
 from app.models.Usuario import Usuario, UsuarioDB
 from app.schemas.Usuario import usuario_schema, usuario_schema_db
@@ -10,6 +10,12 @@ autentificar_usuarios = Blueprint('autentificar', __name__, url_prefix="/api") #
 
 SECRET = 'mi_clave_secreta'  
 ALGORITHM = 'HS256'  # Algoritmo de firma por defecto
+
+def hash_sha256(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+def comprobar_contraseña(password_ingresada, hash_guardado):
+    return hash_sha256(password_ingresada) == hash_guardado
 
 def search_usuario(busqueda:str, valor:str) -> Usuario:
     """
@@ -150,21 +156,19 @@ def registro_post():
     password = request.form.get('password')
 
     if isinstance(search_usuario("email", email), Usuario):
-        #return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         flash("El usuario con este DNI o email ya existe.")
-        return redirect(url_for('autentificar.registro'))
+        return jsonify({'redirect_url': url_for('autentificar.registro')})
 
-
-    usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=password)
+    usuario = UsuarioDB(nombre=nombre, dni=dni, email=email, domicilio=domicilio, password=hash_sha256(password))
 
     
     conn = Conexion()
-    success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
+    success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usuario mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
     conn.close_connection()
 
     if success_id:
-        return redirect(url_for('autentificar.login'))
-            
+        return jsonify({'redirect_url': url_for('autentificar.login')})
+     
     return jsonify({"message": "Hubo un error al registrar el usuario."}), 500
 
 #Endpoint para el login de Usuarios
@@ -195,7 +199,7 @@ def login_post():
 
     usuario_db = search_usuario_db(email)
 
-    if type(usuario_db) != UsuarioDB or usuario_db.password != password: #comprobación de credenciales (falta hacer el hash)
+    if not isinstance(usuario_db, UsuarioDB) or comprobar_contraseña(usuario_db.password, password): #comprobación de credenciales (falta hacer el hash)
         return jsonify({"error": "Email o contraseña incorrectas."}), 401
 
     #Creación de un token de autentificación

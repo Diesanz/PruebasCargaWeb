@@ -37,9 +37,12 @@ def get_produtos(ids=None):
     productos = conn.select_db(query, (tuple(ids),))  # Pasa los IDs como una tupla
     conn.close_connection()
     
-    productos_obj = [Producto(**producto_schema(p)) for p in productos] # Validamos datos y tipamos
+    if productos:
+        productos_obj = [Producto(**producto_schema(p)) for p in productos] # Validamos datos y tipamos
     
-    return productos_obj
+        return productos_obj
+    
+    return []
 
 #Endpoint que devuelve la información principal de la página web
 @menu.route('/', methods=['GET'])

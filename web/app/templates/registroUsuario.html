@@ -14,8 +14,7 @@
             <h2>Bienvenido a EATTHIS!!</h2>
             <p>Complete las siguietes casillas con sus datos personales</p>
 
-            <form action="/api/registro" method="POST">
-
+            <form id="formRegistro">
                 <p class="titulo">
                     <label for="nombre">Nombre</label>
                     <input class="input" type="text" name="nombre" id="nombre" required>
@@ -54,9 +53,8 @@
                 {% endwith %}
             
                 
-                <p>
-                    <input type="submit" class="btn btn-login" name="btn-login" value="Registrarse">
-                </p>
+                <button type="submit" class="btn btn-login" name="btn-login" >Registrarse</button>
+
                 
                 <div class="redes">
                     <span>Elige cualquier otro metodo de identificacion</span>
@@ -66,5 +64,6 @@
                 </div>
             </form>
         </div>
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </body>
 </html>

@@ -18,8 +18,11 @@ def get_produtosdb():
     query = "SELECT * FROM Producto" 
     productos = conn.select_db(query)
     conn.close_connection()
+
+    if productos:
+        return [Producto(**producto_schema(p)) for p in productos]
     
-    return [Producto(**producto_schema(p)) for p in productos]
+    return []
 
 #Método que se encarga de obtener el producto de la base de datos según su identificador
 def obtener_producto_por_id(id):
@@ -74,6 +77,19 @@ def producto_detalle(id: int):
 
 @producto.route('/productos/<int:id>',methods=['PUT'])
 def actualizarProductoEntero(id:int):
+    """
+    Actualiza todos los campos de un producto existente en la base de datos.
+
+    Keyword arguments:
+    id -- ID del producto a actualizar (int)
+    Request form data:
+        nombre -- nuevo nombre del producto
+        descripcion -- nueva descripción del producto
+        precio -- nuevo precio
+        stock -- nuevo stock
+        tipo -- nuevo tipo de producto
+    Return: JSON con URL de redirección si tiene éxito, o error 500 si falla
+    """
     
     nombre = request.form.get('nombre')
     descripcion = request.form.get('descripcion')
@@ -99,6 +115,16 @@ def actualizarProductoEntero(id:int):
 
 @producto.route('/productos/<int:id>', methods=['PATCH'])
 def actualizarTipo(id: int):
+    """
+    Actualiza únicamente el tipo de un producto específico.
+
+    Keyword arguments:
+    id -- ID del producto a modificar (int)
+    Request JSON:
+        tipo -- nuevo tipo de producto
+    Return: JSON con URL de redirección si tiene éxito, o error 400/500 si falla
+    """
+    
     data = request.get_json()
 
     if not data or 'tipo' not in data:

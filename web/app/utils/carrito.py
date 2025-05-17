@@ -5,7 +5,28 @@ from app.models.itemCarrito import ItemCarrito, ItemCarritoDB
 from app.schemas.Carrito import carrito_schema
 from app.schemas.itemCarrito import item_carrito_schema
 
+#carpeat con métodos útiles que van a ser utilizados por más de un controlador
 
+def get_id_carrito_usuario(usuario_id: str):
+    """
+    Obtiene el ID del carrito asociado a un usuario específico.
+
+    Args:
+        usuario_id (str): ID del usuario.
+
+    Returns:
+        int or Tuple: ID del carrito si existe, o una respuesta JSON con error 404 si no se encuentra.
+    """
+    
+    query_db = "SELECT id FROM Carrito WHERE usuario_id = %s"
+    conn = Conexion()
+    id_carrito = conn.select_db(query_db, (usuario_id,), one=True)
+    conn.close_connection()
+
+    if not id_carrito:
+        return jsonify({"error": "Carrito no encontrado para el usuario."}), 404 
+
+    return id_carrito['id']
 
 def get_carrito_items_usuario(usuario_id: str) -> Carrito:
     """

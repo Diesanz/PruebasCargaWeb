@@ -58,7 +58,7 @@
                 <div class="platos">
                     {% for producto in productos %}
                         <div class="plato">
-                            <a href="#" style="text-decoration: none; color:black;">
+                            <a  style="text-decoration: none; color:black;">
                                 <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}" alt="{{ producto.nombre }}">
                                 <div class="descripcion">
                                     <h4 class="nombre">{{producto.nombre}}</h4>
