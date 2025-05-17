@@ -240,24 +240,29 @@ async function hacerLogin(login){
 }
 
 
+// Espera a que todo el contenido del DOM esté cargado antes de ejecutar el script
 document.addEventListener('DOMContentLoaded', function(){
+    // Referencias a elementos del DOM
     const login = document.getElementById('loginForm');
     const registro = document.getElementById('formRegistro');
     const carrito = document.getElementById('carrito');
     const delete_btn = document.getElementById('delete_btn');
-    const logout_btn =  document.getElementById('logoutButton');
+    const logout_btn = document.getElementById('logoutButton');
     const tramitar_btn = document.getElementById('tramitar_btn');
     const insert_pr_btn = document.querySelectorAll(".boton1");
     const form = document.getElementById('formEditar');
 
+    // Si existe el formulario de login, se asigna el manejador correspondiente
     if(login){
         hacerLogin(login)
     }
 
+    // Si existe el formulario de registro, se asigna el manejador correspondiente
     if(registro){
         hacerRegistro(registro)
     }
  
+    // Si hay un botón o enlace al carrito, se previene el comportamiento por defecto y se llama a la función para cargar el carrito
     if(carrito){
         carrito.addEventListener('click', function (e) {
             e.preventDefault(); // Previene salto si es <a href="#">
@@ -265,40 +270,46 @@ document.addEventListener('DOMContentLoaded', function(){
         });    
     }
 
+    // Si existe el botón para borrar el carrito, se asigna la función correspondiente
     if(delete_btn){
         delete_btn.addEventListener('click', function(e) {
-            e.preventDefault
-            borrar_items_carrito()
+            e.preventDefault(); // ← FALTABA LLAMAR A ESTA FUNCIÓN CON PARÉNTESIS
+            borrar_items_carrito();
         })
     }
 
+    // Si hay un botón de logout, al hacer clic redirige al endpoint de logout
     if(logout_btn){
         logout_btn.addEventListener('click', function() {
-            // Redirigir a la ruta de logout para eliminar el token y redirigir al login
             window.location.href = '/api/logout';
         });
     }
 
+    // Si existe el botón para tramitar pedido
     if(tramitar_btn){
         tramitar_btn.addEventListener('click', function(e){
+            // Desactiva el botón y muestra mensaje de procesamiento
             tramitar_btn.disabled = true;
             tramitar_btn.innerHTML = "Procesando...";
+            // Después de 5 segundos, lo reactiva
             setTimeout(function() {
                 tramitar_btn.disabled = false;
                 tramitar_btn.innerHTML = "Procesar Compra";
-            }, 5000); // 5000 milisegundos = 5 segundos
-            e.preventDefault
-            tramitar_pedido(tramitar_btn)
+            }, 5000);
+            e.preventDefault(); // ← FALTABA LLAMAR A ESTA FUNCIÓN CON PARÉNTESIS
+            tramitar_pedido(tramitar_btn);
         });
     }
 
+    // Si hay botones para añadir productos al carrito, se asigna la función a cada uno
     if(insert_pr_btn){
-        insert_pr_btn.forEach(boton =>{
-            insert_carrito(boton)
+        insert_pr_btn.forEach(boton => {
+            insert_carrito(boton);
         });
     }
 
-    if (form){
+    // Si existe un formulario de edición de producto, se evita el envío por defecto y se ejecuta la lógica personalizada
+    if(form){
         form.addEventListener('submit', function (e) {
             e.preventDefault(); 
             actualizarProducto();

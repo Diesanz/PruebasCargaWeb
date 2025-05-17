@@ -156,7 +156,6 @@ def registro_post():
     password = request.form.get('password')
 
     if isinstance(search_usuario("email", email), Usuario):
-        #return jsonify({"message": "El usuario con este DNI  o email ya existe."}), 400
         flash("El usuario con este DNI o email ya existe.")
         return jsonify({'redirect_url': url_for('autentificar.registro')})
 
@@ -164,7 +163,7 @@ def registro_post():
 
     
     conn = Conexion()
-    success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usurio mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
+    success_id=conn.procedure('CreateUser', usuario.to_tuple()) #Añade un usuario mediante procedimiento, ya que con este mismo se puede obtener el id para insertarlo en el carrito
     conn.close_connection()
 
     if success_id:

@@ -5,6 +5,8 @@ from app.models.itemCarrito import ItemCarrito, ItemCarritoDB
 from app.schemas.Carrito import carrito_schema
 from app.schemas.itemCarrito import item_carrito_schema
 
+#carpeat con métodos útiles que van a ser utilizados por más de un controlador
+
 def get_id_carrito_usuario(usuario_id: str):
     """
     Obtiene el ID del carrito asociado a un usuario específico.

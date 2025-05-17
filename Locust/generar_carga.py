@@ -237,7 +237,7 @@ class MiUsuario(HttpUser):
                         self.lista_pedidos.append(id_pedido)
                         print("✅ Pedido creado con ID:", id_pedido)
                         response.success()
-                        # Simulación de vaciado del carrito
+                        
                     elif 'redirect_url' in data:
                         print("⚠️ Sin items de carrito")
                         response.success()
