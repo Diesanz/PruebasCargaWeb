@@ -142,6 +142,7 @@ class MiUsuario(HttpUser):
                     if id_pedido:
                         self.lista_pedidos.append(id_pedido)
                         print("✅ Pedido creado con ID:", id_pedido)
+                        #borrar los items del carrito, esta tarear se hace de manera manual pero se necesita de un frontend por eso se simul asi en locust
                         response.success()
                         with self.client.delete("/api/carrito/vaciar", json=data, allow_redirects=False, catch_response=True) as response:
                             self.manejar_redireccion(response, "✅ Carrito vaciado")
