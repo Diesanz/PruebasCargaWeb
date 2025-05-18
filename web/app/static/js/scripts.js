@@ -279,11 +279,24 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // Si hay un botón de logout, al hacer clic redirige al endpoint de logout
-    if(logout_btn){
-        logout_btn.addEventListener('click', function() {
-            window.location.href = '/api/logout';
+    if (logout_btn) {
+        logout_btn.addEventListener('click', async function () {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'GET',
+                });
+    
+                if (response.ok) {
+                    window.location.href = '/api/login';
+                } else {
+                    console.error("Fallo al cerrar sesión:", response.status);
+                }
+            } catch (error) {
+                console.error("Error al hacer logout:", error);
+            }
         });
     }
+    
 
     // Si existe el botón para tramitar pedido
     if(tramitar_btn){

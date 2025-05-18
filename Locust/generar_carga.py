@@ -37,6 +37,10 @@ class MiUsuario(HttpUser):
     wait_time = between(1, 2)
 
     def on_start(self):
+        """Se ejecuta al iniciar cada usuario de prueba
+
+        Return: None
+        """
         self.usuario = generar_usuario()
         self.autenticado = False
         self.productos_disponibles = cargar_json(ARCHIVO_PRODUCTOS)
@@ -73,6 +77,10 @@ class MiUsuario(HttpUser):
         
     @task(2)
     def intentar_login(self):
+        """Tarea para login con usuario registrado aleatorio
+
+        Return: None
+        """
         if self.login is False:
             with self.client.post("/api/login", data={
                 "email": self.usuario["email"],
@@ -190,7 +198,6 @@ class MiUsuario(HttpUser):
                         id_pedido = data.get("id_pedido")
                         self.lista_pedidos.append(id_pedido)
                         print("✅ Pedido creado con ID:", id_pedido)
-                        print(f"Ususrio {self.usuario}, {self.lista_pedidos}")
                         response.success()
                         
                     elif 'redirect_url' in data:
@@ -283,7 +290,8 @@ class MiUsuario(HttpUser):
 
         Return: None
         """
-        if self.lista_pedidos:
+        if self.lista_pedidos: #ya que en los pedidos a la hora de cargarlos se usa paginación, para no sobrecargar la db.
+                            # con esto se simula como un usuario va a ir accediendo a sus diferentes páginas de pedidos.
             num_ped = len(self.lista_pedidos)
             paginas = (num_ped // 4) + (1 if num_ped % 4 > 0 else 0)
             pagina_rand = random.randint(1,paginas)

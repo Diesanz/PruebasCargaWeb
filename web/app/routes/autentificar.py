@@ -212,7 +212,7 @@ def login_post():
     return resp
 
 #Endpoint para realizar el cierre de sesion del usuario
-@autentificar_usuarios.route('/logout')
+@autentificar_usuarios.route('/logout', methods=['GET'])
 @verificar_token
 def logout(usuario_id):
     """
