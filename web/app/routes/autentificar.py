@@ -228,6 +228,6 @@ def logout(usuario_id):
     """
     token = request.cookies.get('authToken')
     if token:
-        resp = make_response(redirect(url_for('autentificar.login')))
-        resp.set_cookie('authToken', '', expires=50)  # Borra la cookie
+        resp = make_response({"mensaje": "Sesión cerrada correctamente"}, 200)
+        resp.delete_cookie('authToken')
         return resp

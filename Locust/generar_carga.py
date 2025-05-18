@@ -1,17 +1,16 @@
 from locust import HttpUser, task, between
 import random, json, string, os
 
-# Vaciar archivo JSON de usuarios si existe al iniciar
-if os.path.exists("usuarios_registrados.json"):
-    with open("usuarios_registrados.json", "w") as f:
-        f.write("")
 
-# === Archivos de persistencia ===
-ARCHIVO_USUARIOS = "usuarios_registrados.json"
+# === Archivo de persistencia ===
 ARCHIVO_PRODUCTOS = "productos_cache.json"
 
 # === Funciones auxiliares ===
 def generar_usuario():
+    """Genera un usuario con datos aleatorios
+
+    Return: dict con datos del usuario
+    """
     nombre = ''.join(random.choices(string.ascii_lowercase, k=10))
     return {
         "nombre": nombre,
@@ -21,39 +20,24 @@ def generar_usuario():
         "password": "1234"
     }
 
-def cargar_json_lines(path):
-    if os.path.exists(path):
-        with open(path, "r") as f:
-            return [json.loads(line.strip()) for line in f if line.strip()]
-    return []
-
-def guardar_json_line(path, data):
-    with open(path, "a") as f:
-        f.write(json.dumps(data) + "\n")
-
 def cargar_json(path):
+    """Carga un archivo JSON completo
+
+    Keyword arguments:
+    path -- ruta del archivo
+    Return: objeto JSON o lista vacía
+    """
     if os.path.exists(path):
         with open(path, "r") as f:
             return json.load(f)
     return []
 
-# Decorador para que las tareas dependan de estar logueado
-def task_guard(func):
-    def wrapper(self, *args, **kwargs):
-        if not self.login:
-            # No estamos logueados, no ejecutamos esta tarea
-            # Se puede poner print o simplemente return
-            # print(f"⚠️ Saltando tarea {func.__name__} porque no está logueado")
-            return
-        return func(self, *args, **kwargs)
-    return wrapper
-
+# === Clase principal de usuario ===
 class MiUsuario(HttpUser):
     wait_time = between(1, 2)
 
     def on_start(self):
         self.usuario = generar_usuario()
-        self.usuarios_registrados = cargar_json_lines(ARCHIVO_USUARIOS)
         self.autenticado = False
         self.productos_disponibles = cargar_json(ARCHIVO_PRODUCTOS)
         self.lista_pedidos = []
@@ -62,29 +46,18 @@ class MiUsuario(HttpUser):
         with self.client.post("/api/registro", data=self.usuario, catch_response=True) as response:
             if response.status_code == 200 and "redirect_url" in response.json():
                 print("✅ Usuario registrado exitosamente")
-                guardar_json_line(ARCHIVO_USUARIOS, self.usuario)
-                self.usuarios_registrados.append(self.usuario)
                 response.success()
             else:
                 response.failure(f"❌ Error al registrar: {response.status_code} - {response.text}")
         
-
-    @task(1)
-    def intentar_login(self):
-        with self.client.post("/api/login", data={
-            "email": self.usuario["email"],
-            "password": self.usuario["password"]
-        }, catch_response=True) as response:
-            if response.status_code == 200:
-                self.login = True
-                print(f"🔐 Re-login exitoso{self.lista_pedidos}")
-                return True
-            else:
-                self.login = False
-                print("❌ Re-login fallido")
-                return False
-                
     def manejar_redireccion(self, response, mensaje_ok):
+        """Gestiona respuestas HTTP, chequeando redirecciones y errores
+
+        Keyword arguments:
+        response -- respuesta HTTP
+        mensaje_ok -- mensaje a mostrar si es exitosa
+        Return: True si OK o redirección válida, False si error
+        """
         if response.status_code == 200:
             print(mensaje_ok)
             return True
@@ -93,28 +66,57 @@ class MiUsuario(HttpUser):
             return True
         elif response.status_code == 401:
             print("❌ No autorizado: token inválido o ausente (401)")
-
             return False
         else:
             print(f"❌ Error inesperado ({response.status_code})")
             return False
+        
+    @task(2)
+    def intentar_login(self):
+        if self.login is False:
+            with self.client.post("/api/login", data={
+                "email": self.usuario["email"],
+                "password": self.usuario["password"]
+            }, catch_response=True) as response:
+                if response.status_code == 200:
+                    self.login = True
+                    print(f"🔐 Login exitoso{self.lista_pedidos}")
+                    return True
+                else:
+                    self.login = False
+                    print("❌ Login fallido")
+                    return False
 
     @task(1)
     def register_get(self):
+        """Tarea para solicitar la página de registro vía GET
+
+        Return: None
+        """
         self.client.get("/api/registro")
 
     @task(1)
     def login_get(self):
-        self.client.get("/api/login")
+        """Tarea para solicitar la página de login vía GET
 
+        Return: None
+        """
+        self.client.get("/api/login")
 
     @task(1)
     def menu(self):
-        self.client.get("/api/menu")
+        """Tarea para obtener el menú vía GET
 
+        Return: None
+        """
+        self.client.get("/api/menu")
 
     @task(3)
     def agregar_producto_carrito(self):
+        """Tarea para agregar un producto aleatorio al carrito vía POST
+
+        Return: None
+        """
         if not self.productos_disponibles:
             print("⚠️ No hay productos disponibles.")
             return
@@ -130,15 +132,22 @@ class MiUsuario(HttpUser):
 
     @task(1)
     def get_productos(self):
+        """Tarea para obtener la lista de productos vía GET
+
+        Return: None
+        """
         response = self.client.get("/api/productos")
         if response.status_code == 200:
             print("✅ Muestreo de productos exitoso")
         else:
             print(f"❌ Error en el muestreo: {response.status_code}")
 
- 
     @task(1)
     def get_producto_por_id(self):
+        """Tarea para obtener un producto aleatorio por ID vía GET
+
+        Return: None
+        """
         if not self.productos_disponibles:
             return
 
@@ -149,9 +158,12 @@ class MiUsuario(HttpUser):
         else:
             print(f"❌ Error al obtener producto {producto['id']}: {response.status_code}")
 
-
     @task(1)
     def get_un_pedido(self):
+        """Tarea para obtener un pedido aleatorio de la lista vía GET
+
+        Return: None
+        """
         if not self.lista_pedidos:
             print("⚠️ No hay pedidos en la lista para consultar.")
             return
@@ -164,9 +176,12 @@ class MiUsuario(HttpUser):
             else:
                 response.failure("❌ Error al consultar pedido")
 
-
     @task(2)
     def checkout(self):
+        """Tarea para realizar checkout y vaciar carrito
+
+        Return: None
+        """
         with self.client.post("/api/checkout", allow_redirects=False, catch_response=True) as response:
             try:
                 if response.status_code == 200:
@@ -174,9 +189,10 @@ class MiUsuario(HttpUser):
                     if 'id_pedido' in data:
                         id_pedido = data.get("id_pedido")
                         self.lista_pedidos.append(id_pedido)
-                        print(f"Usuario {self.usuario}, {self.lista_pedidos}")
                         print("✅ Pedido creado con ID:", id_pedido)
+                        print(f"Ususrio {self.usuario}, {self.lista_pedidos}")
                         response.success()
+                        
                     elif 'redirect_url' in data:
                         print("⚠️ Sin items de carrito")
                         response.success()
@@ -190,9 +206,12 @@ class MiUsuario(HttpUser):
             except ValueError as e:
                 response.failure(f"❌ Error al parsear JSON: {str(e)}")
 
-
     @task(2)
     def actualizar_producto_put(self):
+        """Tarea para actualizar producto completo vía PUT
+
+        Return: None
+        """
         if not self.productos_disponibles:
             return
 
@@ -213,9 +232,12 @@ class MiUsuario(HttpUser):
         else:
             print(f"❌ Error al actualizar producto {producto['id']} con PUT: {response.status_code}")
 
-
     @task(2)
     def actualizar_tipo_patch(self):
+        """Tarea para actualizar solo el tipo del producto vía PATCH
+
+        Return: None
+        """
         if not self.productos_disponibles:
             return
 
@@ -233,15 +255,22 @@ class MiUsuario(HttpUser):
 
     @task(1)
     def get_carrito(self):
+        """Tarea para obtener el carrito vía GET
+
+        Return: None
+        """
         with self.client.get("/api/carrito", allow_redirects=False, catch_response=True) as response:
             if self.manejar_redireccion(response, "✅ El carrito se muestra correctamente"):
                 response.success()
             else:
                 response.failure("❌ Fallo al obtener el carrito")
 
-
     @task(1)
     def delete_carrito(self):
+        """Tarea para vaciar el carrito vía DELETE
+
+        Return: None
+        """
         with self.client.delete("/api/carrito/vaciar", allow_redirects=False, catch_response=True) as response:
             if self.manejar_redireccion(response, "✅ El carrito se vacia correctamente"):
                 response.success()
@@ -250,12 +279,34 @@ class MiUsuario(HttpUser):
 
     @task(1)
     def get_pedidos(self):
+        """Tarea para obtener la lista de pedidos vía GET
+
+        Return: None
+        """
         if self.lista_pedidos:
             num_ped = len(self.lista_pedidos)
-            print(f"Pedidos totales {num_ped}, {self.usuario['email']}, {self.lista_pedidos}")
-        with self.client.get("/api/pedidos", allow_redirects=False, catch_response=True) as response:
+            paginas = (num_ped // 4) + (1 if num_ped % 4 > 0 else 0)
+            pagina_rand = random.randint(1,paginas)
+            url = f"/api/pedidos?page={pagina_rand}"
+        else:
+            url = "/api/pedidos"
+
+        with self.client.get(url, allow_redirects=False, catch_response=True) as response:
             if self.manejar_redireccion(response, "✅ Los pedidos se muestran correctamente"):
                 response.success()
             else:
                 response.failure("❌ Fallo al obtener pedidos")
 
+    @task(1)
+    def cerrar_sesion(self):
+        """Tarea para cerrar sesión vía GET
+
+        Return: None
+        """
+        with self.client.get("/api/logout", allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, "✅ Cierre de sesión correcto"):
+                self.login = False
+                response.success()
+            else:
+                response.failure("❌ Fallo al cerrar sesión")
+   
