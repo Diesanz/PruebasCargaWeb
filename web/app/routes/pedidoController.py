@@ -127,7 +127,7 @@ def get_pedidos_usuario(usuario_id):
 
     # Obtén la página actual de la URL (por defecto la página 1)
     page = request.args.get('page', 1, type=int)
-
+    print("Pageeeeeeeeeee", str(page))
     pedidos = get_pedidos(usuario_id, page)
 
     return render_template('pedidos.html', pedidos = pedidos)
