@@ -60,7 +60,7 @@ class MiUsuario(HttpUser):
         Keyword arguments:
         response -- respuesta HTTP
         mensaje_ok -- mensaje a mostrar si es exitosa
-        Return: True si OK o redirección válida, False si error
+        Return: True si OK y False redirección válida, o si error
         """
         if response.status_code == 200:
             print(mensaje_ok)
