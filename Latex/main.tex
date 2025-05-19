@@ -320,7 +320,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endfor %}
     \end{verbatim}
 
-    \textit{Uso de Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url$_$for` para cargar las imágenes estáticas.
+    \textit{Uso de Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url\_for` para cargar las imágenes estáticas.
 
     \item \textbf{Registro de usuario:} permite a nuevos usuarios crear una cuenta. El formulario envía los datos a un endpoint que los procesa.
 
@@ -430,24 +430,24 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endwith %}
     \end{verbatim}
     
-    \textit{Uso de Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash. El bloque `{% with %}` permite definir una variable temporal.
+    \textit{Uso de Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash.
     
 
 \end{itemize}
 
 
 \subsection{Modelo de dominio}
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=1\linewidth]{./img/modelo_dominio.drawio.png}
-            \caption{Modelado de dominio}
-            \label{fig:dom-mod}
-        \end{figure}
+       \begin{figure}[H]
+           \centering
+           \includegraphics[width=0.75\linewidth]{modeloDom.png}
+           \caption{Enter Caption}
+           \label{fig:enter-label}
+       \end{figure}
         
 \subsection{Mapa del sitio web}
         \begin{figure}[H]
             \centering
-            \includegraphics[width=1\linewidth]{./img/mapa_sitio_web.drawio.png}
+            \includegraphics[width=0.80\linewidth]{./img/mapa_sitio_web.drawio.png}
             \caption{Mapa del sitio web}
             \label{fig:web-map}
         \end{figure}
@@ -763,13 +763,13 @@ Este patrón de verificación del token se ha aplicado de forma consistente en o
 De este modo se asegura la integridad de la web y facilita tareas de seguridad.
 
 \chapter{Base de datos}
-    \subsection{Diagrama base de datos}
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=1\linewidth]{./img/Carga_web.png}
-            \caption{Modelo base de datos}
-            \label{fig:web-map}
-        \end{figure}
+\section{Diagrama de base de datos y especificaciones}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=1.05\linewidth]{db.png}
+    \caption{Diagrama de base de datos}
+    \label{fig:enter-label}
+\end{figure}
 
 \subsection{Conexión a la base de datos}
 
@@ -852,7 +852,7 @@ De este modo se asegura la integridad de la web y facilita tareas de seguridad.
     \subsubsection*{Relaciones entre tablas}
     
     \begin{itemize}
-        \item \texttt{Usuario} $\rightarrow$ \texttt{Carrito} (1:1): Un usuario puede tener un carrito.
+        \item \texttt{Usuario} $\rightarrow$ \texttt{Carrito} (1:N): Un usuario puede tener varios carritos, pero un carrito solo puede pertecer a un usaurio.
         \item \texttt{Usuario} $\rightarrow$ \texttt{Pedido} (1:N): Un usuario puede haber realizado varios pedidos.
         \item \texttt{Carrito} $\rightarrow$ \texttt{CarritoItem} (1:N): Cada carrito puede contener múltiples productos.
         \item \texttt{Pedido} $\rightarrow$ \texttt{PedidoItem} (1:N): Cada pedido puede contener varios productos.
