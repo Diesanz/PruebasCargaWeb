@@ -283,37 +283,160 @@
         \item La carpeta utils está formada por:
             \begin{itemize}
                 \item comprobar\_token.py $\rightarrow$ que crea el método de comprobación del token de inicio de sesión del usuario.
-                \item carrito.py $\rightarrow$ se crea este metodo dentro de la carpeta utils ya que erea utilizado tanto por el controlador de los pedidos como el del carrito, su función es obtener los items del carrito de un usuario.
+                \item carrito.py $\rightarrow$ se crean métodos  dentro de la carpeta utils ya qu son utilizados tanto por el controlador de los pedidos como el del carrito, su función es obtener los items del carrito de un usuario o la de devolver el id de un carrito de un usuario.
             \end{itemize}
     \end{enumerate} 
         
-\section{Especificaciones Página web}
-    La página web que se va a crear para esta parte de la página será una tienda online de platos de comida, en donde los usuarios podrán consultar y realizar pedidos a través de su cuenta. Las principales funcionalidades de la página web son:
-        \begin{itemize}
-            \item Los usuarios deben de ser capaces de registrarse e identificarse en la web.
-            \item Los usuarios deben de ser capaces de cerrar sesión.
-            \item Los usuarios deben de ser capaces de consultar una descripción del producto que se vende y un menú de acceso a las distintas vistas desde una página principal.
-            \item Los usuarios deben de ser capaces de consultar una lista de productos que se venden, y ser capaces de añadirlos a su carrito de la compra.
-            \item Los usuarios deben de ser capaces de consultar los productos que tienen en su carrito de la compra y realizar un pedido de todos ellos.
-            \item Los usuarios deben de ser capaces de eleminar los productos que tienen añadidos en sus carritos.
-            \item Los usuarios deben de ser capaces de consultar con más detalle cada uno de los productos.
-            \item Los usuarios deben de ser capaces de consultar un historial de todos los pedidos realizados y sus detalles.
-        \end{itemize}
+\section{Especificaciones de la Página Web}
 
-    \subsection{Vistas y html}
-    En base a las especificaciones de la web anteriores se han detectado una serie de vistas que debe de tener la página web, y son las siguientes:
-    \begin{itemize}
-        \item Página principal: en esta vista, se presenta el propósito de la web y da la posibilidad de navegar por toda ella.
-        \item Registro de usuario: en esta vista, el usuario será capaz de registrarse como un usuario nuevo.
-        \item Identificación de usuario: en esta vista, el usuario será capaz de identificarse en la web, si ya tiene cuenta creada.
-        \item Lista de productos disponibles: en esta vista, se muestran la lista de productos que están disponibles para su venta.
-        \item Detalle del producto: en esta vista, se muestra con más detalle el producto, como la información nutricional.
-        \item Carrito de la compra: en esta vista, se muestra el contenido del pedido actual.
-        \item Historial de pedidos:en esta vista, se muestra una lista de pedidos realizados en el pasado.
-        \item Detalles de un pedido: en esta vista, se muestra en más detalle el pedido realizado, como los productos y el precio.
-    \end{itemize}
+La página web desarrollada representa una tienda online de platos de comida, donde los usuarios pueden consultar productos y realizar pedidos mediante su cuenta. Las principales funcionalidades implementadas son:
 
-    \subsection{Modelo de dominio}
+\begin{itemize}
+    \item Registro e inicio de sesión de usuarios.
+    \item Cierre de sesión.
+    \item Consulta de una descripción general del sitio y navegación a distintas secciones desde la página principal.
+    \item Visualización del catálogo de productos y posibilidad de añadirlos al carrito.
+    \item Consulta del carrito de la compra y confirmación del pedido.
+    \item Eliminación de productos del carrito.
+    \item Consulta detallada de cada producto.
+    \item Consulta del historial de pedidos y visualización de sus detalles.
+\end{itemize}
+
+\subsection{Vistas, HTML y lógica Jinja2}
+
+A continuación, se describen las principales vistas de la web, explicando brevemente el uso de Jinja2 en cada una:
+
+\begin{itemize}
+    \item \textbf{Página principal:} muestra el propósito de la tienda e incluye recomendaciones de productos.
+    
+    \begin{verbatim}
+    {% for producto in productos %}
+        <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}">
+        <h4>{{ producto.nombre }}</h4>
+        <p>{{ producto.precio }} €</p>
+        <p>Tipo de producto: {{ producto.tipo }}</p>
+    {% else %}
+        <p>No hay productos disponibles.</p>
+    {% endfor %}
+    \end{verbatim}
+
+    \textit{Uso de Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url$_$for` para cargar las imágenes estáticas.
+
+    \item \textbf{Registro de usuario:} permite a nuevos usuarios crear una cuenta. El formulario envía los datos a un endpoint que los procesa.
+
+    \item \textbf{Inicio de sesión:} permite a usuarios ya registrados autenticarse. En caso de error, se puede mostrar un mensaje con Jinja2.
+
+    \item \textbf{Catálogo de productos:} muestra todos los productos disponibles para su compra.
+
+    \begin{verbatim}
+    {% for producto in productos %}
+        <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}">
+        <h4>{{ producto.nombre }}</h4>
+        <p>{{ producto.precio }} €</p>
+        <button class="boton1">Añadir al carro</button>
+        <a href="/api/productos/{{ producto.id }}"><button>Detalles</button></a>
+    {% else %}
+        <p>No hay productos disponibles.</p>
+    {% endfor %}
+    \end{verbatim}
+
+    \textit{Uso de Jinja2:} generación dinámica de cada tarjeta de producto, incluyendo enlaces a sus detalles y botón para añadir al carrito.
+
+    \item \textbf{Detalle del producto:} muestra información más completa como la descripción, el stock y el tipo.
+
+    \begin{verbatim}
+    <h3>{{ producto.nombre }}</h3>
+    <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+    <p><strong>Precio:</strong> {{ producto.precio }} €</p>
+    <p><strong>Stock:</strong> {{ producto.stock }}</p>
+    <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
+    \end{verbatim}
+
+    \textit{Uso de Jinja2:} muestra los atributos de un único objeto `producto`.
+
+    \item \textbf{Carrito de la compra:} permite ver los productos añadidos, sus cantidades y el total del pedido.
+
+    \begin{verbatim}
+    {% for item in items %}
+        <img src="{{ url_for('static', filename='img/' + item.url) }}">
+        <span>{{ item.nombre }}</span>
+        <p>{{ item.precio }} €</p>
+        <p>Cantidad: {{ item.cantidad }}</p>
+    {% endfor %}
+    <p>Total: {{ total if total else '0.0' }} €</p>
+    \end{verbatim}
+
+    \textit{Uso de Jinja2:} se itera sobre los productos del carrito y se calcula el total condicionalmente.
+
+    \item \textbf{Detalle del pedido:} visualización detallada de los productos comprados en un pedido específico.
+
+    \begin{verbatim}
+    {% for item in items %}
+        <img src="{{ url_for('static', filename='img/' + item.producto.imagen_url) }}">
+        <p>{{ item.producto.nombre }}</p>
+        <p>{{ item.producto.descripcion }}</p>
+        <p>Cantidad: {{ item.cantidad }}</p>
+        <p>Precio: {{ item.producto.precio }} €</p>
+        <p>Total: {{ '%.1f' | format(item.producto.precio * item.cantidad) }} €</p>
+    {% endfor %}
+    \end{verbatim}
+
+    \newpage
+    \item \textbf{Historial de pedidos:} Lista de pedidos pasados del usuario, mostrando estado, fecha y total.
+    
+    \begin{verbatim}
+    {% for orden in pedidos.lista_p %}
+        <p>Pedido #{{ orden.id }}</p>
+        <p>Fecha: {{ orden.fecha }}</p>
+        <p>Total: {{ orden.total }} €</p>
+        <p>Estado: {{ orden.estado }}</p>
+    {% endfor %}
+    \end{verbatim}
+    
+    \textit{Uso de Jinja2:} Se recorre dinámicamente una lista de pedidos (`pedidos.lista\_p`) y se imprimen los datos de cada uno.
+    
+    \vspace{-0.5em} % reduce el espacio vertical antes del siguiente item
+    
+    \item \textbf{Paginación de pedidos:} Permite navegar entre páginas de pedidos si existen múltiples.
+    
+    \begin{verbatim}
+    {% if pedidos.page > 1 %}
+        <a href="{{ url_for('pedidoController.get_pedidos_usuario', 
+        page=pedidos.page - 1) }}">Anterior</a>
+    {% endif %}
+    {% if pedidos.total_pages > pedidos.page %}
+        <a href="{{ url_for('pedidoController.get_pedidos_usuario', 
+        page=pedidos.page + 1) }}">Siguiente</a>
+    {% endif %}
+    \end{verbatim}
+    
+    \textit{Uso de Jinja2:} Se comprueba el número de página actual para mostrar enlaces de navegación si es necesario.
+    
+    \vspace{-0.5em}
+    
+    \item \textbf{Mensajes de error:} Muestra mensajes flash para informar al usuario sobre errores.
+    
+    \begin{verbatim}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="mensaje-error">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Revisa que todos los campos sean correctos</p>
+        {% endif %}
+    {% endwith %}
+    \end{verbatim}
+    
+    \textit{Uso de Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash. El bloque `{% with %}` permite definir una variable temporal.
+    
+
+\end{itemize}
+
+
+\subsection{Modelo de dominio}
         \begin{figure}[H]
             \centering
             \includegraphics[width=1\linewidth]{./img/modelo_dominio.drawio.png}
@@ -321,15 +444,325 @@
             \label{fig:dom-mod}
         \end{figure}
         
-    \subsection{Mapa del sitio web}
+\subsection{Mapa del sitio web}
         \begin{figure}[H]
             \centering
             \includegraphics[width=1\linewidth]{./img/mapa_sitio_web.drawio.png}
             \caption{Mapa del sitio web}
             \label{fig:web-map}
         \end{figure}
+    \section{API}
+    API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
+    Los tipos de API son:
+        \begin{itemize}
+            \item Según su acceso:
+            \begin{itemize}
+                \item APIs abiertas (públicas): cualquier persona puede usarlas sin autenticación.
+                \item APIs restringidas (privadas): solo pueden usarlas ciertas aplicaciones o usuarios.
+            \end{itemize}
+            \item Según su arquitectura:
+            \begin{itemize}
+                \item RESTful APIs: usan HTTP y recursos estructurados como URLs.
+                \item SOAP: usan XML.
+            \end{itemize}
+        \end{itemize}
+    Los principales usos de las APIs son:
+        \begin{itemize}
+            \item Integración de servicios: permiten que diferentes servicios web y aplicaciones se conecten y compartan funcionalidades.
+            \item Desarrollo de aplicaciones modulares: son aplicaciones complejas divididas en módulos.
+            \item Acceso a datos y funcionalidades: exponen datos y funcionalidades específicas de una aplicación.
+            \item Automatización de tareas: permiten automatizar tareas para que no sea necesario la intervención humana.
+            \item Creación de nuevas aplicaciones y servicios: combinando funcionalidades de diferentes sistemas de manera sencilla.
+            \item Plataformas como servicio (PaaS): plataformas en la nube.
+            \item Microservicios: funcionalidades pequeñas en la arquitectura de microservicios.
+        \end{itemize}
+    Existen diferentes métodos HTTP, que son utilizados por las APIs:
+        \begin{itemize}
+            \item GET: usado para obtener datos del servidor.
+            \item POST: usado para enviar datos al servidor y crear un nuevo recurso.
+            \item PUT: usado para reemplazar completamente un recurso existente.
+            \item PATCH: usado para actualizar parcialmente un recurso.
+            \item DELETE: usado para eliminar un recurso.
+        \end{itemize}
+
+    \subsection{Endpoints de la práctica}
+        \begin{itemize}
+            \item Autenticación (Login y Registro)
+            \begin{itemize}
+                \item POST /api/login $\rightarrow$ verificar credenciales y devuelve un token o sesión.
+                \item POST /api/registro $\rightarrow$ crea una nueva cuenta de usuario.
+                \item DELETE /api/logout $\rightarrow$ cierra sesión de un usuario y eleimina su token.
+            \end{itemize}
+            \item Menú principal
+            \begin{itemize}
+                \item GET /api/menu $\rightarrow$ devuelve información general de la tienda y categorías de productos.
+            \end{itemize}
+            \item Selector de productos
+            \begin{itemize}
+                \item GET /api/productos $\rightarrow$ devuelve la lista de productos disponibles.
+                \item GET /api/productos/{id} $\rightarrow$ devuelve detalles de un producto específico.
+            \end{itemize}
+            \item Carrito de compra
+            \begin{itemize}
+                \item POST /api/carrito/agregar $\rightarrow$ agregar un producto al carrito.
+                \item GET /api/carrito $\rightarrow$ obtiene el estado actual del carrito.
+                \item DELETE /api/carrito/vaciar $\rightarrow$ vacía el carrito del usuario.
+            \end{itemize}
+            \item Listado de pedidos
+            \begin{itemize}
+                \item GET /api/pedidos $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
+                \item GET /api/pedidos/{id} $\rightarrow$ devuelve los detalles de un pedido específico.
+            \end{itemize}
+            \item Proceso de compra
+            \begin{itemize}
+                \item POST /api/checkout $\rightarrow$ procesa la compra y registra la venta.
+            \end{itemize}
+            \item Actualización de productos
+            \begin{itemize}
+                \item PUT /api/productos/{id} $\rightarrow$ actualiza completamente un producto.
+                \item PATCH /api/productos/{id} $\rightarrow$ modifica parcialmente un producto.
+            \end{itemize}
+        \end{itemize}
+        
+\section{Scripts}
+
+\subsection{Archivo \texttt{run.py}}
+
+    El archivo \texttt{run.py} actúa como punto de entrada de la aplicación. Este script debe ejecutarse con el entorno virtual activado, utilizando el comando:
     
-\section{Base de datos}
+    \begin{lstlisting}[language=bash]
+    python run.py
+    \end{lstlisting}
+    
+    Esto lanza el servidor de desarrollo de Flask, cargando todas las plantillas HTML, controladores y rutas definidas en la aplicación.
+    
+    A continuación, se muestra el contenido del archivo \texttt{run.py}:
+    
+    \begin{lstlisting}[language=Python, caption={Script principal \texttt{run.py}}]
+    from app import create_app
+    from flask import render_template, redirect, url_for
+    # Crear la aplicación usando la función de fábrica
+    app = create_app()
+    @app.route('/')
+    def hello_world():
+        return redirect(url_for('menu.api_index'))  # Redirección a la página principal del menú
+
+    # Filtro personalizado para sumar días a una fecha
+    def sumar_dias(fecha, dias):
+        from datetime import timedelta
+        return fecha + timedelta(days=dias)
+    # Registro del filtro en el entorno Jinja
+    app.jinja_env.filters['suma_dias'] = sumar_dias
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+    \end{lstlisting}
+    
+    Este script realiza las siguientes funciones clave:
+    
+    \begin{itemize}
+      \item Llama a la función \texttt{create\_app()} para crear la instancia de Flask.
+      \item Define la ruta principal \texttt{/}, que redirige a la función \texttt{api\_index} del blueprint del menú.
+      \item Registra un filtro personalizado en Jinja llamado \texttt{suma\_dias}, útil para mostrar fechas manipuladas en las plantillas.
+      \item Inicia el servidor en modo \texttt{debug}.
+    \end{itemize}
+    
+\subsection{Archivo \texttt{\_\_init\_\_.py}}
+    
+    El archivo \texttt{\_\_init\_\_.py} se encarga de inicializar la aplicación Flask, registrar los distintos \textit{blueprints} correspondientes a las funcionalidades de la aplicación y establecer los manejadores de errores.
+    
+    \begin{lstlisting}[language=Python, caption={Inicialización de la aplicación Flask}]
+    from flask import Flask, render_template
+    
+    def create_app():
+        app = Flask(__name__, template_folder='templates')
+        app.secret_key = 'clave-super-secreta-123'
+        
+        # Importación de los blueprints
+        from .routes.autentificar import autentificar_usuarios
+        from .routes.carritoController import carrito
+        from .routes.menuController import menu
+        from .routes.pedidoController import pedido
+        from .routes.productosController import producto
+    
+        # Registro de blueprints
+        app.register_blueprint(autentificar_usuarios)
+        app.register_blueprint(carrito)
+        app.register_blueprint(menu)
+        app.register_blueprint(pedido)
+        app.register_blueprint(producto)
+    
+        # Registro de manejadores de errores
+        register_error_handlers(app)
+    
+        return app
+    
+    # Manejadores de errores personalizados
+    def register_error_handlers(app):
+        @app.errorhandler(400)
+        def error400(error):
+            return render_template('error.html', error=400, mensaje="No se pudo procesar la petición."), 400
+    
+        .... Más errores
+    \end{lstlisting}
+    
+    Este archivo realiza las siguientes tareas:
+    
+    \begin{itemize}
+      \item Crea una instancia de Flask con una carpeta de plantillas personalizada.
+      \item Establece una clave secreta para el manejo de sesiones.
+      \item Registra los \textit{blueprints} correspondientes a las rutas del sistema (autenticación, carrito, menú, pedidos, productos).
+      \item Define y registra funciones para manejar errores HTTP comunes, como \texttt{400}, \texttt{401}, \texttt{404} y \texttt{500}, mostrando una plantilla HTML con mensajes personalizados.
+    \end{itemize}
+\subsection{Blueprints y Organización de Controladores}
+
+Para mantener una estructura modular y organizada, se ha utilizado el sistema de \texttt{Blueprints} de Flask. Cada controlador se define como un módulo independiente que se registra en la aplicación principal a través del archivo \texttt{\_\_init\_\_.py}.
+
+A continuación, se describen los distintos \texttt{Blueprints} definidos:
+
+\begin{itemize}
+    \item \texttt{autentificar\_usuarios = Blueprint('autentificar', \_\_name\_\_, url\_prefix="/api")}
+    \begin{itemize}
+        \item $\rightarrow$ Este blueprint gestiona el controlador de autenticación (\textbf{autentificar}).
+        \item $\rightarrow$ Maneja rutas como \texttt{/api/login} y \texttt{/api/registro}.
+        \item $\rightarrow$ Se encuentra definido en \texttt{routes/autentificar.py}.
+    \end{itemize}
+
+    \item \texttt{carrito = Blueprint('carritoController', \_\_name\_\_, url\_prefix="/api/carrito")}
+    \begin{itemize}
+        \item $\rightarrow$ Corresponde al controlador de carrito de compras.
+        \item $\rightarrow$ Define rutas como \texttt{/api/carrito/agregar}, etc.
+        \item $\rightarrow$ Archivo: \texttt{routes/carritoController.py}.
+    \end{itemize}
+
+    \item \texttt{menu = Blueprint('menu', \_\_name\_\_, url\_prefix="/api/menu")}
+    \begin{itemize}
+        \item $\rightarrow$ Controlador encargado de servir los platos del menú.
+        \item $\rightarrow$ Ruta base: \texttt{/api/menu}.
+        \item $\rightarrow$ Ubicación: \texttt{routes/menuController.py}.
+    \end{itemize}
+
+    \item \texttt{pedido = Blueprint('pedidoController', \_\_name\_\_, url\_prefix="/api")}
+    \begin{itemize}
+        \item $\rightarrow$ Controlador para realizar y gestionar pedidos.
+        \item $\rightarrow$ Rutas como \texttt{/api/checkout}, etc.
+        \item $\rightarrow$ Se encuentra en \texttt{routes/pedidoController.py}.
+    \end{itemize}
+
+    \item \texttt{producto = Blueprint('producto', \_\_name\_\_, url\_prefix="/api")}
+    \begin{itemize}
+        \item $\rightarrow$ Gestiona los productos de la base de datos.
+        \item $\rightarrow$ Rutas típicas: \texttt{/api/productos}, \texttt{/api/productos/<idProducto>}, etc.
+        \item $\rightarrow$ Archivo correspondiente: \texttt{routes/productosController.py}.
+    \end{itemize}
+\end{itemize}
+
+Todos estos \texttt{Blueprints} se registran en la función \texttt{create\_app()} del archivo \texttt{\_\_init\_\_.py} para que formen parte del sistema general de rutas de la aplicación.
+
+\subsection{Decorador \texttt{verificar\_token}}
+
+El sistema de autenticación de usuarios se basa en tokens JWT (JSON Web Token) almacenados en cookies. Para proteger rutas que requieren autenticación, se implementa un decorador llamado \texttt{verificar\_token}. Este decorador se aplica a las funciones que sólo deben ser accesibles por usuarios autenticados.
+
+El decorador realiza las siguientes funciones:
+
+\begin{itemize}
+    \item Verifica si existe una cookie llamada \texttt{authToken}.
+    \item Si el token existe, intenta decodificarlo utilizando una clave secreta y el algoritmo definido.
+    \item Si el token es válido, extrae el \texttt{usuario\_id} y lo pasa como argumento a la función decorada.
+    \item Si el token ha expirado, borra la cookie y redirige al usuario al formulario de inicio de sesión.
+    \item Si el token es inválido o no está presente, se devuelve un error o redirección al login.
+\end{itemize}
+
+A continuación, se muestra el código completo del decorador:
+
+\begin{lstlisting}[language=Python, caption={Decorador verificar\_token}]
+def verificar_token(f):
+    """
+    Decorador que protege rutas requeridas para usuarios autenticados.
+    Verifica la validez de un token JWT almacenado en una cookie llamada 'authToken'.
+
+    Si el token es válido, extrae el `usuario_id` y lo pasa como primer argumento
+    a la función decorada.
+
+    - Si el token ha expirado, borra la cookie y redirige al login.
+    - Si el token es inválido, devuelve un error JSON 401.
+    - Si no hay token, redirige al login.
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        token = request.cookies.get('authToken')  # Obtener el token de la cookie
+        
+        if token:
+            try:
+                # Intentar decodificar el token
+                token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
+                usuario_id = token_decode['id']
+                
+                # Llamar a la función original si el token es válido
+                return f(usuario_id, *args, **kwargs)
+            
+            except jwt.ExpiredSignatureError:
+                # Si el token ha expirado, borra la cookie y redirige al login
+                resp = make_response(redirect(url_for('autentificar.login')))
+                resp.set_cookie('authToken', '', expires=0)
+                return resp
+            
+            except jwt.InvalidTokenError:
+                # Si el token es inválido
+                return jsonify({"message": "Token inválido"}), 401
+        else:
+            # Si no hay token, redirige al login
+            return redirect(url_for('autentificar.login'))
+    
+    return wrapper
+\end{lstlisting}
+
+Este decorador es esencial para garantizar que sólo los usuarios autenticados puedan acceder a determinadas rutas, especialmente aquellas relacionadas con el carrito, pedidos y perfil de usuario.
+
+\subsection{Ejemplo de Endpoint Protegido con Token}
+
+Uno de los puntos clave de esta práctica ha sido asegurar los endpoints que requieren autenticación mediante el uso de tokens JWT almacenados en cookies. A continuación, se muestra un ejemplo claro de cómo se ha aplicado esta lógica de seguridad:
+
+\begin{lstlisting}[language=Python, caption={Endpoint protegido para mostrar el carrito}]
+@carrito.route('/', methods=['GET'])
+@verificar_token
+def get_items_carrito(usuario_id):
+    """
+    Muestra los productos actuales en el carrito del usuario autenticado.
+
+    Args:
+        usuario_id (int): ID del usuario autenticado extraído del token.
+
+    Returns:
+        Response: Renderiza la plantilla del carrito con los productos y el total si existe,
+        o la plantilla de inicio con un mensaje de error si el carrito no fue encontrado.
+    """
+
+    carrito = get_carrito_items_usuario(usuario_id)
+    if isinstance(carrito, Carrito):
+        total_carrito = carrito.getTotalCarrito()
+        items_json = [item_carrito_schema(item, True) for item in carrito.items]
+        
+        return render_template("carrito.html", items=items_json, total=total_carrito)
+
+    return render_template("index.html", error="Carrito no encontrado", items=[], total=0)
+\end{lstlisting}
+
+\textbf{Explicación del funcionamiento:}
+\begin{itemize}
+    \item $\rightarrow$ Este endpoint pertenece al \textbf{controlador \texttt{carritoController}}, encargado de gestionar la lógica del carrito de compras.
+    \item $\rightarrow$ Utiliza el decorador \texttt{@verificar\_token} para proteger la ruta, exigiendo que el usuario esté autenticado.
+    \item $\rightarrow$ El decorador extrae el \texttt{usuario\_id} directamente del token JWT almacenado en la cookie \texttt{authToken}.
+    \item $\rightarrow$ Una vez autenticado, se llama a la función \texttt{get\_carrito\_items\_usuario()} que recupera el carrito asociado a ese usuario.
+    \item $\rightarrow$ Si el carrito existe, se calcula el total, se transforma cada ítem a formato JSON (usando \texttt{item\_carrito\_schema}) y se renderiza la plantilla \texttt{carrito.html}.
+    \item $\rightarrow$ En caso de que el carrito no exista, se redirige a la plantilla de inicio con un mensaje de error.
+\end{itemize}
+
+Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagr un producto al carrito, visualizar los pedidos, etc. 
+
+De este modo se asegura la integridad de la web y facilita tareas de seguridad.
+
+\chapter{Base de datos}
     \subsection{Diagrama base de datos}
         \begin{figure}[H]
             \centering
@@ -480,78 +913,7 @@
         \item \textbf{Caso de uso:} se ejecuta al registrar un nuevo usuario desde la aplicación. Garantiza que no se guarden datos parciales si algo falla.
     \end{itemize}
     
-\section{API}
-    API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
-    Los tipos de API son:
-        \begin{itemize}
-            \item Según su acceso:
-            \begin{itemize}
-                \item APIs abiertas (públicas): cualquier persona puede usarlas sin autenticación.
-                \item APIs restringidas (privadas): solo pueden usarlas ciertas aplicaciones o usuarios.
-            \end{itemize}
-            \item Según su arquitectura:
-            \begin{itemize}
-                \item RESTful APIs: usan HTTP y recursos estructurados como URLs.
-                \item SOAP: usan XML.
-            \end{itemize}
-        \end{itemize}
-    Los principales usos de las APIs son:
-        \begin{itemize}
-            \item Integración de servicios: permiten que diferentes servicios web y aplicaciones se conecten y compartan funcionalidades.
-            \item Desarrollo de aplicaciones modulares: son aplicaciones complejas divididas en módulos.
-            \item Acceso a datos y funcionalidades: exponen datos y funcionalidades específicas de una aplicación.
-            \item Automatización de tareas: permiten automatizar tareas para que no sea necesario la intervención humana.
-            \item Creación de nuevas aplicaciones y servicios: combinando funcionalidades de diferentes sistemas de manera sencilla.
-            \item Plataformas como servicio (PaaS): plataformas en la nube.
-            \item Microservicios: funcionalidades pequeñas en la arquitectura de microservicios.
-        \end{itemize}
-    Existen diferentes métodos HTTP, que son utilizados por las APIs:
-        \begin{itemize}
-            \item GET: usado para obtener datos del servidor.
-            \item POST: usado para enviar datos al servidor y crear un nuevo recurso.
-            \item PUT: usado para reemplazar completamente un recurso existente.
-            \item PATCH: usado para actualizar parcialmente un recurso.
-            \item DELETE: usado para eliminar un recurso.
-        \end{itemize}
 
-    \subsection{Endpoints de la práctica}
-        \begin{itemize}
-            \item Autenticación (Login y Registro)
-            \begin{itemize}
-                \item POST /api/login $\rightarrow$ verificar credenciales y devuelve un token o sesión.
-                \item POST /api/registro $\rightarrow$ crea una nueva cuenta de usuario.
-                \item DELETE /api/logout $\rightarrow$ cierra sesión de un usuario y eleimina su token.
-            \end{itemize}
-            \item Menú principal
-            \begin{itemize}
-                \item GET /api/menu $\rightarrow$ devuelve información general de la tienda y categorías de productos.
-            \end{itemize}
-            \item Selector de productos
-            \begin{itemize}
-                \item GET /api/productos $\rightarrow$ devuelve la lista de productos disponibles.
-                \item GET /api/productos/{id} $\rightarrow$ devuelve detalles de un producto específico.
-            \end{itemize}
-            \item Carrito de compra
-            \begin{itemize}
-                \item POST /api/carrito/agregar $\rightarrow$ agregar un producto al carrito.
-                \item GET /api/carrito $\rightarrow$ obtiene el estado actual del carrito.
-                \item DELETE /api/carrito/vaciar $\rightarrow$ vacía el carrito del usuario.
-            \end{itemize}
-            \item Listado de pedidos
-            \begin{itemize}
-                \item GET /api/pedidos $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
-                \item GET /api/pedidos/{id} $\rightarrow$ devuelve los detalles de un pedido específico.
-            \end{itemize}
-            \item Proceso de compra
-            \begin{itemize}
-                \item POST /api/checkout $\rightarrow$ procesa la compra y registra la venta.
-            \end{itemize}
-            \item Actualización de productos
-            \begin{itemize}
-                \item PUT /api/productos/{id} $\rightarrow$ actualiza completamente un producto.
-                \item PATCH /api/productos/{id} $\rightarrow$ modifica parcialmente un producto.
-            \end{itemize}
-        \end{itemize}
 
 \chapter{Pruebas de carga con Locust}
 \section{Locust}
@@ -732,11 +1094,32 @@ Esta tarea realiza una petición GET para obtener la lista de productos disponib
 Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
 
 
-
-
 \section{Simulación y Monitorización}
+\subsection{Simulación}
+Para evaluar el rendimiento del sistema, se realizó una prueba de carga con una duración total de 20 minutos utilizando Locust. Durante esta prueba, se simularon usuarios concurrentes ejecutando tareas comunes como el registro, login, consulta de menú, agregado de productos al carrito y checkout. Las tareas fueron ejecutadas con tiempos de espera aleatorios entre 1 y 3 segundos para emular un comportamiento de usuario realista.
 
 \subsection{Resultados}
+
+Se capturaron métricas de rendimiento cada 5 minutos, registrando el comportamiento del sistema en distintos momentos de la prueba. Las capturas obtenidas desde la interfaz web de Locust muestran la evolución del sistema:
+
+%capturas cad 5 min
+
+Durante la ejecución, se observaron patrones de rendimiento generalmente estables, aunque con ciertos aumentos en los tiempos de respuesta a medida que incrementaba el número de usuarios concurrentes. Los errores 3xx y 401 fueron tratados como respuestas erróneas dentro del contexto de esta prueba, ya que representan fallos reales en la ejecución de acciones por parte de usuarios autenticados (por ejemplo, sesión expirada o token inválido). Esta decisión permite reflejar un comportamiento más realista del sistema bajo prueba.
+
+Cabe destacar que, en contextos donde se deseen simular usuarios anónimos accediendo a recursos públicos, estos mismos códigos podrían ser tratados como respuestas válidas (\texttt{success()}). Sin embargo, dado que el objetivo en este caso es evaluar flujos autenticados, se ha optado por marcarlos siempre como \texttt{failure()}.
+
+
+Las siguientes gráficas (incluidas a continuación en capturas de pantalla) permiten visualizar cómo evolucionó el sistema frente a la carga progresiva.
+
+%ejemplo
+\begin{itemize}
+    \item Captura minuto 0: Inicio de la prueba con baja carga.
+    \item Captura minuto 5: Primer incremento de carga concurrente, sistema respondiendo adecuadamente.
+    \item Captura minuto 10: Carga intermedia, aumento de la latencia.
+    \item Captura minuto 15: Mayor tráfico, algunos errores 401 y redirecciones presentes.
+    \item Captura minuto 20: Final de la prueba, estabilidad en el sistema.
+\end{itemize}
+
 
 \subsection{Mejoras para el Rendimiento Web}
 Para mejorar el rendimiento del sistema durante la implementación del backend se aplicaron las siguientes optimizaciones:
