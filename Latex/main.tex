@@ -98,8 +98,10 @@
     { \Large \bfseries Escuela de Ingeniería Informática}\\[0.3 cm]
     { \Large \bfseries EVALUACIÓN DE SISTEMAS INFORMÁTICOS}\\[1 cm]
     
-    \Large \theauthor
-    \vspace{1.5cm}
+    \begin{center}
+        \Large \theauthor
+    \end{center}
+    \vspace{1.5cm} 
     \Large \thedate
 
 \end{titlepage}
@@ -134,15 +136,83 @@
         En caso de no tener instalado Python, se puede descargar desde la página oficial de Python.
 
     \subsection{Entorno virtual}
-        Un entorno virtual (venv) es una carpeta que contiene una instalación independiente de Python y sus dependencias, es decir, es un lugar seguro donde se pueden instalar dependencias específicas sin afectar al sistema operativo ni a otros proyectos. Sus ventajas son:
-            \begin{itemize}
-                \item Aislamiento: evita conflictos de versiones entre diferentes proyectos.
-                \item Control: puede tener un archivo con todas las versiones usadas.
-                \item Seguridad: no se modifica la instalación de Python del sistema.
-                \item Portabilidad: puedes compartir tu proyecto fácilmente.
-            \end{itemize}
-        Para crear el entorno virtual ejecutamos el comando \lstinline{python3 -m venv env_pruebas}, para activarlo \lstinline{source env_pruebas/bin/activate}, y para desactivarlo \lstinline{deactivate}. 
-        Con el entorno virtual activado, habría que instalar el paquete de Flask con el comando \lstinline{pip install flask}, y comprobarlo con \lstinline{pip show flask}, además de instalar otros paquetes encontrados en el fichero \textbf{requirements.txt} de nuestra carpeta d la práctica.
+    
+    Un entorno virtual (venv) es una carpeta que contiene una instalación independiente de Python y sus dependencias. Es decir, es un espacio aislado donde se pueden instalar paquetes específicos sin afectar al sistema operativo ni a otros proyectos. 
+    
+    Por defecto, Python 3 incluye el módulo \textit{venv}, pero si fuera necesario instalarlo manualmente (por ejemplo, en distribuciones basadas en Debian como Ubuntu o Kali), el comando sería:
+    
+    \begin{lstlisting}
+    sudo apt install python3-venv
+    \end{lstlisting}
+    
+    Las ventajas de usar un entorno virtual son:
+    
+    \begin{itemize}
+        \item \textbf{Aislamiento}: evita conflictos de versiones entre diferentes proyectos.
+        \item \textbf{Control}: permite tener un archivo con todas las dependencias utilizadas.
+        \item \textbf{Seguridad}: no se modifica la instalación global de Python del sistema.
+        \item \textbf{Portabilidad}: facilita compartir el proyecto con otros usuarios.
+    \end{itemize}
+    
+    Para crear un entorno virtual se ejecuta el comando:
+    
+    \begin{lstlisting}
+    python3 -m venv env_pruebas
+    \end{lstlisting}
+    
+    Para activarlo:
+    
+    \begin{lstlisting}
+    source env_pruebas/bin/activate
+    \end{lstlisting}
+    
+    Y para desactivarlo:
+    
+    \begin{lstlisting}
+    deactivate
+    \end{lstlisting}
+    
+    Con el entorno virtual activado, se puede instalar el paquete Flask con:
+    
+    \begin{lstlisting}
+    pip install flask
+    \end{lstlisting}
+    
+    Y verificar su instalación con:
+    
+    \begin{lstlisting}
+    pip show flask
+    \end{lstlisting}
+    
+    Además, se pueden instalar automáticamente otros paquetes definidos en el fichero \textbf{requirements.txt} de la carpeta del proyecto.
+    
+    \subsubsection{Paquetes instalados y cómo instalarlos}
+    
+    En este punto se pueden hacer dos cosas: instalar los paquetes de forma global o dentro de un entorno virtual.
+    
+    \begin{itemize}
+        \item \textbf{Instalación global}: Aunque se instalaron varios paquetes, aquí se detallan los más relevantes: Flask y Locust. Para instalarlos globalmente, se usan los siguientes comandos:
+    
+        \begin{lstlisting}
+        pip install flask
+        pip install locust
+        \end{lstlisting}
+    
+        \item \textbf{Instalación en entorno virtual}: Nuestra práctica se ha desarrollado utilizando un entorno virtual, dadas las ventajas explicadas anteriormente. Para instalar los paquetes necesarios en este entorno, primero se activa:
+    
+        \begin{lstlisting}
+        source env_pruebas/bin/activate
+        \end{lstlisting}
+    
+        Luego, se instalan todas las dependencias con:
+    
+        \begin{lstlisting}
+        pip install -r requirements.txt
+        \end{lstlisting}
+    
+        Este comando instala automáticamente todos los paquetes listados en el archivo \texttt{requirements.txt}. No obstante, en nuestro caso, los paquetes ya se habían instalado manualmente dentro del entorno. Si no se dispone del archivo \texttt{requirements.txt}, sería necesario instalar cada paquete uno por uno con el entorno virtual activado.
+    \end{itemize}
+
 
 \section{Contenido y estructura página web}
 \subsection{Estructura de carpetas}
@@ -499,6 +569,190 @@
             \item Pruebas de estrés.
             \item Pruebas de resistencia.
         \end{itemize}
+
+
+\subsection{Instalación y Configuración de Locust}
+
+Para instalar Locust se ha utilizado el siguiente comando:
+
+\begin{lstlisting}[language=bash]
+pip install locust
+\end{lstlisting}
+
+Para ejecutar las pruebas, se lanza Locust con el comando:
+
+\begin{lstlisting}[language=bash]
+locust -f locustfile.py --host http://localhost:5000
+\end{lstlisting}
+
+En nuestra práctica se trabaja con un entorno virtual, por lo que es necesario activarlo antes de ejecutar las pruebas con Locust. 
+
+Posteriormente, se accede a la interfaz web de Locust en \texttt{http://localhost:8089} para configurar el número de usuarios concurrentes y la tasa de aparición.
+
+En nuestro proyecto, el script de Locust se encuentra dentro de la carpeta \texttt{Locust}, que está dentro de la carpeta general del proyecto.
+
+
+\section{Diseño del Script de Carga}
+
+El archivo \texttt{locustfile.py} contiene la definición de un usuario simulado mediante la clase \texttt{MiUsuario}, que ejecuta diversas tareas para representar el comportamiento realista de los usuarios en la tienda. Estas tareas se dividen en varios grupos con diferentes pesos, entre los que destacan:
+
+\begin{itemize}
+    \item \textbf{Autenticación}: Registro y login de usuarios.
+    \item \textbf{Navegación}: Consulta del menú principal y detalles de productos.
+    \item \textbf{Carrito de compras}: Añadir productos, obtener el carrito y vaciarlo.
+    \item \textbf{Checkout}: Proceso de compra simulando retardo y creación de pedidos.
+    \item \textbf{Pedidos}: Consulta de pedidos individuales y listados paginados.
+    \item \textbf{Actualización de productos}: Modificación completa (PUT) y parcial (PATCH).
+    \item \textbf{Gestión de sesión}: Cierre de sesión del usuario.
+\end{itemize}
+
+\subsection{Funciones auxiliares}
+
+Para apoyar las tareas de prueba, el script incluye funciones auxiliares importantes:
+
+\begin{itemize}
+    \item \texttt{generar\_usuario()}: Crea datos aleatorios para un usuario nuevo, incluyendo nombre, DNI, correo electrónico, domicilio y contraseña.
+    \item \texttt{cargar\_json(path)}: Carga un archivo JSON con la lista de productos disponibles para simular acciones sobre productos reales.
+\end{itemize}
+
+\subsection{Manejo de autenticación y token}
+
+En el backend de la aplicación, la autenticación está basada en tokens. Para asegurar la validez del token, el backend implementa una función que valida si el token está presente y activo. Si el token falta o ha expirado, el backend responde con redirecciones (códigos HTTP entre 300 y 308) o un código específico 401 (token expirado).
+
+En el script de carga, esta lógica se gestiona en la función \texttt{manejar\_redireccion()}, que interpreta las respuestas del servidor:
+
+\begin{lstlisting}[language=Python, caption={Gestión de redirecciones y expiración de token}]
+def manejar_redireccion(self, response, mensaje_ok):
+    if response.status_code == 200:
+        print(mensaje_ok)
+        return True
+    elif response.status_code in [301,302,303,307,308]:
+        print("❌ Redirigido por problemas con el token")
+        return True
+    elif response.status_code == 401:
+        print("❌ No autorizado: token inválido o expirado (401)")
+        return False
+    else:
+        print(f"❌ Error inesperado ({response.status_code})")
+        return False
+\end{lstlisting}
+
+Esta función es clave para que las tareas sepan si la petición fue exitosa, si hubo redirección por token inválido o si el token expiró. Así, el script puede reaccionar a cada situación, logrando una simulación realista del flujo de autenticación.
+
+\subsection{Estructura de la clase \texttt{MiUsuario}}
+
+La clase principal que representa al usuario virtual en las pruebas es \texttt{MiUsuario}, que hereda de \texttt{HttpUser} de Locust. En ella se definen:
+
+\begin{itemize}
+    \item \texttt{on\_start()}: Se ejecuta al iniciar el usuario, genera un usuario aleatorio y realiza el registro mediante una petición POST a \texttt{/api/registro}.
+    \item \texttt{intentar\_login()}: Tarea con peso 2 que intenta loguear al usuario con las credenciales generadas.
+    \item Tareas para obtener páginas de registro y login, consultar el menú, productos y pedidos.
+    \item Tareas para manipular el carrito: agregar productos, obtenerlo y vaciarlo.
+    \item \texttt{checkout()}: Simula el proceso de compra, que si es exitoso devuelve un \texttt{id\_pedido} que se almacena para posteriores consultas.
+    \item Actualización de productos mediante métodos PUT y PATCH, para modificar datos completos o solo el tipo.
+    \item Cierre de sesión mediante petición GET a \texttt{/api/logout}.
+\end{itemize}
+
+Cada tarea está decorada con \texttt{@task(peso)} para definir la frecuencia con la que se ejecuta durante la prueba de carga.
+
+\subsection{Ejemplos de tareas:}
+
+\subsubsection{Agregar producto al carrito (POST /api/carrito/agregar)}
+
+\begin{lstlisting}[language=Python, caption={Tarea para agregar un producto al carrito}]
+@task(3)
+def agregar_producto_carrito(self):
+    if not self.productos_disponibles:
+        print("⚠️ No hay productos disponibles.")
+        return
+
+    producto = random.choice(self.productos_disponibles)
+    data = {"id_producto": producto["id"]}
+
+    with self.client.post("/api/carrito/agregar", json=data, allow_redirects=False, catch_response=True) as response:
+        if self.manejar_redireccion(response, "✅ Producto añadido al carrito"):
+            response.success()
+        else:
+            response.failure("❌ Fallo al agregar producto al carrito")
+\end{lstlisting}
+Esta tarea selecciona un producto aleatorio de la lista cargada desde el archivo \texttt{productos\_cache.json} y lo añade al carrito mediante una petición POST a \texttt{/api/carrito/agregar}
+
+\newpage
+\subsubsection{Registro de usuario (POST /api/registro)}
+
+\begin{lstlisting}[language=Python, caption={Tarea para registrar un nuevo usuario}]
+@task(1)
+def registro(self):
+    data = generar_usuario()
+    with self.client.post("/api/registro", json=data, allow_redirects=False, catch_response=True) as response:
+        if self.manejar_redireccion(response, "✅ Registro exitoso"):
+            self.correo = data["email"]
+            self.contrasena = data["password"]
+            response.success()
+        else:
+            response.failure("❌ Error en el registro")
+\end{lstlisting}
+
+Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y enviándolos mediante una petición POST. Si el backend responde con una redirección válida o éxito, se almacenan las credenciales para su uso posterior. En el backend existe una función que gestiona tokens; si el token no existe o ha expirado, la aplicación redirige, por eso se comprueban los estados HTTP de redirección (300-308). El código 401 indica que el token ha expirado y se debe iniciar sesión de nuevo.
+
+\subsubsection{Checkout (POST /api/checkout)}
+
+\begin{lstlisting}[language=Python, caption={Tarea para realizar el checkout}]
+@task(2)
+def checkout(self):
+    with self.client.post("/api/checkout", allow_redirects=False, catch_response=True) as response:
+        if self.manejar_redireccion(response, "✅ Checkout realizado"):
+            if response.status_code == 200:
+                pedido = response.json().get("id_pedido")
+                if pedido:
+                    self.pedido_id = pedido
+            response.success()
+        else:
+            response.failure("❌ Fallo en el checkout")
+\end{lstlisting}
+
+Esta tarea simula la finalización de la compra realizando una petición POST al endpoint \texttt{/api/checkout}. Si la respuesta es exitosa y no se requiere redirección, se guarda el identificador del pedido para posibles consultas posteriores. Nuevamente, la verificación del token en el backend asegura que solo usuarios autenticados puedan realizar esta acción.
+
+\subsubsection{Obtener menú (GET /api/menu)}
+
+\begin{lstlisting}[language=Python, caption={Tarea para obtener el menú de productos}]
+@task(5)
+def obtener_menu(self):
+    with self.client.get("/api/menu", allow_redirects=False, catch_response=True) as response:
+        if self.manejar_redireccion(response, "✅ Menú obtenido"):
+            self.menu = response.json()
+            response.success()
+        else:
+            response.failure("❌ Error al obtener el menú")
+\end{lstlisting}
+
+Esta tarea realiza una petición GET para obtener la lista de productos disponibles en el menú. La respuesta se almacena localmente para ser utilizada en otras tareas. Como en los casos anteriores, si el token no está presente o ha expirado, el backend responde con redirección o error para que la simulación controle el flujo de autenticación correctamente.
+
+
+Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
+
+
+
+
+\section{Simulación y Monitorización}
+
+\subsection{Resultados}
+
+\subsection{Mejoras para el Rendimiento Web}
+Para mejorar el rendimiento del sistema durante la implementación del backend se aplicaron las siguientes optimizaciones:
+
+\begin{itemize}
+    \item \textbf{Paginación en los endpoints de pedidos}: para evitar la carga excesiva de datos al listar muchos pedidos.
+    \item \textbf{Procedimientos almacenados}: se han creado en MariaDB para optimizar operaciones como la creación de usuarios o pedidos, reduciendo el número de consultas realizadas desde la aplicación.
+    \item \textbf{Comprobaciones previas a las consultas}: 
+    \item \textbf{Control de errores y validaciones}: se retornan errores claros desde la API, lo cual evita llamadas repetidas con entradas inválidas.
+    \item \textbf{Minimización de consultas anidadas}: se han reestructurado algunas funciones para reducir el coste computacional de las consultas complejas.
+\end{itemize}
+
+Estas mejoras han permitido mejorar la escalabilidad y estabilidad del sistema, especialmente bajo carga alta.
+
+\subsection{Conclusiones}
+
         
 \chapter{Monitorización del servidor}
 
