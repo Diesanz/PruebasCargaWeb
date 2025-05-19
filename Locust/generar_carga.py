@@ -67,7 +67,7 @@ class MiUsuario(HttpUser):
             return True
         elif response.status_code in [301, 302, 303, 307, 308]:
             print("❌ Redirigido por problemas con el token")
-            return True
+            return False
         elif response.status_code == 401:
             print("❌ No autorizado: token inválido o ausente (401)")
             return False
@@ -136,7 +136,7 @@ class MiUsuario(HttpUser):
             if self.manejar_redireccion(response, "✅ Producto añadido al carrito"):
                 response.success()
             else:
-                response.failure("❌ Fallo al agregar producto al carrito")
+                response.failure(f"❌ Fallo al agregar producto al carrito {response.status_code}")
 
     @task(1)
     def get_productos(self):
@@ -182,7 +182,7 @@ class MiUsuario(HttpUser):
             if self.manejar_redireccion(response, f"✅ Se ha accedido al pedido {id_random}"):
                 response.success()
             else:
-                response.failure("❌ Error al consultar pedido")
+                response.failure(f"❌ Error al consultar pedido {response.status_code}")
 
     @task(2)
     def checkout(self):
@@ -209,7 +209,7 @@ class MiUsuario(HttpUser):
                     if self.manejar_redireccion(response, ""):
                         response.success()
                     else:
-                        response.failure("❌ Fallo en checkout")
+                        response.failure(f"❌ Fallo en checkout {response.status_code}")
             except ValueError as e:
                 response.failure(f"❌ Error al parsear JSON: {str(e)}")
 
@@ -233,11 +233,11 @@ class MiUsuario(HttpUser):
             "tipo": random.choice(["Vegano", "Proteico", "Equilibrado"])
         }
 
-        response = self.client.put(f"/api/productos/{producto['id']}", data=data)
-        if response.status_code == 200:
-            print(f"✅ Producto {producto['id']} actualizado completamente (PUT)")
-        else:
-            print(f"❌ Error al actualizar producto {producto['id']} con PUT: {response.status_code}")
+        with self.client.put(f"/api/productos/{producto['id']}", data=data, catch_response= True) as response:
+            if self.manejar_redireccion(response, f"✅ Producto {producto['id']} actualizado completamente (PUT)"):
+                response.success()
+            else:
+                response.failure(f"❌ Error al actualizar producto {producto['id']} con PUT: {response.status_code}")
 
     @task(2)
     def actualizar_tipo_patch(self):
@@ -253,12 +253,11 @@ class MiUsuario(HttpUser):
         nuevo_tipo = random.choice([t for t in ["Vegano", "Proteico", "Equilibrado"] if t != tipo_actual])
         data = {"tipo": nuevo_tipo}
 
-        response = self.client.patch(f"/api/productos/{producto['id']}", json=data)
-        if response.status_code == 200:
-            producto["tipo"] = nuevo_tipo
-            print(f"✅ Tipo del producto {producto['id']} actualizado a '{nuevo_tipo}'")
-        else:
-            print(f"❌ Error al actualizar tipo del producto {producto['id']}: {response.status_code}")
+        with self.client.patch(f"/api/productos/{producto['id']}", json=data, catch_response= True) as response:
+            if self.manejar_redireccion(response, f"✅ Tipo del producto {producto['id']} actualizado a '{nuevo_tipo}'"):
+                response.success()
+            else:
+                response.failure(f"❌ Error al actualizar tipo del producto {producto['id']}: {response.status_code}")
 
     @task(1)
     def get_carrito(self):
@@ -270,7 +269,7 @@ class MiUsuario(HttpUser):
             if self.manejar_redireccion(response, "✅ El carrito se muestra correctamente"):
                 response.success()
             else:
-                response.failure("❌ Fallo al obtener el carrito")
+                response.failure(f"❌ Fallo al obtener el carrito {response.status_code}")
 
     @task(1)
     def delete_carrito(self):
@@ -282,7 +281,7 @@ class MiUsuario(HttpUser):
             if self.manejar_redireccion(response, "✅ El carrito se vacia correctamente"):
                 response.success()
             else:
-                response.failure("❌ Fallo al vaciar el carrito")
+                response.failure(f"❌ Fallo al vaciar el carrito {response.status_code}")
 
     @task(1)
     def get_pedidos(self):
@@ -303,7 +302,7 @@ class MiUsuario(HttpUser):
             if self.manejar_redireccion(response, "✅ Los pedidos se muestran correctamente"):
                 response.success()
             else:
-                response.failure("❌ Fallo al obtener pedidos")
+                response.failure(f"❌ Fallo al obtener pedidos {response.status_code}")
 
     @task(1)
     def cerrar_sesion(self):
@@ -316,5 +315,5 @@ class MiUsuario(HttpUser):
                 self.login = False
                 response.success()
             else:
-                response.failure("❌ Fallo al cerrar sesión")
+                response.failure(f"❌ Fallo al cerrar sesión {response.status_code} ")
    

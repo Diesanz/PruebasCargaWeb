@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Blueprint, render_template, redirect,
 from app.db.conexiondb import Conexion
 from app.models.Producto import Producto
 from app.schemas.Producto import producto_schema
+from app.utils.comprobar_token import verificar_token #importar el decorador del token
 
 producto = Blueprint('producto', __name__, url_prefix="/api")
 
@@ -76,7 +77,8 @@ def producto_detalle(id: int):
         return "Producto no encontrado", 404
 
 @producto.route('/productos/<int:id>',methods=['PUT'])
-def actualizarProductoEntero(id:int):
+@verificar_token
+def actualizarProductoEntero(usuario_id, id:int):
     """
     Actualiza todos los campos de un producto existente en la base de datos.
 
@@ -114,7 +116,8 @@ def actualizarProductoEntero(id:int):
         return jsonify({'error': 'No se pudo actualizar el producto'}), 500
 
 @producto.route('/productos/<int:id>', methods=['PATCH'])
-def actualizarTipo(id: int):
+@verificar_token
+def actualizarTipo(usuario_id, id: int):
     """
     Actualiza únicamente el tipo de un producto específico.
 
