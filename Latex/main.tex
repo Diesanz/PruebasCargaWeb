@@ -564,7 +564,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
       \item Llama a la función \texttt{create\_app()} para crear la instancia de Flask.
       \item Define la ruta principal \texttt{/}, que redirige a la función \texttt{api\_index} del blueprint del menú.
       \item Registra un filtro personalizado en Jinja llamado \texttt{suma\_dias}, útil para mostrar fechas manipuladas en las plantillas.
-      \item Inicia el servidor en modo \texttt{debug}.
+      \item Inicia el servidor en modo \texttt{debug}. En producción el modo \texttt{debug = False} 
     \end{itemize}
     
 \subsection{Archivo \texttt{\_\_init\_\_.py}}
@@ -1104,20 +1104,170 @@ Se capturaron métricas de rendimiento cada 5 minutos, registrando el comportami
 
 %capturas cad 5 min
 
-Durante la ejecución, se observaron patrones de rendimiento generalmente estables, aunque con ciertos aumentos en los tiempos de respuesta a medida que incrementaba el número de usuarios concurrentes. Los errores 3xx y 401 fueron tratados como respuestas erróneas dentro del contexto de esta prueba, ya que representan fallos reales en la ejecución de acciones por parte de usuarios autenticados (por ejemplo, sesión expirada o token inválido). Esta decisión permite reflejar un comportamiento más realista del sistema bajo prueba.
+Durante la ejecución, ("se observaron patrones de rendimiento generalmente estables, aunque con ciertos aumentos en los tiempos de respuesta a medida que incrementaba el número de usuarios concurrentes"). Los errores 3xx y 401 fueron tratados como respuestas erróneas dentro del contexto de esta prueba, ya que representan fallos reales en la ejecución de acciones por parte de usuarios autenticados (por ejemplo, sesión expirada o token inválido). Esta decisión permite reflejar un comportamiento más realista del sistema bajo prueba.
 
-Cabe destacar que, en contextos donde se deseen simular usuarios anónimos accediendo a recursos públicos, estos mismos códigos podrían ser tratados como respuestas válidas (\texttt{success()}). Sin embargo, dado que el objetivo en este caso es evaluar flujos autenticados, se ha optado por marcarlos siempre como \texttt{failure()}.
+En contextos donde se deseen simular usuarios anónimos accediendo a recursos públicos, estos mismos códigos podrían ser tratados como respuestas válidas (\texttt{success()}). Sin embargo, dado que el objetivo en este caso es evaluar flujos autenticados, se ha optado por marcarlos siempre como \texttt{failure()}.
 
 
 Las siguientes gráficas (incluidas a continuación en capturas de pantalla) permiten visualizar cómo evolucionó el sistema frente a la carga progresiva.
 
 %ejemplo
 \begin{itemize}
-    \item Captura minuto 0: Inicio de la prueba con baja carga.
-    \item Captura minuto 5: Primer incremento de carga concurrente, sistema respondiendo adecuadamente.
-    \item Captura minuto 10: Carga intermedia, aumento de la latencia.
-    \item Captura minuto 15: Mayor tráfico, algunos errores 401 y redirecciones presentes.
-    \item Captura minuto 20: Final de la prueba, estabilidad en el sistema.
+    \item Captura minuto 0-5:
+    Ejemplo: En los primeros 5 minutos, se simularon 50 usuarios concurrentes. El sistema respondió con una media de 120 peticiones por segundo y un tiempo de respuesta medio de 180ms, con un percentil 95 de 250ms. No se registraron errores.
+
+    En Grafana, se observa un aumento progresivo del uso de CPU hasta el 45\%, mientras que la RAM se mantiene estable en torno al 60\%. La carga del sistema permanece por debajo de 1, lo que indica que el servidor aún tiene capacidad disponible.
+
+    ---Captura
+    \item Captura minuto 5-10: 
+    \item Captura minuto 10-15: 
+    \item Captura minuto 15-20: 
+\end{itemize}
+\subsubsection{Endpoints cŕiticos} Ejemplo
+checkout es el endpoint más lento (900 ms) y el que más errores genera (7 %).
+
+    Posible cuello de botella en validación de stock o pasarela de pago.
+
+/carrito también muestra un tiempo alto (650 ms) con 5 % de errores.
+
+    Quizá esté mal optimizada la consulta a la base de datos o el renderizado de productos.
+
+/login es lento (500 ms), y eso afecta a la experiencia de usuario.
+
+    Podría deberse a validaciones, encriptación o gestión de sesión.
+    
+\subsection{Métricas recogidas}
+
+Durante la prueba de carga, se tomaron manualmente las siguientes métricas cada 5 minutos:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Tiempo (min)} & \textbf{Usuarios activos} & \textbf{Tiempo medio de respuesta (ms)} & \textbf{CPU (\%)} & \textbf{RAM (\%)} \\
+\hline
+5   &                  &                           &               &              \\
+10  &                  &                           &               &              \\
+15  &                  &                           &               &              \\
+20  &                  &                           &               &              \\
+\hline
+\end{tabular}
+\caption{Métricas del sistema recogidas durante la prueba}
+\end{table}
+
+\vspace{0.5cm}
+
+\subsection{Cálculo del rendimiento (Throughput)}
+
+Se calcula el \textbf{throughput} (peticiones por segundo) a partir del número de usuarios activos y el tiempo medio de respuesta:
+
+\[
+\text{Throughput (req/s)} = \frac{\text{Usuarios activos}}{\text{Tiempo medio de respuesta (segundos)}}
+\]
+
+\textit{Nota: convertir la respuesta de milisegundos a segundos dividiendo entre 1000.}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Tiempo (min)} & \textbf{Usuarios activos} & \textbf{Tiempo medio de respuesta (s)} & \textbf{Throughput (req/s)} \\
+\hline
+5   &                     &                          &                        \\
+10  &                     &                          &                        \\
+15  &                     &                          &                        \\
+20  &                     &                          &                        \\
+\hline
+\end{tabular}
+\caption{Cálculo del rendimiento del sistema usando throughput}
+\end{table}
+
+\vspace{0.5cm}
+
+\subsection{Aplicación de la Ley de Little}
+
+Para validar el comportamiento del sistema, se aplica la \textbf{Ley de Little}:
+
+\[
+N = X \cdot R
+\]
+
+Donde:
+\begin{itemize}
+    \item $N$: número de usuarios en el sistema.
+    \item $X$: throughput (req/s).
+    \item $R$: tiempo medio de respuesta (segundos).
+\end{itemize}
+
+Se puede aplicar en uno o varios puntos de la prueba para comprobar la consistencia del sistema bajo carga.
+
+\vspace{0.5cm}
+
+\subsection{Métricas adicionales derivadas}
+
+A partir de los datos recogidos por Locust, se pueden calcular métricas adicionales para un análisis más completo:
+
+\begin{itemize}
+    \item \textbf{Tasa de error (\%)}: $\frac{\# \text{Fails}}{\# \text{Requests}} \times 100$
+    \item \textbf{Éxitos por segundo}: $\text{Current RPS} - \text{Current Failures/s}$
+    \item \textbf{Throughput de datos (bytes/s)}: $\text{Average size (bytes)} \times \text{Current RPS}$
+    \item \textbf{Análisis de latencia (outliers)}: Comparar media, mediana y percentiles para detectar picos o inestabilidad.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Eficiencia de uso de recursos}
+
+Se calculan las eficiencias del sistema respecto a los recursos hardware empleados:
+
+\subsubsection*{Eficiencia del uso de CPU}
+\[
+\text{Eficiencia}_{\text{CPU}} = \frac{\text{Throughput}}{\text{Uso de CPU (\%)}}
+\]
+
+\subsubsection*{Eficiencia del uso de RAM}
+\[
+\text{Eficiencia}_{\text{RAM}} = \frac{\text{Throughput}}{\text{Uso de RAM (\%)}}
+\]
+
+\vspace{0.3cm}
+
+\subsubsection*{Índice de saturación relativa}
+\[
+\text{Índice de saturación relativa} = \frac{\text{Uso de CPU (\%)}}{\text{Uso de RAM (\%)}}
+\]
+
+\begin{itemize}
+    \item Si el índice es $\gg 1$: la CPU puede ser el cuello de botella.
+    \item Si el índice es $\ll 1$: la RAM (o el I/O asociado) podría estar limitando el rendimiento.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Análisis de posibles cuellos de botella}
+
+A partir de las métricas anteriores se identifican los siguientes aspectos:
+
+\begin{itemize}
+    \item \textbf{Evolución de la latencia}: si el tiempo medio de respuesta aumenta de forma lineal o exponencial.
+    \item \textbf{Saturación de recursos}: momento exacto donde CPU o RAM superan ciertos umbrales y cómo afecta al throughput.
+    \item \textbf{Disminución del throughput}: identificar si hay descenso pese al aumento de usuarios.
+    \item \textbf{Errores registrados}: analizar si aparecen errores como \texttt{ConnectionRefused}, \texttt{Timeouts}, etc., y en qué momento.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Conclusiones y recomendaciones}
+
+\begin{itemize}
+    \item Resumen de los principales cuellos de botella detectados.
+    \item Recomendaciones para mitigar el impacto de los problemas identificados, tales como:
+    \begin{itemize}
+        \item Optimización del código backend.
+        \item Escalado horizontal del servidor.
+        \item Uso de cachés o balanceadores de carga.
+        \item Monitorización continua con alertas en Grafana.
+    \end{itemize}
 \end{itemize}
 
 
