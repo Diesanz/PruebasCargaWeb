@@ -941,22 +941,36 @@ Para instalar Locust se ha utilizado el siguiente comando:
 pip install locust
 \end{lstlisting}
 
-Para ejecutar las pruebas, se lanza Locust con el comando:
+Para ejecutar las pruebas de carga, se debe lanzar Locust con el siguiente comando:
 
 \begin{lstlisting}[language=bash]
-locust -f locustfile.py --host http://localhost:5000
+locust -f generar_carga.py --host http://localhost:5000
 \end{lstlisting}
 
-En nuestra práctica se trabaja con un entorno virtual, por lo que es necesario activarlo antes de ejecutar las pruebas con Locust. 
+En esta práctica se trabaja dentro de un entorno virtual, por lo que es necesario activarlo antes de ejecutar Locust.
 
-Posteriormente, se accede a la interfaz web de Locust en \texttt{http://localhost:8089} para configurar el número de usuarios concurrentes y la tasa de aparición.
+Una vez lanzado el comando, se accede a la interfaz web de Locust desde la URL \texttt{http://localhost:8089}, donde se puede configurar el número de usuarios concurrentes y la tasa de aparición.
 
-En nuestro proyecto, el script de Locust se encuentra dentro de la carpeta \texttt{Locust}, que está dentro de la carpeta general del proyecto.
+En nuestro proyecto, el script de Locust se encuentra en la carpeta \texttt{Locust}, ubicada dentro del directorio principal del proyecto. 
+
+Dado que estamos trabajando con el servidor de la universidad, el host utilizado en el comando debe ser:
+
+\begin{center}
+\textbf{http://virtual.lab.inf.uva.es:31224}
+\end{center}
+
+ya que ahí es donde se encuentra desplegada nuestra aplicación web.
+
+Asimismo, para acceder a la interfaz web de Locust en el entorno remoto, se debe utilizar la siguiente dirección:
+
+\begin{center}
+\textbf{http://virtual.lab.inf.uva.es:31223}
+\end{center}
 
 
 \section{Diseño del Script de Carga}
 
-El archivo \texttt{locustfile.py} contiene la definición de un usuario simulado mediante la clase \texttt{MiUsuario}, que ejecuta diversas tareas para representar el comportamiento realista de los usuarios en la tienda. Estas tareas se dividen en varios grupos con diferentes pesos, entre los que destacan:
+El archivo \texttt{generar\_carga.py} contiene la definición de un usuario simulado mediante la clase \texttt{MiUsuario}, que ejecuta diversas tareas para representar el comportamiento realista de los usuarios en la tienda. Estas tareas se dividen en varios grupos con diferentes pesos, entre los que destacan:
 
 \begin{itemize}
     \item \textbf{Autenticación}: Registro y login de usuarios.
@@ -1096,7 +1110,11 @@ Este fragmento demuestra cómo se maneja la respuesta para detectar posibles pro
 
 \section{Simulación y Monitorización}
 \subsection{Simulación}
-Para evaluar el rendimiento del sistema, se realizó una prueba de carga con una duración total de 20 minutos utilizando Locust. Durante esta prueba, se simularon usuarios concurrentes ejecutando tareas comunes como el registro, login, consulta de menú, agregado de productos al carrito y checkout. Las tareas fueron ejecutadas con tiempos de espera aleatorios entre 1 y 3 segundos para emular un comportamiento de usuario realista.
+Para evaluar el rendimiento del sistema, se realizó una prueba de carga con una duración total de 20 minutos utilizando Locust. 
+\begin{lstlisting}[language=bash]
+locust -f generar_carga.py  -u 160 -r 0.1333 --run-time 20m --host http://virtual.lab.inf.uva.es:31224
+\end{lstlisting}
+Durante esta prueba, se simularon 160 usuarios concurrentes ejecutando tareas comunes como el registro, login, consulta de menú, agregado de productos al carrito y checkout. Las tareas fueron ejecutadas con tiempos de espera aleatorios entre 1 y 3 segundos para emular un comportamiento de usuario realista. Por otro lado la tasa de entra de usuarios es de 1 cada 7 segundos más o menos. De esta manera se simulan como van llegando usuarios poco a poco y van generarnado cada vez más carga a lo largo de los 20 minutos.
 
 \subsection{Resultados}
 
@@ -1152,7 +1170,22 @@ Durante la prueba de carga, se tomaron manualmente las siguientes métricas cada
 20  &                  &                           &               &              \\
 \hline
 \end{tabular}
-\caption{Métricas del sistema recogidas durante la prueba}
+\caption{Métricas del sistema recogidas durante la prueba 1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Tiempo (min)} & \textbf{Carga del sistema} & \textbf{Frecuencia CPU} & \textbf{Ope. E/S}} \\
+\hline
+    5   &                  &                                          &              \\
+    10  &                  &                                          &              \\
+    15  &                  &                                          &              \\
+    20  &                  &                                          &              \\
+\hline
+\end{tabular}
+\caption{Métricas del sistema recogidas durante la prueba 2}
 \end{table}
 
 \vspace{0.5cm}
@@ -1243,6 +1276,25 @@ Se calculan las eficiencias del sistema respecto a los recursos hardware emplead
 \end{itemize}
 
 \vspace{0.5cm}
+\subsubsection*{Eficiencia por núcleo}
+
+Relación entre throughput y cantidad de núcleos utilizados:
+
+\[
+\text{Eficiencia por núcleo} = \frac{\text{Throughput}}{\text{Nº de núcleos usados}}
+\]
+
+Útil para escalar horizontalmente y decidir si añadir más núcleos mejora el rendimiento.
+
+\subsubsection*{Tasa de saturación del sistema}
+
+Relaciona carga del sistema con tiempo de respuesta:
+
+\[
+\text{Tasa de saturación} = \frac{\text{Carga del sistema}}{\text{Tiempo medio de respuesta (s)}}
+\]
+
+Si crece rápidamente, el sistema no está respondiendo eficientemente al incremento de carga.
 
 \subsection{Análisis de posibles cuellos de botella}
 
@@ -1287,6 +1339,61 @@ Estas mejoras han permitido mejorar la escalabilidad y estabilidad del sistema, 
 \subsection{Conclusiones}
 
         
-\chapter{Monitorización del servidor}
+\chapter{Monitorización del servidor con Grafana}
+En la práctica anterior se recogieron métricas de rendimiento del servidor como el uso de CPU, memoria RAM, frecuencia de la CPU, operaciones de entrada/salida (E/S), entre otras, las cuales se visualizaron mediante paneles en Grafana. Estas métricas permitieron monitorizar el estado general del sistema durante las pruebas de carga.
+
+En esta parte, se han añadido nuevas métricas relacionadas con las reglas de negocio definidas, tales como el número de usuarios registrados, pedidos creados, ingresos totales, número de carritos con ítems dentro y el top 10 de productos más vendidos. Estas métricas permiten evaluar el comportamiento y la carga real de la página web desde un punto de vista más comercial.
+
+\section{Reglas de negocio}
+\begin{itemize}
+    \item Número de usurios registrados
+    \item Pedidos creados 
+    \item Ingresoso totales 
+    \item Numero de carritos que tienen itmes dentro 
+    \item Top 10 productos más vendidos 
+\end{itemize}
+
+\section{Visualización de grafana}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\linewidth]{usuariosreg.png}
+    \caption{Usuarios Registrados}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.2\linewidth]{ingresosT.png}
+    \caption{Ingresos Totales}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.1\linewidth]{productosV.png}
+    \caption{Productos más Vendidos}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\linewidth]{carritoItems.png}
+    \caption{Número de Carritos con Items}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{pedCrea.png}
+    \caption{Pedidos creados por unidad de tiempo y pedidos totales}
+    \label{fig:enter-label}
+\end{figure}
+\chapter{Conclusiones, Reparto de trabajo y Bibliografia}
+
+\section{Conclusiones}
+
+\section{Reparto de trabajo}
+
+\section{Bibliografía}
 
 \end{document}
