@@ -10,7 +10,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
-
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{bibliografia.bib}
 \usepackage{geometry}
 \geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
 \usepackage{titlesec}
@@ -114,7 +115,7 @@
 
 \chapter{Página web}
 
-\section{Introducción Flask}
+\section{Introducción Flask}\cite{openwebinars_flask} \cite{flask_docs}
     Flask es un microframework escrto en Python y desarrollado para simplificar y hacer más fácil la creación de aplicaciones web bajo el patrón modelo vista controlador (MVC). Las pricipales ventajas de usar Flask son:
         \begin{itemize}
             \item Microframework: perfecto si se quiere desarrollar una app básica de manera rápida y ágil, ya que no se necesitarán muchas extensiones, y con Flask es suficiente.
@@ -135,7 +136,7 @@
         Para utilizar Flask, es necesario tener instalado Python. Para ello se ejecuta el comando \lstinline{python --version}, y debe aparecer una versión de Python 3 o superior.\\
         En caso de no tener instalado Python, se puede descargar desde la página oficial de Python.
 
-    \subsection{Entorno virtual}
+    \subsection{Entorno virtual} \cite{venv_python}
     
     Un entorno virtual (venv) es una carpeta que contiene una instalación independiente de Python y sus dependencias. Es decir, es un espacio aislado donde se pueden instalar paquetes específicos sin afectar al sistema operativo ni a otros proyectos. 
     
@@ -214,7 +215,7 @@
     \end{itemize}
 
 
-\section{Contenido y estructura página web}
+\section{Contenido y estructura página web} \cite{mdn_mvc}
 \subsection{Estructura de carpetas}
         Para mantener un código limpio, modular y escalable, se ha utilizado una estructura específica de carpetas con las siguientes funcionalidades:
             \begin{itemize}
@@ -916,7 +917,7 @@ De este modo se asegura la integridad de la web y facilita tareas de seguridad.
 
 
 \chapter{Pruebas de carga con Locust}
-\section{Locust}
+\section{Locust} \cite{locust_docs}
     Locust es una herramienta de código abierto escrita en Python para realizar pruebas de carga y rendimiento sobre sitios o aplicaciones web, APIs, o cualquier otro sistema que pueda ser probado mediante peticiones HTTP u otras.\\
     
     Debido a que está desarrollado en Python, lo hace una herramienta flexible, potente y fácil de entender capaz de ser un sistema distribuido y escalable que puede ejecutarse sobre varias máquinas. Además, dispone de una interfaz web en tiempo real que muestra métricas como el número de usuarios activos, número de peticiones por segundo, o tiempos de respuesta y tasas de error.\\
@@ -933,7 +934,7 @@ De este modo se asegura la integridad de la web y facilita tareas de seguridad.
         \end{itemize}
 
 
-\subsection{Instalación y Configuración de Locust}
+\subsection{Instalación y Configuración de Locust} \cite{locust_video}
 
 Para instalar Locust se ha utilizado el siguiente comando:
 
@@ -1108,7 +1109,7 @@ Esta tarea realiza una petición GET para obtener la lista de productos disponib
 Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
 
 
-\section{Simulación y Monitorización}
+\section{Simulación y Monitorización} \cite{xantygc_locust}
 \subsection{Simulación}
 Para evaluar el rendimiento del sistema, se realizó una prueba de carga con una duración total de 20 minutos utilizando Locust. 
 \begin{lstlisting}[language=bash]
@@ -1344,7 +1345,7 @@ En la práctica anterior se recogieron métricas de rendimiento del servidor com
 
 En esta parte, se han añadido nuevas métricas relacionadas con las reglas de negocio definidas, tales como el número de usuarios registrados, pedidos creados, ingresos totales, número de carritos con ítems dentro y el top 10 de productos más vendidos. Estas métricas permiten evaluar el comportamiento y la carga real de la página web desde un punto de vista más comercial.
 
-\section{Reglas de negocio}
+\section{Reglas de negocio} \cite{metricas_boske}
 \begin{itemize}
     \item Número de usurios registrados
     \item Pedidos creados 
@@ -1353,47 +1354,176 @@ En esta parte, se han añadido nuevas métricas relacionadas con las reglas de n
     \item Top 10 productos más vendidos 
 \end{itemize}
 
-\section{Visualización de grafana}
-\begin{figure}
+\section{Visualización de Grafana}
+\subsection*{Número de usuarios registrados en la página web}
+
+Esta métrica se encarga de recolectar el número de usuarios que se han ido generando y registrando en nuestra página web. De esta manera, se puede conocer cuántos usuarios están ejecutando tareas o no, y medir de forma coherente el rendimiento del sistema.
+
+Para ello, dentro de Grafana se ha escrito la siguiente sentencia SQL:
+
+\begin{verbatim}
+SELECT COUNT(id) FROM Carga_web.Usuario
+\end{verbatim}
+
+Esta consulta se encarga de obtener cuántos usuarios hay registrados en cada momento.
+
+Para mostrarlo en Grafana, se ha optado por una visualización de tipo *Stat*, donde simplemente se pueden ver los usuarios totales registrados en tiempo real.
+
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.3\linewidth]{usuariosreg.png}
     \caption{Usuarios Registrados}
     \label{fig:enter-label}
 \end{figure}
 
-\begin{figure}
+\subsection*{Ingresos totales}
+
+Esta métrica está más orientada a la parte comercial, ya que permite visualizar los ingresos totales que la empresa ha generado en un momento dado, así como su evolución a lo largo del tiempo.
+
+Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
+
+\begin{verbatim}
+SELECT 
+    FROM_UNIXTIME(UNIX_TIMESTAMP(fecha) - MOD(UNIX_TIMESTAMP(fecha), 5)) AS tiempo_agrupado,
+    SUM(total) AS ingreso_total
+FROM 
+    Carga_web.Pedido
+WHERE 
+    fecha BETWEEN NOW() - INTERVAL 5 MINUTE AND NOW()
+GROUP BY 
+    tiempo_agrupado
+ORDER BY 
+    tiempo_agrupado;
+\end{verbatim}
+
+Esta consulta agrupa los ingresos cada 5 segundos, permitiendo visualizar cómo varían con el tiempo. 
+
+Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Time series*, que permite observar la evolución de los ingresos en intervalos regulares. Además, se puede obtener el total acumulado de ingresos para el rango de tiempo seleccionado.
+
+\begin{figure}[!h]
     \centering
-    \includegraphics[width=0.2\linewidth]{ingresosT.png}
+    \includegraphics[width=1.1\linewidth]{ingT.png}
     \caption{Ingresos Totales}
     \label{fig:enter-label}
 \end{figure}
 
-\begin{figure}
+\subsection*{Productos más vendidos}
+
+Esta métrica también está dirigida a un ámbito comercial, ya que permite visualizar cuáles son los productos más vendidos en la web. Esta información puede ser útil para, por ejemplo, que el equipo comercial decida aumentar el stock de estos productos y ofrecer una mayor variedad en función de la demanda.
+
+Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
+
+\begin{verbatim}
+SELECT 
+  id, nombre, total_pedidos
+FROM (
+  SELECT 
+    p.id AS id,
+    p.nombre AS nombre,
+    COUNT(*) AS total_pedidos
+  FROM 
+    Carga_web.PedidoItem AS pe
+  JOIN 
+    Carga_web.Producto AS p ON p.id = pe.producto_id
+  GROUP BY 
+    p.id, p.nombre
+  HAVING 
+    COUNT(*) > 10
+
+  UNION ALL
+
+  SELECT 
+    NULL AS id,
+    'Sin resultados' AS nombre,
+    NULL AS total_pedidos
+  WHERE NOT EXISTS (
+    SELECT 
+      1
+    FROM 
+      Carga_web.PedidoItem AS pe
+    JOIN 
+      Carga_web.Producto AS p ON p.id = pe.producto_id
+    GROUP BY 
+      p.id, p.nombre
+    HAVING 
+      COUNT(*) > 10
+  )
+) AS datos
+LIMIT 10;
+\end{verbatim}
+
+Esta consulta permite obtener los productos con más de 10 pedidos y, en caso de que no existan, mostrar un mensaje indicando que no hay resultados. 
+
+Para mostrar los datos en Grafana, se ha optado por una visualización de tipo *Table*, donde se puede observar el ID del producto, su nombre y el número total de pedidos en los que ha sido incluido. De esta forma, se puede construir un ranking con los 10 productos más vendidos y obtener una visualización clara y útil para la toma de decisiones.
+\newpage
+\begin{figure}[!h]
     \centering
     \includegraphics[width=1.1\linewidth]{productosV.png}
-    \caption{Productos más Vendidos}
+    \caption{Productos más vendidos}
     \label{fig:enter-label}
 \end{figure}
 
-\begin{figure}
+\subsection*{Carritos de usuarios que tienen productos}
+
+Esta métrica permite conocer cuántos carritos contienen productos y, por tanto, están listos o en preparación para realizar un pedido. El propósito principal es llevar un control sobre la carga de la base de datos, específicamente sobre la tabla `CarritoItem`. 
+
+A partir de esta métrica también se podrían derivar otras, como por ejemplo, identificar carritos que contienen productos pero que no han finalizado el pedido tras un cierto tiempo, es decir, carritos potencialmente abandonados.
+
+Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
+
+\begin{verbatim}
+SELECT COUNT(DISTINCT ci.carrito_id) AS carritos_con_items
+FROM Carga_web.CarritoItem ci
+JOIN Carga_web.Carrito c ON c.id = ci.carrito_id;
+\end{verbatim}
+
+Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Gauge*, estableciendo un límite máximo de 150 carritos. Esta elección se debe a que, una vez que se realizan los pedidos, de tabla `CarritoItem` se eliminan los items del usurio que acaba de realizar el pedido, lo que hace que esta visualización varíe constantemente.
+
+Además, esta métrica permite evaluar la carga que está soportando la tabla de carritos y analizar si los usuarios están avanzando en el proceso de compra o simplemente acumulando productos sin completar el pedido.
+
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.3\linewidth]{carritoItems.png}
     \caption{Número de Carritos con Items}
     \label{fig:enter-label}
 \end{figure}
 
-\begin{figure}
+\subsection*{Pedidos creados}
+
+Esta métrica permite conocer cuántos pedidos se han realizado en cada unidad de tiempo, lo cual resulta útil para analizar el comportamiento de los usuarios en la web, detectar picos de actividad y evaluar el rendimiento del sistema. Además, también permite visualizar el número total de pedidos realizados en el intervalo seleccionado.
+
+Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
+
+\begin{verbatim}
+SELECT 
+  (FLOOR(UNIX_TIMESTAMP(fecha) / 10) * 10) * 1000 AS time,
+  COUNT(*) AS pedidos
+FROM 
+  Carga_web.Pedido
+WHERE 
+  $__timeFilter(fecha)
+GROUP BY 
+  time
+ORDER BY 
+  time;
+\end{verbatim}
+
+Esta consulta agrupa los pedidos realizados en intervalos de 10 segundos, permitiendo así una visualización dinámica y detallada de la frecuencia de pedidos a lo largo del tiempo. La función `\_\_timeFilter(fecha)` es gestionada automáticamente por Grafana para adaptar el rango temporal a lo que el usuario seleccione en el panel.
+
+Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Time series*, que facilita el seguimiento temporal de los pedidos, ayudando a detectar patrones de comportamiento de los usuarios, así como a evaluar posibles cuellos de botella o momentos de alta demanda.
+
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\linewidth]{pedCrea.png}
     \caption{Pedidos creados por unidad de tiempo y pedidos totales}
     \label{fig:enter-label}
 \end{figure}
-\chapter{Conclusiones, Reparto de trabajo y Bibliografia}
+\chapter{Conclusiones y  Reparto de trabajo}
 
 \section{Conclusiones}
 
 \section{Reparto de trabajo}
 
-\section{Bibliografía}
 
+\printbibliography
 \end{document}
