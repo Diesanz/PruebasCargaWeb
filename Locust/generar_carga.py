@@ -111,34 +111,15 @@ class MiUsuario(HttpUser):
         """
         self.client.get("/api/login")
 
-    @task(1)
+    @task(2)
     def menu(self):
         """Tarea para obtener el menú vía GET
 
         Return: None
         """
         self.client.get("/api/menu")
-
-    @task(3)
-    def agregar_producto_carrito(self):
-        """Tarea para agregar un producto aleatorio al carrito vía POST
-
-        Return: None
-        """
-        if not self.productos_disponibles:
-            print("⚠️ No hay productos disponibles.")
-            return
-
-        producto = random.choice(self.productos_disponibles)
-        data = {"id_producto": producto["id"]}
-
-        with self.client.post("/api/carrito/agregar", json=data, allow_redirects=False, catch_response=True) as response:
-            if self.manejar_redireccion(response, "✅ Producto añadido al carrito"):
-                response.success()
-            else:
-                response.failure(f"❌ Fallo al agregar producto al carrito {response.status_code}")
-
-    @task(1)
+    
+    @task(2)
     def get_productos(self):
         """Tarea para obtener la lista de productos vía GET
 
@@ -166,23 +147,24 @@ class MiUsuario(HttpUser):
         else:
             print(f"❌ Error al obtener producto {producto['id']}: {response.status_code}")
 
-    @task(1)
-    def get_un_pedido(self):
-        """Tarea para obtener un pedido aleatorio de la lista vía GET
+    @task(3)
+    def agregar_producto_carrito(self):
+        """Tarea para agregar un producto aleatorio al carrito vía POST
 
         Return: None
         """
-        if not self.lista_pedidos:
-            print("⚠️ No hay pedidos en la lista para consultar.")
+        if not self.productos_disponibles:
+            print("⚠️ No hay productos disponibles.")
             return
 
-        id_random = random.choice(self.lista_pedidos)
+        producto = random.choice(self.productos_disponibles)
+        data = {"id_producto": producto["id"]}
 
-        with self.client.get(f"/api/pedidos/{id_random}", catch_response=True) as response:
-            if self.manejar_redireccion(response, f"✅ Se ha accedido al pedido {id_random}"):
+        with self.client.post("/api/carrito/agregar", json=data, allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, "✅ Producto añadido al carrito"):
                 response.success()
             else:
-                response.failure(f"❌ Error al consultar pedido {response.status_code}")
+                response.failure(f"❌ Fallo al agregar producto al carrito {response.status_code}")
 
     @task(2)
     def checkout(self):
@@ -212,6 +194,70 @@ class MiUsuario(HttpUser):
                         response.failure(f"❌ Fallo en checkout {response.status_code}")
             except ValueError as e:
                 response.failure(f"❌ Error al parsear JSON: {str(e)}")
+
+    
+    @task(1)
+    def get_carrito(self):
+        """Tarea para obtener el carrito vía GET
+
+        Return: None
+        """
+        with self.client.get("/api/carrito", allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, "✅ El carrito se muestra correctamente"):
+                response.success()
+            else:
+                response.failure(f"❌ Fallo al obtener el carrito {response.status_code}")
+
+    @task(1)
+    def delete_carrito(self):
+        """Tarea para vaciar el carrito vía DELETE
+
+        Return: None
+        """
+        with self.client.delete("/api/carrito/vaciar", allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, "✅ El carrito se vacia correctamente"):
+                response.success()
+            else:
+                response.failure(f"❌ Fallo al vaciar el carrito {response.status_code}")
+    
+    @task(1)
+    def get_pedidos(self):
+        """Tarea para obtener la lista de pedidos vía GET
+
+        Return: None
+        """
+        if self.lista_pedidos: #ya que en los pedidos a la hora de cargarlos se usa paginación, para no sobrecargar la db.
+                            # con esto se simula como un usuario va a ir accediendo a sus diferentes páginas de pedidos.
+            num_ped = len(self.lista_pedidos)
+            paginas = (num_ped // 4) + (1 if num_ped % 4 > 0 else 0)
+            pagina_rand = random.randint(1,paginas)
+            url = f"/api/pedidos?page={pagina_rand}"
+        else:
+            url = "/api/pedidos"
+
+        with self.client.get(url, allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, "✅ Los pedidos se muestran correctamente"):
+                response.success()
+            else:
+                response.failure(f"❌ Fallo al obtener pedidos {response.status_code}")
+
+    @task(1)
+    def get_un_pedido(self):
+        """Tarea para obtener un pedido aleatorio de la lista vía GET
+
+        Return: None
+        """
+        if not self.lista_pedidos:
+            print("⚠️ No hay pedidos en la lista para consultar.")
+            return
+
+        id_random = random.choice(self.lista_pedidos)
+
+        with self.client.get(f"/api/pedidos/{id_random}", catch_response=True) as response:
+            if self.manejar_redireccion(response, f"✅ Se ha accedido al pedido {id_random}"):
+                response.success()
+            else:
+                response.failure(f"❌ Error al consultar pedido {response.status_code}")
 
     @task(2)
     def actualizar_producto_put(self):
@@ -258,51 +304,6 @@ class MiUsuario(HttpUser):
                 response.success()
             else:
                 response.failure(f"❌ Error al actualizar tipo del producto {producto['id']}: {response.status_code}")
-
-    @task(1)
-    def get_carrito(self):
-        """Tarea para obtener el carrito vía GET
-
-        Return: None
-        """
-        with self.client.get("/api/carrito", allow_redirects=False, catch_response=True) as response:
-            if self.manejar_redireccion(response, "✅ El carrito se muestra correctamente"):
-                response.success()
-            else:
-                response.failure(f"❌ Fallo al obtener el carrito {response.status_code}")
-
-    @task(1)
-    def delete_carrito(self):
-        """Tarea para vaciar el carrito vía DELETE
-
-        Return: None
-        """
-        with self.client.delete("/api/carrito/vaciar", allow_redirects=False, catch_response=True) as response:
-            if self.manejar_redireccion(response, "✅ El carrito se vacia correctamente"):
-                response.success()
-            else:
-                response.failure(f"❌ Fallo al vaciar el carrito {response.status_code}")
-
-    @task(1)
-    def get_pedidos(self):
-        """Tarea para obtener la lista de pedidos vía GET
-
-        Return: None
-        """
-        if self.lista_pedidos: #ya que en los pedidos a la hora de cargarlos se usa paginación, para no sobrecargar la db.
-                            # con esto se simula como un usuario va a ir accediendo a sus diferentes páginas de pedidos.
-            num_ped = len(self.lista_pedidos)
-            paginas = (num_ped // 4) + (1 if num_ped % 4 > 0 else 0)
-            pagina_rand = random.randint(1,paginas)
-            url = f"/api/pedidos?page={pagina_rand}"
-        else:
-            url = "/api/pedidos"
-
-        with self.client.get(url, allow_redirects=False, catch_response=True) as response:
-            if self.manejar_redireccion(response, "✅ Los pedidos se muestran correctamente"):
-                response.success()
-            else:
-                response.failure(f"❌ Fallo al obtener pedidos {response.status_code}")
 
     @task(1)
     def cerrar_sesion(self):

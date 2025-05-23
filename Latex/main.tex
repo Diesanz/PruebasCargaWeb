@@ -215,7 +215,28 @@
     \end{itemize}
 
 
-\section{Contenido y estructura página web} \cite{mdn_mvc}
+\section{Contenido y estructura página web} 
+\subsection{Arquitectura MVC} \cite{mdn_mvc}
+
+El patrón \textbf{MVC (Modelo-Vista-Controlador)} es un enfoque común en el diseño de software que se utiliza para implementar interfaces de usuario, lógica de control y gestión de datos. Su principal ventaja es que separa claramente la lógica de negocios de la visualización, lo cual facilita el mantenimiento, mejora la organización del código y permite una división más clara del trabajo entre desarrolladores.
+
+Además, otros patrones de diseño se han basado en MVC, como:
+\begin{itemize}
+    \item \textbf{MVVM} (Modelo-Vista-Modelo de Vista)
+    \item \textbf{MVP} (Modelo-Vista-Presentador)
+    \item \textbf{MVW} (Modelo-Vista-Whatever)
+\end{itemize}
+
+Las tres partes del patrón MVC se describen a continuación:
+
+\begin{itemize}
+    \item \textbf{Modelo}: Se encarga de gestionar los datos y la lógica de negocio.
+    \item \textbf{Vista}: Responsable de la presentación y diseño visual que ve el usuario.
+    \item \textbf{Controlador}: Actúa como intermediario entre el modelo y la vista, recibiendo las acciones del usuario y redirigiendo los comandos al modelo y/o a la vista.
+\end{itemize}
+
+En nuestro caso, la aplicación web desarrollada sigue esta arquitectura, ya que es una de las más se ha visto y es fácil de aplicar, especialmente útil para aplicaciones web pequeñas o medianas como la nuestra. Con esta arquitectura hemos podidos dividir las responsabilidades.
+
 \subsection{Estructura de carpetas}
         Para mantener un código limpio, modular y escalable, se ha utilizado una estructura específica de carpetas con las siguientes funcionalidades:
             \begin{itemize}
@@ -382,7 +403,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endfor %}
     \end{verbatim}
 
-    \newpage
+  
     \item \textbf{Historial de pedidos:} Lista de pedidos pasados del usuario, mostrando estado, fecha y total.
     
     \begin{verbatim}
@@ -971,17 +992,58 @@ Asimismo, para acceder a la interfaz web de Locust en el entorno remoto, se debe
 
 \section{Diseño del Script de Carga}
 
-El archivo \texttt{generar\_carga.py} contiene la definición de un usuario simulado mediante la clase \texttt{MiUsuario}, que ejecuta diversas tareas para representar el comportamiento realista de los usuarios en la tienda. Estas tareas se dividen en varios grupos con diferentes pesos, entre los que destacan:
+El archivo \texttt{generar\_carga.py} define un usuario simulado a través de la clase \texttt{MiUsuario}, que ejecuta varias tareas imitando el comportamiento típico de un usuario real en la tienda online. Estas tareas están agrupadas por funcionalidad, y a cada una se le ha asignado un peso que representa la frecuencia o importancia de su ejecución durante la simulación. A continuación se describe cada grupo de tareas junto con la justificación de su peso:
 
 \begin{itemize}
-    \item \textbf{Autenticación}: Registro y login de usuarios.
-    \item \textbf{Navegación}: Consulta del menú principal y detalles de productos.
-    \item \textbf{Carrito de compras}: Añadir productos, obtener el carrito y vaciarlo.
-    \item \textbf{Checkout}: Proceso de compra simulando retardo y creación de pedidos.
-    \item \textbf{Pedidos}: Consulta de pedidos individuales y listados paginados.
-    \item \textbf{Actualización de productos}: Modificación completa (PUT) y parcial (PATCH).
-    \item \textbf{Gestión de sesión}: Cierre de sesión del usuario.
+    \item \textbf{Autenticación}: Incluye el registro y el login de usuarios.  
+    El registro se hace solo una vez al crear un nuevo usuario, así que se le asigna un peso bajo. El login se realiza ocasionalmente, ya que una vez iniciada la sesión, el token permanece activo salvo que expire o se elimine, por lo que su peso es moderado. Las peticiones GET relacionadas también tienen un peso bajo, ya que no son críticas ni frecuentes.
+
+    \item \textbf{Navegación}: Consulta del menú principal y visualización de productos.  
+    Ver el menú principal es muy común porque es el punto de entrada a otras secciones, así que tiene peso 2. Ver la lista de productos también es bastante frecuente, ya que la tienda gira en torno a ellos. En cambio, ver los detalles de un producto en específico es menos habitual, así que su peso es 1.
+
+    \item \textbf{Carrito de compras}: Añadir productos, consultar el carrito y vaciarlo.  
+    Añadir al carrito es una acción principal dentro de la tienda y genera mucha carga, por eso tiene el peso más alto (3). Consultar o vaciar el carrito se hace menos, así que se les asigna un peso de 1.
+
+    \item \textbf{Checkout}: Proceso de compra y creación de pedidos.  
+    Es una tarea crítica porque es donde se concreta la compra. Tiene peso 2, ya que se quiere observar el rendimiento del servidor durante este proceso, pero no se asigna el máximo para evitar una sobre-representación de compras pequeñas, que no serían realistas.
+
+    \item \textbf{Pedidos}: Consulta de pedidos individuales y listados paginados.  
+    Son tareas que los usuarios hacen de vez en cuando para verificar sus compras. Por eso, ambas tienen peso 1.
+
+    \item \textbf{Actualización de productos}: Modificaciones completas (PUT) y parciales (PATCH).  
+    Aunque no todos los usuarios lo hacen, se quiere ver cómo responde el sistema cuando ocurre. Por eso, ambas tareas tienen peso 2.
+
+    \item \textbf{Gestión de sesión}: Cierre de sesión del usuario.  
+    Muchos usuarios no suelen cerrar sesión de forma activa, por lo que esta acción se realiza poco y tiene peso 1. Además que era una tarea que no se pedía en el eneunciado.
 \end{itemize}
+
+\subsection*{Tabla de Pesos Asignados por Tarea}
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Tarea} & \textbf{Peso} \\
+\hline
+GET Registro/Login & 1 \\
+POST Registro & 1 \\
+POST Login & 2 \\
+GET Menú Principal & 2 \\
+GET Lista de Productos & 2 \\
+GET Detalles de Producto & 1 \\
+POST Añadir al Carrito & 3 \\
+GET Carrito & 1 \\
+DELETE Vaciar Carrito & 1 \\
+POST Checkout (Compra) & 2 \\
+GET Pedido Individual & 1 \\
+GET Listado de Pedidos & 1 \\
+PUT Producto & 2 \\
+PATCH Producto & 2 \\
+POST Logout & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Esta distribución de pesos busca simular el comportamiento más realista posible de los usuarios dentro de la tienda, dando más peso a las tareas clave como añadir productos o realizar compras, sin descuidar las acciones menos frecuentes pero igualmente importantes para el análisis del rendimiento.
 
 \subsection{Funciones auxiliares}
 
@@ -1016,21 +1078,6 @@ def manejar_redireccion(self, response, mensaje_ok):
 
 Esta función es clave para que las tareas sepan si la petición fue exitosa, si hubo redirección por token inválido o si el token expiró. Así, el script puede reaccionar a cada situación, logrando una simulación realista del flujo de autenticación.
 
-\subsection{Estructura de la clase \texttt{MiUsuario}}
-
-La clase principal que representa al usuario virtual en las pruebas es \texttt{MiUsuario}, que hereda de \texttt{HttpUser} de Locust. En ella se definen:
-
-\begin{itemize}
-    \item \texttt{on\_start()}: Se ejecuta al iniciar el usuario, genera un usuario aleatorio y realiza el registro mediante una petición POST a \texttt{/api/registro}.
-    \item \texttt{intentar\_login()}: Tarea con peso 2 que intenta loguear al usuario con las credenciales generadas.
-    \item Tareas para obtener páginas de registro y login, consultar el menú, productos y pedidos.
-    \item Tareas para manipular el carrito: agregar productos, obtenerlo y vaciarlo.
-    \item \texttt{checkout()}: Simula el proceso de compra, que si es exitoso devuelve un \texttt{id\_pedido} que se almacena para posteriores consultas.
-    \item Actualización de productos mediante métodos PUT y PATCH, para modificar datos completos o solo el tipo.
-    \item Cierre de sesión mediante petición GET a \texttt{/api/logout}.
-\end{itemize}
-
-Cada tarea está decorada con \texttt{@task(peso)} para definir la frecuencia con la que se ejecuta durante la prueba de carga.
 
 \subsection{Ejemplos de tareas:}
 
@@ -1054,7 +1101,7 @@ def agregar_producto_carrito(self):
 \end{lstlisting}
 Esta tarea selecciona un producto aleatorio de la lista cargada desde el archivo \texttt{productos\_cache.json} y lo añade al carrito mediante una petición POST a \texttt{/api/carrito/agregar}
 
-\newpage
+
 \subsubsection{Registro de usuario (POST /api/registro)}
 
 \begin{lstlisting}[language=Python, caption={Tarea para registrar un nuevo usuario}]
@@ -1072,6 +1119,7 @@ def registro(self):
 
 Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y enviándolos mediante una petición POST. Si el backend responde con una redirección válida o éxito, se almacenan las credenciales para su uso posterior. En el backend existe una función que gestiona tokens; si el token no existe o ha expirado, la aplicación redirige, por eso se comprueban los estados HTTP de redirección (300-308). El código 401 indica que el token ha expirado y se debe iniciar sesión de nuevo.
 
+\newpage
 \subsubsection{Checkout (POST /api/checkout)}
 
 \begin{lstlisting}[language=Python, caption={Tarea para realizar el checkout}]
@@ -1108,9 +1156,8 @@ Esta tarea realiza una petición GET para obtener la lista de productos disponib
 
 Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
 
-
-\section{Simulación y Monitorización} \cite{xantygc_locust}
-\subsection{Simulación}
+\section{Simulación y Monitorización} 
+\subsection{Simulación}\cite{xantygc_locust}
 Para evaluar el rendimiento del sistema, se realizó una prueba de carga con una duración total de 20 minutos utilizando Locust. 
 \begin{lstlisting}[language=bash]
 locust -f generar_carga.py  -u 160 -r 0.1333 --run-time 20m --host http://virtual.lab.inf.uva.es:31224
@@ -1337,9 +1384,6 @@ Para mejorar el rendimiento del sistema durante la implementación del backend s
 
 Estas mejoras han permitido mejorar la escalabilidad y estabilidad del sistema, especialmente bajo carga alta.
 
-\subsection{Conclusiones}
-
-        
 \chapter{Monitorización del servidor con Grafana}
 En la práctica anterior se recogieron métricas de rendimiento del servidor como el uso de CPU, memoria RAM, frecuencia de la CPU, operaciones de entrada/salida (E/S), entre otras, las cuales se visualizaron mediante paneles en Grafana. Estas métricas permitieron monitorizar el estado general del sistema durante las pruebas de carga.
 
@@ -1522,8 +1566,60 @@ Para mostrar los resultados en Grafana, se ha optado por una visualización de t
 
 \section{Conclusiones}
 
+A lo largo de este proyecto se ha conseguido desarrollar una aplicación web en Flask, siguiendo una arquitectura Modelo-Vista-Controlador (MVC). Se han implementado las funcionalidades principales de una tienda online, como el registro y login de usuarios, la visualización de productos, la gestión de carritos y pedidos, así como un sistema de autenticación mediante tokens.
+
+Por otro lado, se han realizado pruebas de carga sobre la página web y sus diferentes endpoints utilizando la herramienta Locust, desarrollada en Python. Para estas pruebas, se creó un script que simulaba diferentes usuarios realizando las distintas tareas posibles en nuestra web. Esto permitió exponer el sistema a distintas condiciones de carga. Tras las pruebas, se recogieron los resultados y se generaron métricas que ayudaron a identificar posibles cuellos de botella.
+
+También se configuró Grafana para visualizar métricas del sistema, lo cual fue útil para observar el rendimiento en tiempo real y entender mejor el comportamiento de la aplicación bajo carga.
+
+\subsubsection*{Problemas encontrados}
+Durante el desarrollo de la web no surgieron demasiados problemas, aunque sí hubo algunos retos, especialmente al implementar los tokens de autenticación y al mostrar todos los pedidos de un usuario, ya que requería una lógica más elaborada. En cuanto a Locust, también hubo dificultades al principio, ya que no conocíamos bien la herramienta y los datos recogidos no eran fiables. Esto se debió a que no comprendíamos bien cómo se distribuían los usuarios ni cómo ejecutaban las tareas. Sin embargo, esto nos llevó a mejorar y escalar el código de manera más sólida.
+
+Gracias a este proyecto hemos podido conocer herramientas de desarrollo backend como Flask, que ha resultado ser bastante intuitiva y fácil de usar. También diseñamos una base de datos relacional, lo cual ha reforzado nuestros conocimientos previos. Por otro lado, el uso de Locust nos ha enseñado lo sencillo que puede ser generar carga y evaluar el comportamiento de una web. Además, hemos conseguido aplicar los conocimientos teóricos de la asignatura a un caso práctico y real, lo que ha reforzado lo aprendido en clase. También hemos mejorado nuestras habilidades con Git y GitHub, trabajando de forma colaborativa.
+
+\subsubsection*{Mejoras}
+Como posibles mejoras futuras, se propone:
+\begin{itemize}
+    \item Mejorar el \textit{frontend} de la página web para ofrecer una mejor experiencia al usuario.
+    \item Implementar medidas para balancear la carga y mejorar el rendimiento general.
+    \item Extender los paneles de Grafana con más métricas de negocio.
+\end{itemize}
+
+
 \section{Reparto de trabajo}
 
+\subsection{Trabajo personal}
+
+\subsubsection*{Fernández Sánchez, Víctor}
+\begin{itemize}
+    \item \textbf{Página web}: Registro de usuarios, implementación del endpoint del carrito y del endpoint de productos.
+    \item \textbf{Locust}: Tareas de checkout y de agregar productos al carrito.
+\end{itemize}
+
+\subsubsection*{Sánchez Maroto, Gonzalo}
+\begin{itemize}
+    \item \textbf{Página web}: Menú principal e implementación del endpoint de pedidos.
+    \item \textbf{Locust}: Tareas de visualización de pedidos individuales, listados de pedidos y vaciado del carrito.
+\end{itemize}
+
+\subsubsection*{Sanz Santos, Diego}
+\begin{itemize}
+    \item \textbf{Página web}: Login de usuarios, implementación del endpoint del carrito y de pedidos, y generación del token de autenticación.
+    \item \textbf{Locust}: Tareas de autenticación, cierre de sesión, visualización del menú, login y registro.
+\end{itemize}
+
+\subsubsection*{Verduras Cavada, Rubén}
+\begin{itemize}
+    \item \textbf{Página web}: Implementación del endpoint de pedidos y de productos, y desarrollo de funciones auxiliares.
+    \item \textbf{Locust}: Tareas de visualización de productos y su modificación tanto total (PUT) como parcial (PATCH).
+\end{itemize}
+
+\subsection{Trabajo común}
+\begin{itemize}
+    \item \textbf{Página web}: Cada integrante se encargó de implementar distintos controladores, como se detalló anteriormente. Las clases y los \texttt{schemas} fueron repartidos entre todos, dividiéndose el trabajo de forma equitativa. El diseño del modelo de dominio y la estructura general de la aplicación se realizaron en conjunto.
+    \item \textbf{Base de datos}: La estructura de las tablas y su creación se diseñaron en equipo, incluyendo los diagramas y los procedimientos almacenados.
+    \item \textbf{Informe}: Su redacción se distribuyó de forma equitativa. Rubén, Víctor y Diego se centraron principalmente en las secciones relacionadas con Locust y la página web, mientras que Gonzalo trabajó más en la parte de la web y en la integración con Grafana.
+\end{itemize}
 
 \printbibliography
 \end{document}
