@@ -1,4 +1,4 @@
--- Active: 1744363405273@@127.0.0.1@3306@Carga_web
+-- Active: 1743866200358@@127.0.0.1@3306@Carga_web
 
 -- CREATE DATABASE Carga_web;
 -- CREATE USER 'user_pr'@'localhost' IDENTIFIED BY 'Grupo6esi';
@@ -88,7 +88,7 @@ CREATE TABLE `PedidoItem` (
 
 -- Active: 1744363405273@@127.0.0.1@3306@Carga_web
 -- Primero eliminamos el procedimiento si ya existe
-DROP PROCEDURE AddOrUpdateItemCarrito;
+DROP PROCEDURE IF EXISTS AddOrUpdateItemCarrito;
 
 -- Crear el procedimiento para agregar o actualizar un ítem en el carrito
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `AddOrUpdateItemCarrito`(
@@ -117,7 +117,7 @@ BEGIN
 END;
 
 -- Primero eliminamos el procedimiento si ya existe
-DROP PROCEDURE CreateUser;
+DROP PROCEDURE IF EXISTS CreateUser;
 
 -- Crear el procedimiento para crear un nuevo usuario
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `CreateUser`(

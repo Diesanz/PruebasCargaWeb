@@ -1,9 +1,10 @@
-from locust import HttpUser, task, between
-import random, json, string, os
-
+from locust import HttpUser, task, between, events
+import random, json, string, os, threading, time, csv
 
 # === Archivo de persistencia ===
 ARCHIVO_PRODUCTOS = "productos_cache.json"
+CSV_FILE = "locust_stats.csv"
+SAVE_INTERVAL = 10  # 5 minutos en segundos
 
 # === Funciones auxiliares ===
 def generar_usuario():
@@ -32,9 +33,49 @@ def cargar_json(path):
             return json.load(f)
     return []
 
+# Función para guardar estadísticas periódicamente en CSV
+def save_stats_periodically(environment):
+    # Escribe header si no existe el archivo
+    if not os.path.exists(CSV_FILE):
+        with open(CSV_FILE, "w", newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Type", "Name", "# Requests", "# Fails", "Median (ms)", "95%ile (ms)",
+                "99%ile (ms)", "Average (ms)", "Min (ms)", "Max (ms)",
+                "Average size (bytes)", "Current RPS", "Current Failures/s"
+            ])
+
+    while True:
+        time.sleep(SAVE_INTERVAL)
+        with open(CSV_FILE, "a", newline='') as f:
+            writer = csv.writer(f)
+            for stat in environment.stats.entries.values():
+                writer.writerow([
+                    stat.method,
+                    stat.name,
+                    stat.num_requests,
+                    stat.num_failures,
+                    round(stat.median_response_time, 2) if stat.median_response_time else 0,
+                    round(stat.get_response_time_percentile(0.95), 2) if stat.num_requests else 0,
+                    round(stat.get_response_time_percentile(0.99), 2) if stat.num_requests else 0,
+                    round(stat.avg_response_time, 2) if stat.avg_response_time else 0,
+                    round(stat.min_response_time, 2) if stat.min_response_time else 0,
+                    round(stat.max_response_time, 2) if stat.max_response_time else 0,
+                    round(stat.avg_content_length, 2) if stat.avg_content_length else 0,
+                    round(stat.total_rps, 2) if hasattr(stat, "total_rps") else 0,
+                    round(stat.fail_ratio * stat.total_rps if hasattr(stat, "fail_ratio") else 0, 2),
+                ])
+        print(f"📊 Estadísticas guardadas en {CSV_FILE}")
+
+# Evento que se ejecuta al iniciar la prueba
+@events.test_start.add_listener
+def on_test_start(environment, **kwargs):
+    thread = threading.Thread(target=save_stats_periodically, args=(environment,), daemon=True)
+    thread.start()
+
 # === Clase principal de usuario ===
 class MiUsuario(HttpUser):
-    wait_time = between(1, 2)
+    wait_time = between(1, 3)
 
     def on_start(self):
         """Se ejecuta al iniciar cada usuario de prueba
@@ -67,9 +108,11 @@ class MiUsuario(HttpUser):
             return True
         elif response.status_code in [301, 302, 303, 307, 308]:
             print("❌ Redirigido por problemas con el token")
+            self.login = False
             return False
         elif response.status_code == 401:
             print("❌ No autorizado: token inválido o ausente (401)")
+            self.login = False
             return False
         else:
             print(f"❌ Error inesperado ({response.status_code})")
@@ -81,7 +124,7 @@ class MiUsuario(HttpUser):
 
         Return: None
         """
-        if self.login is False:
+        if self.login is False: #controla que antes de iniciar sesion, tenga cerrado sesion o no tengas token, dando un control más real
             with self.client.post("/api/login", data={
                 "email": self.usuario["email"],
                 "password": self.usuario["password"]
