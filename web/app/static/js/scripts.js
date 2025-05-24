@@ -118,7 +118,7 @@ function insert_carrito(boton){
             if (data.redirect_url) {
                 window.location.href = data.redirect_url;
             } else if (data.error) {
-                alert("Error: " + data.error);
+                alert("Inicia sesión antes de añadir productso");
             }
         })
         .catch(error => {
