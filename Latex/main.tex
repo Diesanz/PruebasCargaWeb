@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{siunitx} 
+\usepackage{inconsolata} % Fuente monoespaciada más elegante
 \usepackage{hyperref}
 \usepackage[backend=bibtex]{biblatex}
 \addbibresource{bibliografia.bib}
@@ -49,13 +50,17 @@
     numberstyle=\tiny\color{gray}
 }
 
-\lstset{
-    language=bash,
-    basicstyle=\ttfamily\small,  % Tipo de letra monoespaciada
-    keywordstyle=\color{blue},   % Color de palabras clave
-    stringstyle=\color{red},     % Color de strings
-    commentstyle=\color{gray},   % Color de comentarios
-    showstringspaces=false       % No mostrar espacios en strings
+\lstdefinestyle{simplebash}{
+  language=bash,
+  basicstyle=\ttfamily\small,        % Fuente pequeña, monoespaciada
+  backgroundcolor=\color{white},     % Sin fondo
+  frame=none, 
+  numbers = none,% Sin bordes
+  showstringspaces=false,
+  breaklines=true,
+  keywordstyle=\color{black},        % Comandos en negro
+  commentstyle=\color{gray},         % Comentarios en gris
+  stringstyle=\color{teal},          % Cadenas en teal
 }
 
 \lstdefinelanguage{SQL}{
@@ -68,6 +73,61 @@
     morecomment=[s]{/*}{*/},
     commentstyle=\color{gray}\ttfamily,
     stringstyle=\color{red}\ttfamily,
+}
+
+
+\lstdefinestyle{SQL}{
+  language=SQL,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{white},  % Fondo blanco limpio
+  frame=none,                     % Sin caja
+  numbers=none,                   % Sin numeración
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=2
+}
+
+\lstdefinelanguage{JinjaHTML}{
+  language=html,
+  sensitive=true,
+  alsoletter={\%},
+  morekeywords={
+    for, in, else, endfor
+  },
+  keywordstyle=\color{teal}\bfseries,
+  morecomment=[s]{\{\%}{\%\}},
+  commentstyle=\color{gray},
+  morestring=[b]",
+  stringstyle=\color{red}
+}
+
+\lstdefinestyle{bonitoJinja}{
+  language=JinjaHTML,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{white},
+  frame=none,
+  numbers=none,
+  showstringspaces=false,
+  breaklines=true
+}
+
+\definecolor{codeblue}{rgb}{0.1,0.1,0.6}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codegreen}{rgb}{0.0,0.6,0.0}
+
+\lstdefinestyle{pythonclean}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegray}\itshape,
+    stringstyle=\color{codegreen},
+    showstringspaces=false,
+    breaklines=true,
+    frame=none,        % sin caja
+    numbers=none,      % sin números de línea
+    backgroundcolor=\color{white}, % sin fondo gris
+    captionpos=b,
+    tabsize=4
 }
 
 
@@ -158,7 +218,7 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
     
     Por defecto, Python 3 incluye el módulo \textit{venv}, pero si fuera necesario instalarlo manualmente (por ejemplo, en distribuciones basadas en Debian como Ubuntu o Kali), el comando sería:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     sudo apt install python3-venv
     \end{lstlisting}
     
@@ -173,31 +233,31 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
     
     Para crear un entorno virtual se ejecuta el comando:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     python3 -m venv env_pruebas
     \end{lstlisting}
     
     Para activarlo:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     source env_pruebas/bin/activate
     \end{lstlisting}
     
     Y para desactivarlo:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     deactivate
     \end{lstlisting}
     
     Con el entorno virtual activado, se puede instalar el paquete Flask con:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     pip install flask
     \end{lstlisting}
     
     Y verificar su instalación con:
     
-    \begin{lstlisting}
+    \begin{lstlisting}[style=simplebash]
     pip show flask
     \end{lstlisting}
     
@@ -210,20 +270,20 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
     \begin{itemize}
         \item \textbf{Instalación global}: Aunque se instalaron varios paquetes, aquí se detallan los más relevantes: Flask y Locust. Para instalarlos globalmente, se usan los siguientes comandos:
     
-        \begin{lstlisting}
+        \begin{lstlisting}[style=simplebash]
         pip install flask
         pip install locust
         \end{lstlisting}
     
         \item \textbf{Instalación en entorno virtual}: Nuestra práctica se ha desarrollado utilizando un entorno virtual, dadas las ventajas explicadas anteriormente. Para instalar los paquetes necesarios en este entorno, primero se activa:
     
-        \begin{lstlisting}
+        \begin{lstlisting}[style=simplebash]
         source env_pruebas/bin/activate
         \end{lstlisting}
     
         Luego, se instalan todas las dependencias con:
     
-        \begin{lstlisting}
+        \begin{lstlisting}[style=simplebash]
         pip install -r requirements.txt
         \end{lstlisting}
     
@@ -339,7 +399,7 @@ La página web desarrollada representa una tienda online de platos de comida, do
     \item Consulta detallada de cada producto.
     \item Consulta del historial de pedidos y visualización de sus detalles.
 \end{itemize}
-
+\newpage
 \subsection{Vistas, HTML y lógica Jinja2}
 
 A continuación, se describen las principales vistas de la web, explicando brevemente el uso de Jinja2 en cada una:
@@ -347,16 +407,16 @@ A continuación, se describen las principales vistas de la web, explicando breve
 \begin{itemize}
     \item \textbf{Página principal:} muestra el propósito de la tienda e incluye recomendaciones de productos.
     
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% for producto in productos %}
         <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}">
         <h4>{{ producto.nombre }}</h4>
-        <p>{{ producto.precio }} €</p>
+        <p>{{ producto.precio }}</p>
         <p>Tipo de producto: {{ producto.tipo }}</p>
     {% else %}
         <p>No hay productos disponibles.</p>
     {% endfor %}
-    \end{verbatim}
+    \end{lstlisting}
 
     \textit{Uso de Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url\_for` para cargar las imágenes estáticas.
 
@@ -366,78 +426,77 @@ A continuación, se describen las principales vistas de la web, explicando breve
 
     \item \textbf{Catálogo de productos:} muestra todos los productos disponibles para su compra.
 
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% for producto in productos %}
         <img src="{{ url_for('static', filename='img/' ~ producto.imagen_url) }}">
         <h4>{{ producto.nombre }}</h4>
-        <p>{{ producto.precio }} €</p>
+        <p>{{ producto.precio }} </p>
         <button class="boton1">Añadir al carro</button>
         <a href="/api/productos/{{ producto.id }}"><button>Detalles</button></a>
     {% else %}
         <p>No hay productos disponibles.</p>
     {% endfor %}
-    \end{verbatim}
+    \end{lstlisting}
 
     \textit{Uso de Jinja2:} generación dinámica de cada tarjeta de producto, incluyendo enlaces a sus detalles y botón para añadir al carrito.
 
     \item \textbf{Detalle del producto:} muestra información más completa como la descripción, el stock y el tipo.
 
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     <h3>{{ producto.nombre }}</h3>
     <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
     <p><strong>Precio:</strong> {{ producto.precio }} €</p>
     <p><strong>Stock:</strong> {{ producto.stock }}</p>
     <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
-    \end{verbatim}
+    \end{lstlisting}
 
     \textit{Uso de Jinja2:} muestra los atributos de un único objeto `producto`.
 
     \item \textbf{Carrito de la compra:} permite ver los productos añadidos, sus cantidades y el total del pedido.
 
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% for item in items %}
         <img src="{{ url_for('static', filename='img/' + item.url) }}">
         <span>{{ item.nombre }}</span>
-        <p>{{ item.precio }} €</p>
+        <p>{{ item.precio }}</p>
         <p>Cantidad: {{ item.cantidad }}</p>
     {% endfor %}
     <p>Total: {{ total if total else '0.0' }} €</p>
-    \end{verbatim}
+    \end{lstlisting}
 
     \textit{Uso de Jinja2:} se itera sobre los productos del carrito y se calcula el total condicionalmente.
 
     \item \textbf{Detalle del pedido:} visualización detallada de los productos comprados en un pedido específico.
 
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% for item in items %}
         <img src="{{ url_for('static', filename='img/' + item.producto.imagen_url) }}">
         <p>{{ item.producto.nombre }}</p>
         <p>{{ item.producto.descripcion }}</p>
         <p>Cantidad: {{ item.cantidad }}</p>
-        <p>Precio: {{ item.producto.precio }} €</p>
-        <p>Total: {{ '%.1f' | format(item.producto.precio * item.cantidad) }} €</p>
+        <p>Precio: {{ item.producto.precio }}</p>
+        <p>Total: {{ '%.1f' | format(item.producto.precio * item.cantidad) }}</p>
     {% endfor %}
-    \end{verbatim}
+    \end{lstlisting}
 
   
     \item \textbf{Historial de pedidos:} Lista de pedidos pasados del usuario, mostrando estado, fecha y total.
     
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% for orden in pedidos.lista_p %}
         <p>Pedido #{{ orden.id }}</p>
         <p>Fecha: {{ orden.fecha }}</p>
-        <p>Total: {{ orden.total }} €</p>
+        <p>Total: {{ orden.total }} </p>
         <p>Estado: {{ orden.estado }}</p>
     {% endfor %}
-    \end{verbatim}
+    \end{lstlisting}
     
     \textit{Uso de Jinja2:} Se recorre dinámicamente una lista de pedidos (`pedidos.lista\_p`) y se imprimen los datos de cada uno.
     
-    \vspace{-0.5em} % reduce el espacio vertical antes del siguiente item
-    
+
     \item \textbf{Paginación de pedidos:} Permite navegar entre páginas de pedidos si existen múltiples.
     
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% if pedidos.page > 1 %}
         <a href="{{ url_for('pedidoController.get_pedidos_usuario', 
         page=pedidos.page - 1) }}">Anterior</a>
@@ -446,15 +505,11 @@ A continuación, se describen las principales vistas de la web, explicando breve
         <a href="{{ url_for('pedidoController.get_pedidos_usuario', 
         page=pedidos.page + 1) }}">Siguiente</a>
     {% endif %}
-    \end{verbatim}
-    
+    \end{lstlisting}
     \textit{Uso de Jinja2:} Se comprueba el número de página actual para mostrar enlaces de navegación si es necesario.
-    
-    \vspace{-0.5em}
-    
+        
     \item \textbf{Mensajes de error:} Muestra mensajes flash para informar al usuario sobre errores.
-    
-    \begin{verbatim}
+    \begin{lstlisting}[style=bonitoJinja]
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="mensaje-error">
@@ -466,11 +521,9 @@ A continuación, se describen las principales vistas de la web, explicando breve
             <p>Revisa que todos los campos sean correctos</p>
         {% endif %}
     {% endwith %}
-    \end{verbatim}
-    
+    \end{lstlisting}
     \textit{Uso de Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash.
     
-
 \end{itemize}
 
 
@@ -561,14 +614,14 @@ A continuación, se describen las principales vistas de la web, explicando breve
                 \item PATCH /api/productos/{id} $\rightarrow$ modifica parcialmente un producto.
             \end{itemize}
         \end{itemize}
-        
+\newpage
 \section{Scripts de nuestra web}
 A continuación se detallan una serie de scripts necesarios para arrancar una aplicación web con Flask, junto con otros scripts que ayudan a entender cómo funciona nuestra web.
 \subsection{Archivo \texttt{run.py}}
 
     El archivo \texttt{run.py} actúa como punto de entrada de la aplicación. Este script debe ejecutarse con el entorno virtual activado, utilizando el comando:
     
-    \begin{lstlisting}[language=bash]
+    \begin{lstlisting}[style=simplebash]
     python run.py
     \end{lstlisting}
     
@@ -576,7 +629,7 @@ A continuación se detallan una serie de scripts necesarios para arrancar una ap
     
     A continuación, se muestra el contenido del archivo \texttt{run.py}:
     
-    \begin{lstlisting}[language=Python, caption={Script principal \texttt{run.py}}]
+    \begin{lstlisting}[style=pythonclean, caption={Script principal \texttt{run.py}}]
     from app import create_app
     from flask import render_template, redirect, url_for
     # Crear la aplicación usando la función de fábrica
@@ -593,7 +646,7 @@ A continuación se detallan una serie de scripts necesarios para arrancar una ap
     app.jinja_env.filters['suma_dias'] = sumar_dias
 
     if __name__ == '__main__':
-        app.run(debug=True)
+        app.run(debug=False)
     \end{lstlisting}
     
     Este script realiza las siguientes funciones clave:
@@ -609,7 +662,7 @@ A continuación se detallan una serie de scripts necesarios para arrancar una ap
     
     El archivo \texttt{\_\_init\_\_.py} se encarga de inicializar la aplicación Flask, registrar los distintos \textit{blueprints} correspondientes a las funcionalidades de la aplicación y establecer los manejadores de errores.
     
-    \begin{lstlisting}[language=Python, caption={Inicialización de la aplicación Flask}]
+    \begin{lstlisting}[style=pythonclean, caption={Inicialización de la aplicación Flask}]
     from flask import Flask, render_template
     
     def create_app():
@@ -713,7 +766,7 @@ El decorador realiza las siguientes funciones:
 
 A continuación, se muestra el código completo del decorador:
 
-\begin{lstlisting}[language=Python, caption={Decorador verificar\_token}]
+\begin{lstlisting}[style=pythonclean, caption={Decorador verificar\_token}]
 def verificar_token(f):
     """
     Decorador que protege rutas requeridas para usuarios autenticados.
@@ -761,7 +814,7 @@ Este decorador es esencial para garantizar que sólo los usuarios autenticados p
 
 Uno de los puntos clave de esta práctica ha sido asegurar los endpoints que requieren autenticación mediante el uso de tokens JWT almacenados en cookies. A continuación, se muestra un ejemplo claro de cómo se ha aplicado esta lógica de seguridad:
 
-\begin{lstlisting}[language=Python, caption={Endpoint protegido para mostrar el carrito}]
+\begin{lstlisting}[style=pythonclean, caption={Endpoint protegido para mostrar el carrito}]
 @carrito.route('/', methods=['GET'])
 @verificar_token
 def get_items_carrito(usuario_id):
@@ -796,9 +849,16 @@ def get_items_carrito(usuario_id):
     \item $\rightarrow$ En caso de que el carrito no exista, se redirige a la plantilla de inicio con un mensaje de error.
 \end{itemize}
 
+\section{Concluiones página web y Flask}
 Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagr un producto al carrito, visualizar los pedidos, etc. 
 
 De este modo se asegura la integridad de la web y facilita tareas de seguridad.
+Con el desarrollo de esta parte del proyecto se ha podido comprobar lo sencillo que resulta crear una página web con la ayuda de un framework como Flask. Gracias a su estructura basada en Blueprints y a una serie de funciones incorporadas por defecto, se ha facilitado notablemente la organización del código y se ha podido adoptar una arquitectura basada en el modelo MVC (Modelo-Vista-Controlador).
+
+Asimismo, se ha observado lo accesible que resulta generar páginas HTML dinámicas mediante el uso de Jinja2, lo cual permite integrar lógica y datos directamente en las plantillas de forma clara y eficiente.
+
+Por otro lado, como último apartado de las especificaciones de la práctica, se requería la gestión de al menos cinco productos sobre los que realizar operaciones como añadir, modificar, etc. En nuestro caso, se han añadido algunos productos más, lo cual ha permitido desarrollar una aplicación web más detallada, visualmente atractiva y funcional.
+
 
 \chapter{Base de datos}
 \section{Diagrama de base de datos y especificaciones}
@@ -911,9 +971,7 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
         \begin{itemize}
             \item \texttt{p\_carrito\_id}: ID del carrito.
             \item \texttt{p\_producto\_id}: ID del producto.
-            \item \texttt{p\_nombre}: Nombre del producto.
             \item \texttt{p\_cantidad}: Cantidad del producto.
-            \item \texttt{p\_precio}: Precio del producto.
         \end{itemize}
         
         \item \textbf{Funcionamiento:}
@@ -922,10 +980,30 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
             \item Si ya existe, se actualiza la cantidad sumando la nueva cantidad.
             \item Si no existe, se inserta como nuevo ítem en la tabla \texttt{CarritoItem}.
         \end{enumerate}
-        
+
         \item \textbf{Caso de uso:} se utiliza al añadir productos al carrito desde la aplicación, evitando duplicados y facilitando la actualización.
     \end{itemize}
-    
+    \begin{lstlisting}[language=SQL, style=SQL]
+        BEGIN
+            DECLARE cantidad_existente INT;  -- Variable para almacenar la cantidad existente del producto en el carrito
+        
+            -- Verificamos si el producto ya está en el carrito
+            SELECT cantidad INTO cantidad_existente
+            FROM CarritoItem
+            WHERE carrito_id = p_carrito_id AND producto_id = p_producto_id;
+        
+            -- Si el producto ya existe en el carrito, actualizamos la cantidad
+            IF cantidad_existente IS NOT NULL THEN
+                UPDATE CarritoItem
+                SET cantidad = cantidad + p_cantidad  -- Sumamos la cantidad existente con la nueva cantidad
+                WHERE carrito_id = p_carrito_id AND producto_id = p_producto_id;
+            ELSE
+                -- Si el producto no está en el carrito, lo insertamos como nuevo ítem
+                INSERT INTO CarritoItem (carrito_id, producto_id, cantidad)
+                VALUES (p_carrito_id, p_producto_id, p_cantidad);  -- Insertamos los datos proporcionados
+            END IF;
+        END;
+    \end{lstlisting}
 \subsubsection{Procedimiento \texttt{CreateUser}}
 
     Este procedimiento permite \textbf{crear un nuevo usuario en la base de datos}, asegurando que la operación sea atómica gracias a una transacción.
@@ -951,7 +1029,35 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
         
         \item \textbf{Caso de uso:} se ejecuta al registrar un nuevo usuario desde la aplicación. Garantiza que no se guarden datos parciales si algo falla.
     \end{itemize}
-    
+    \begin{lstlisting}[language=SQL, style=SQL]
+        BEGIN
+            DECLARE id_U INT;  -- Variable para almacenar el ID del nuevo usuario
+            DECLARE EXIT HANDLER FOR SQLEXCEPTION  -- Manejador de excepciones para capturar errores
+            BEGIN
+                ROLLBACK;  -- Si ocurre un error, deshacemos la transacción
+                SIGNAL SQLSTATE '45000'  -- Lanza una señal con el mensaje de error
+                SET MESSAGE_TEXT = 'Ocurrió un error durante la transacción.';  -- Mensaje de error personalizado
+            END;
+            
+            -- Iniciamos la transacción
+            START TRANSACTION;
+            
+            -- Insertamos el nuevo usuario en la tabla Usuario
+            INSERT INTO Usuario (nombre, dni, email, domicilio, password)
+            VALUES (p_nombre, p_dni, p_email, p_domicilio, p_password);
+        
+            -- Obtenemos el ID del nuevo usuario insertado
+            SET id_U = LAST_INSERT_ID();  -- Recupera el último ID insertado (el del nuevo usuario)
+        
+            INSERT INTO Carrito (usuario_id) VALUES (id_U);
+        
+            -- Confirmamos la transacción
+            COMMIT;
+            
+            -- Devolvemos el ID del nuevo usuario
+            SELECT id_U AS id;
+        END;
+    \end{lstlisting}
 
 
 \chapter{Pruebas de carga con Locust}
@@ -976,13 +1082,13 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
 
 Para instalar Locust se ha utilizado el siguiente comando:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=simplebash]
 pip install locust
 \end{lstlisting}
 
 Para ejecutar las pruebas de carga, se debe lanzar Locust con el siguiente comando:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=simplebash]
 locust -f generar_carga.py --host http://localhost:5000
 \end{lstlisting}
 
@@ -1077,7 +1183,7 @@ En el backend de la aplicación, la autenticación está basada en tokens. Para 
 
 En el script de carga, esta lógica se gestiona en la función \texttt{manejar\_redireccion()}, que interpreta las respuestas del servidor:
 
-\begin{lstlisting}[language=Python, caption={Gestión de redirecciones y expiración de token}]
+\begin{lstlisting}[style=pythonclean, caption={Gestión de redirecciones y expiración de token}]
 def manejar_redireccion(self, response, mensaje_ok):
     if response.status_code == 200:
         print(mensaje_ok)
@@ -1100,7 +1206,7 @@ Esta función es clave para que las tareas sepan si la petición fue exitosa, si
 
 \subsubsection{Agregar producto al carrito (POST /api/carrito/agregar)}
 
-\begin{lstlisting}[language=Python, caption={Tarea para agregar un producto al carrito}]
+\begin{lstlisting}[style=pythonclean, caption={Tarea para agregar un producto al carrito}]
 @task(3)
 def agregar_producto_carrito(self):
     if not self.productos_disponibles:
@@ -1121,7 +1227,7 @@ Esta tarea selecciona un producto aleatorio de la lista cargada desde el archivo
 
 \subsubsection{Registro de usuario (POST /api/registro)}
 
-\begin{lstlisting}[language=Python, caption={Tarea para registrar un nuevo usuario}]
+\begin{lstlisting}[style=pythonclean, caption={Tarea para registrar un nuevo usuario}]
 @task(1)
 def registro(self):
     data = generar_usuario()
@@ -1139,7 +1245,7 @@ Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y e
 \newpage
 \subsubsection{Checkout (POST /api/checkout)}
 
-\begin{lstlisting}[language=Python, caption={Tarea para realizar el checkout}]
+\begin{lstlisting}[style=pythonclean, caption={Tarea para realizar el checkout}]
 @task(2)
 def checkout(self):
     with self.client.post("/api/checkout", allow_redirects=False, catch_response=True) as response:
@@ -1157,7 +1263,7 @@ Esta tarea simula la finalización de la compra realizando una petición POST al
 
 \subsubsection{Obtener menú (GET /api/menu)}
 
-\begin{lstlisting}[language=Python, caption={Tarea para obtener el menú de productos}]
+\begin{lstlisting}[style=pythonclean, caption={Tarea para obtener el menú de productos}]
 @task(5)
 def obtener_menu(self):
     with self.client.get("/api/menu", allow_redirects=False, catch_response=True) as response:
@@ -1177,9 +1283,10 @@ Este fragmento demuestra cómo se maneja la respuesta para detectar posibles pro
 \section{Ejecución de la prueba, análisis de resultados}
 
 \subsection{Estrategia de simulación y recogida de métricas}
-Para evaluar el rendimiento del sistema, se llevó a cabo una prueba de carga de 25 minutos utilizando Locust\cite{xantygc_locust}. La ejecución se realizó con el siguiente comando:
+\cite{xantygc_locust}
+Para evaluar el rendimiento del sistema, se llevó a cabo una prueba de carga de 25 minutos utilizando Locust. La ejecución se realizó con el siguiente comando:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=simplebash]
 locust -f generar_carga.py -u 180 -r 0.1333 --run-time 25m --host http://virtual.lab.inf.uva.es:31224
 \end{lstlisting}
 
@@ -1202,7 +1309,7 @@ Durante esta prueba se adoptó una metodología estructurada que combinó la sim
     \item \textbf{Métricas de negocio:}
     \begin{itemize}
         \item Se visualizaron en paralelo métricas funcionales como número de pedidos, productos añadidos al carrito y nuevos registros.
-        \item Estas métricas, presentadas en Grafana (apartado 4), permitieron correlacionar rendimiento técnico y experiencia de usuario.
+        \item Estas métricas, presentadas en Grafana \autoref{sec:visualizacion}, permitieron correlacionar rendimiento técnico y experiencia de usuario.
     \end{itemize}
 \end{enumerate}
 
@@ -1237,7 +1344,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item Como comprobación se adjunta una captura de los orrores obtenidos en el análisi donde se puede iobservar que son errores contrrolados y que son todos de respuest hhtps de 300 a 308 lo que bos indica que el backend esta funcionando correctamente y que todo va bien como debria ocurrir en casos reales.
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.7\linewidth]{errores.png}
+            \includegraphics[width=0.8\linewidth]{errores.png}
             \caption{Enter Caption}
             \label{fig:enter-label}
         \end{figure}
@@ -1249,7 +1356,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item Se observó un rendimiento estable con incrementos moderados en los tiempos de respuesta a medida que aumentaban los usuarios.
     \end{itemize}
 \end{enumerate}
-
+\newpage
 \noindent A continuación, se incluyen las capturas obtenidas cada 5 minutos, donde se aprecia visualmente la evolución del sistema tanto desde la perspectiva técnica (Grafana) como funcional (Locust).
 
 
@@ -1263,15 +1370,15 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
 
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.5\linewidth]{datos5.png}
-        \caption{Enter Caption}
+        \includegraphics[width=0.7\linewidth]{datos5.png}
+        \caption{Datos registrados en el minuto 5}
         \label{fig:enter-label}
     \end{figure}
     El sistema respondió con una media de 16,8 peticiones por segundo y un tiempo de respuesta medio de 134,18\,ms, con un percentil 95 del tiempo de respuesta de 2000\,ms. El número total de peticiones fue de 2753. No se registraron errores.
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.5\linewidth]{imagen5.png}
-        \caption{Enter Caption}
+        \includegraphics[width=0.65\linewidth]{imagen5.png}
+        \caption{Datos de locust registrados en el minuto 5}
         \label{fig:enter-label}
     \end{figure}
 
@@ -1295,8 +1402,8 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     En Grafana se observa un incremento del uso de CPU hasta el 37{,}60\%, mientras que la RAM permanece estable en torno al 34{,}8\%. La carga del sistema a 1 minuto es de 1{,}44 y la de 5 minutos es de 1{,}31. Aunque aún por debajo de 2, los valores se acercan al límite, indicando una mayor exigencia sobre el servidor.
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.5\linewidth]{datos10.png}
-        \caption{Enter Caption}
+        \includegraphics[width=0.7\linewidth]{datos10.png}
+        \caption{Datos registrados en el minuto 10}
         \label{fig:enter-label}
     \end{figure}
     
@@ -1304,7 +1411,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     \begin{figure}[!h]
         \centering
         \includegraphics[width=0.75\linewidth]{imagen10_3.png}
-        \caption{Enter Caption}
+        \caption{Datos de locust registrados en el minuto 10}
         \label{fig:enter-label}
     \end{figure}
     \newpage
@@ -1326,12 +1433,13 @@ Durante la prueba de carga, se ha podido identificar qué endpoints del sistema 
     \caption{Ratios por clase}
     \label{fig:enter-label}
 \end{figure}
-\newpage
+
 \begin{itemize}
     \item El endpoint \texttt{agregarProductoCarrito} (\texttt{/api/carrito/agregar}) destaca como el más utilizado, con un 13,0\% del total, lo que lo convierte en un candidato prioritario para optimización y pruebas de robustez. Dado que en este endpoint se realizan varias operaciones de base de datos, y con los resultados obtenidos, podría convertirse en un cuello de botella bajo condiciones de estrés como las generadas durante la prueba.
 
     \item Le siguen varios endpoints con una participación del 8,7\% cada uno: \newline
     \texttt{actualizarProductoPut}, \texttt{actualizarTipoPatch}, \texttt{checkout}, \texttt{getProductos}, \texttt{intentarLogin}, \texttt{menu}. Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella.
+    Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000ms. Esto se debe al endpoint de checkout, el cual incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Este comportamiento nos dice por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95, impactando negativamente en la eficiencia general de la web.
 
     \item Otros endpoints como \texttt{cerrarSesion}, \texttt{deleteCarrito}, \texttt{getCarrito}, \texttt{getPedidos}, \texttt{getProductoPorId}, \texttt{getUnPedido}, \texttt{loginGet} y \texttt{registerGet} se mantienen en un 4,3\%, siendo menos críticos individualmente. No obstante, su uso combinado representa una carga significativa y podrían convertirse en un problema si el número de usuarios o la carga aumentara.
 \end{itemize}
@@ -1343,7 +1451,7 @@ Este análisis del ratio por clase proporciona una visión clara de dónde se de
     \caption{Enter Caption}
     \label{fig:enter-label}
 \end{figure}
-
+\newpage
 \section{Análisis de rendimiento y posibles cuellos de botella}
 En esta sección se detalla cómo se ha medido el rendimiento del sistema y cómo éste se comporta ante situaciones de saturación de carga.
 
@@ -1450,27 +1558,45 @@ El throughput por usuario se mantiene casi constante en 0.44 RPS, lo que indica 
 
 \subsection{Ley de Little}
 
-La Ley de Little nos dice que:
+La Ley de Little establece que el número medio de trabajos en un sistema en equilibrio es igual al producto de la tasa media de llegadas y el tiempo medio de permanencia en el sistema:
 
 \[
-N = \mu \times R
+Q = \lambda \cdot R
 \]
 
-donde
+Donde:
 
 \begin{itemize}
-    \item \(N\) = usuarios concurrentes,
-    \item \(\mu\) = throughput (peticiones por segundo),
-    \item \(R\) = tiempo medio de respuesta en segundos.
+    \item \( Q \): número medio de trabajos en el sistema (también llamado población media del sistema),
+    \item \( \lambda \): tasa media de llegada (trabajos o peticiones por segundo),
+    \item \( R \): tiempo medio que un trabajo permanece en el sistema (en segundos).
 \end{itemize}
 
-Calculamos \(\mu \times R\) para ver si encaja con \(N\):
+Para aplicar esta ley, **se debe asumir que el sistema está en equilibrio**, es decir, que la tasa de llegada de trabajos es igual a la tasa de salida. Esto implica que el número de trabajos en el sistema se mantiene estable en el tiempo: por cada trabajo que entra, otro sale.
+
+En nuestro caso, **esta condición de equilibrio se considera válida** porque los usuarios se van generando de forma progresiva a lo largo del tiempo (no todos a la vez), y una vez dentro del sistema, comienzan a realizar tareas como navegar, añadir productos o finalizar compras. Esto permite que el sistema estabilice su comportamiento y alcance un flujo constante de peticiones, simulando una carga realista.
+
+Bajo este equilibrio, se puede reformular la ley como:
+
+\[
+N = \mu \cdot R
+\]
+
+donde:
+
+\begin{itemize}
+    \item \(N\): número de usuarios concurrentes,
+    \item \(\mu\): throughput o tasa de procesamiento (peticiones por segundo),
+    \item \(R\): tiempo medio de respuesta por petición (en segundos).
+\end{itemize}
+
+A continuación, se compara el producto \(\mu \cdot R\) con los valores observados de \(N\):
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|}
 \hline
-\textbf{Tiempo (min)} & \textbf{Usuarios \(N\)} & \textbf{Throughput \(\mu\)} & \textbf{\(X \times R\) (estimado)} \\
+\textbf{Tiempo (min)} & \textbf{Usuarios \(N\)} & \textbf{Throughput \(\mu\)} & \textbf{\(\mu \cdot R\) (estimado)} \\
 \hline
 5  & 41  & 16.8  & 2.25 \\
 10 & 81  & 35.6  & 4.71 \\
@@ -1479,12 +1605,12 @@ Calculamos \(\mu \times R\) para ver si encaja con \(N\):
 25 & 180 & 79.3  & 11.82 \\
 \hline
 \end{tabular}
-\caption{Validación Ley de Little (R en segundos)}
+\caption{Validación de la Ley de Little (R en segundos)}
 \end{table}
 
-Como \(\mu \times R\) es mucho menor que \(N\), eso significa que no todos los usuarios están activos al mismo tiempo, muchos están en espera. Esto es posible ya que hay un tiempo entre 1 y 3 segundos en los que los usuarios tienen que esperar para realizar las tareas.
+Como se observa, \(\mu \cdot R\) es menor que \(N\), lo cual indica que no todos los usuarios están activos al mismo tiempo; muchos están esperando o inactivos entre acciones. Esto es coherente con el comportamiento definido en las pruebas, donde los usuarios introducen tiempos de espera de entre 1 y 3 segundos para simular interacciones reales.
 
-\subsection{Conclusiones y recomendaciones}
+\subsection{Conclusiones de los resultados}
 
 Podemos decir que el sistema es eficiente porque:
 
@@ -1495,12 +1621,15 @@ Podemos decir que el sistema es eficiente porque:
 
 En resumen, el sistema funciona bien hasta 180 usuarios concurrentes, con buen rendimiento y sin cuellos de botella claros todavía.
 
-Pero si aumentamos más usuarios, la CPU podría saturarse y la latencia subir rápido, especialmente porque la carga del sistema ya está cerca del límite.
+No obstante, si se continuase aumentando la cantidad de usuarios más allá de este punto, es probable que la \textbf{CPU comience a saturarse}, y como consecuencia, la latencia podría incrementarse rápidamente. Esto se debe a que el sistema estaría operando muy cerca de su \textbf{límite de capacidad}, por lo que pequeñas variaciones en la carga o en la disponibilidad de recursos podrían provocar un comportamiento no lineal, con una caída del rendimiento y aumento del tiempo de respuesta de forma abrupta.
+
+Por tanto, si se desea escalar el sistema para soportar una carga superior, sería recomendable considerar optimizaciones a nivel de backend o infraestructura, como balanceo de carga, caché de contenido o escalado horizontal mediante la distribución de servicios.
+
+
 
 
 \subsection{Mejoras para el Rendimiento Web}
 Durante el desarrollo del backend se aplicaron diversas optimizaciones que, en ese momento, se consideraron útiles para mejorar el rendimiento del sistema. Gracias a estas mejoras, es posible que se haya conseguido un mejor comportamiento bajo carga. Entre las principales acciones implementadas destacan:
-
 
 \begin{itemize}
     \item \textbf{Paginación en los endpoints de pedidos}: Para evitar la carga excesiva de datos al listar muchos pedidos. Se muestran 5 pedidos por página y cada vez que se cambia de p+agina se carga unaos nuevos pediso, de esta formasi un usaurio realiza muschos pediso, la consulta a este enpoint no genera tanta carga y lo ira cargando poco a poco todo.
@@ -1509,30 +1638,55 @@ Durante el desarrollo del backend se aplicaron diversas optimizaciones que, en e
     \item \textbf{Minimización de consultas anidadas}: Se han reestructurado algunas funciones para reducir el coste computacional de las consultas complejas, como en el caso de obtener el carrito de un usuario o los productos de un pedido. De esta manera, se consigue un código más escalable y fácil de mantener.
 \end{itemize}
 
+
+\section{Conclusiones pruebas de carga con Locust}
+Gracias a Locust, ha sido posible obtener una visión detallada del comportamiento del sistema bajo distintas cargas de trabajo. Esta información, una vez recogida y analizada, resulta muy útil para tomar decisiones informadas de cara a futuras optimizaciones o modificaciones del sistema.
+
+La sintaxis basada en Python ha facilitado la creación de escenarios de prueba de forma sencilla y flexible. Una vez comprendido el funcionamiento básico de la herramienta, su uso se vuelve intuitivo y permite analizar múltiples aspectos del rendimiento de la aplicación, como tiempos de respuesta, peticiones por segundo o errores, entre otros.
+
+Locust se presenta como una herramienta muy útil para llevar a cabo pruebas de carga.
+
+
 \chapter{Monitorización del servidor con Grafana}
 En la práctica anterior se recogieron métricas de rendimiento del servidor como el uso de CPU, memoria RAM, frecuencia de la CPU, operaciones de entrada/salida (E/S), entre otras, las cuales se visualizaron mediante paneles en Grafana. Estas métricas permitieron monitorizar el estado general del sistema durante las pruebas de carga.
 
 En esta parte, se han añadido nuevas métricas relacionadas con las reglas de negocio definidas, tales como el número de usuarios registrados, pedidos creados, ingresos totales, número de carritos con ítems dentro y el top 10 de productos más vendidos. Estas métricas permiten evaluar el comportamiento y la carga real de la página web desde un punto de vista más comercial.
 
+\section{Conexión a base de datos desde grafana}
+En este punto se detalla cómo conectar Grafana a la base de datos utilizada por la aplicación web y cómo añadir al dashboard creado en la práctica anterior la visualización de las nuevas métricas.
+
+Para ello, accedemos a la sección de Connections y seleccionamos MySQL. A continuación, es necesario introducir los datos de conexión correspondientes y ajustarlos según la configuración de la base de datos.
+
+Una vez creada la conexión y confirmada su correcta configuración, nos dirigimos a la sección de Dashboards, donde seleccionaremos el dashboard creado en la práctica anterior. Dentro de este, accedemos a la opción Edit y pulsamos en Add Visualization para añadir una nueva visualización.
+
+En el apartado de Data source podremos seleccionar la base de datos que deseamos utilizar: puede ser la propia de Grafana, la base de datos de esta práctica, cualquier otra disponible o incluso una combinación (mixed) de dos o más fuentes de datos.
+
+Una vez seleccionada la fuente de datos, ya es posible realizar las consultas necesarias y visualizar los datos en el dashboard.
+\newpage
 \section{Reglas de negocio} \cite{metricas_boske}
+En este apartado se detallan las métricas de negocio seleccionadas para su visualización.
+
+La elección de estas métricas se ha realizado en base a su relevancia e interés para el análisis de la actividad de la aplicación web, así como por su posible utilidad en un entorno comercial real.
+
+A continuación, se enumeran cinco de las métricas consideradas más representativas:
 \begin{itemize}
-    \item Número de usurios registrados
-    \item Pedidos creados 
-    \item Ingresoso totales 
-    \item Numero de carritos que tienen itmes dentro 
-    \item Top 10 productos más vendidos 
+    \item Número de usurios registrados: Permite conocer el número de usuarios en tiempo resgistrados.
+    \item Pedidos creados: Refleja el número de transacciones. 
+    \item Ingresoso totales: Refleja el rendimiento económico.
+    \item Numero de carritos que tienen itmes/productos dentro: Permite conocer los usaurios que podrían estar listo para realizar un pedido.
+    \item Top 10 productos más vendidos: Permite evaluar como de eficaz y atractiva es la web y los productso que se venden.
 \end{itemize}
 
-\section{Visualización de Grafana}
+\section{Visualización de Grafana}\label{sec:visualizacion}
 \subsection*{Número de usuarios registrados en la página web}
 
 Esta métrica se encarga de recolectar el número de usuarios que se han ido generando y registrando en nuestra página web. De esta manera, se puede conocer cuántos usuarios están ejecutando tareas o no, y medir de forma coherente el rendimiento del sistema.
 
 Para ello, dentro de Grafana se ha escrito la siguiente sentencia SQL:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL, style=SQL]
 SELECT COUNT(id) FROM Carga_web.Usuario
-\end{verbatim}
+\end{lstlisting}
 
 Esta consulta se encarga de obtener cuántos usuarios hay registrados en cada momento.
 
@@ -1551,7 +1705,7 @@ Esta métrica está más orientada a la parte comercial, ya que permite visualiz
 
 Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL, style=SQL]
 SELECT 
     FROM_UNIXTIME(UNIX_TIMESTAMP(fecha) - MOD(UNIX_TIMESTAMP(fecha), 5)) AS tiempo_agrupado,
     SUM(total) AS ingreso_total
@@ -1563,7 +1717,7 @@ GROUP BY
     tiempo_agrupado
 ORDER BY 
     tiempo_agrupado;
-\end{verbatim}
+\end{lstlisting}
 
 Esta consulta agrupa los ingresos cada 5 segundos, permitiendo visualizar cómo varían con el tiempo. 
 
@@ -1571,7 +1725,7 @@ Para mostrar los resultados en Grafana, se ha optado por una visualización de t
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=1.1\linewidth]{ingT.png}
+    \includegraphics[width=1.0\linewidth]{ingT.png}
     \caption{Ingresos Totales}
     \label{fig:enter-label}
 \end{figure}
@@ -1582,7 +1736,7 @@ Esta métrica también está dirigida a un ámbito comercial, ya que permite vis
 
 Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL, style=SQL]
 SELECT 
   id, nombre, total_pedidos
 FROM (
@@ -1619,15 +1773,15 @@ FROM (
   )
 ) AS datos
 LIMIT 10;
-\end{verbatim}
+\end{lstlisting}
 
 Esta consulta permite obtener los productos con más de 10 pedidos y, en caso de que no existan, mostrar un mensaje indicando que no hay resultados. 
 
 Para mostrar los datos en Grafana, se ha optado por una visualización de tipo *Table*, donde se puede observar el ID del producto, su nombre y el número total de pedidos en los que ha sido incluido. De esta forma, se puede construir un ranking con los 10 productos más vendidos y obtener una visualización clara y útil para la toma de decisiones.
-\newpage
+
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=1.1\linewidth]{productosV.png}
+    \includegraphics[width=1.0\linewidth]{productosV.png}
     \caption{Productos más vendidos}
     \label{fig:enter-label}
 \end{figure}
@@ -1640,11 +1794,11 @@ A partir de esta métrica también se podrían derivar otras, como por ejemplo, 
 
 Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL, style=SQL]
 SELECT COUNT(DISTINCT ci.carrito_id) AS carritos_con_items
 FROM Carga_web.CarritoItem ci
 JOIN Carga_web.Carrito c ON c.id = ci.carrito_id;
-\end{verbatim}
+\end{lstlisting}
 
 Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Gauge*, estableciendo un límite máximo de 150 carritos. Esta elección se debe a que, una vez que se realizan los pedidos, de tabla `CarritoItem` se eliminan los items del usurio que acaba de realizar el pedido, lo que hace que esta visualización varíe constantemente.
 
@@ -1663,7 +1817,7 @@ Esta métrica permite conocer cuántos pedidos se han realizado en cada unidad d
 
 Para ello, dentro de Grafana se ha utilizado la siguiente sentencia SQL:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL, style=SQL]
 SELECT 
   (FLOOR(UNIX_TIMESTAMP(fecha) / 10) * 10) * 1000 AS time,
   COUNT(*) AS pedidos
@@ -1675,21 +1829,26 @@ GROUP BY
   time
 ORDER BY 
   time;
-\end{verbatim}
+\end{lstlisting}
 
 Esta consulta agrupa los pedidos realizados en intervalos de 10 segundos, permitiendo así una visualización dinámica y detallada de la frecuencia de pedidos a lo largo del tiempo. La función `\_\_timeFilter(fecha)` es gestionada automáticamente por Grafana para adaptar el rango temporal a lo que el usuario seleccione en el panel.
 
 Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Time series*, que facilita el seguimiento temporal de los pedidos, ayudando a detectar patrones de comportamiento de los usuarios, así como a evaluar posibles cuellos de botella o momentos de alta demanda.
-
+\newpage
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\linewidth]{pedCrea.png}
     \caption{Pedidos creados por unidad de tiempo y pedidos totales}
     \label{fig:enter-label}
 \end{figure}
+
+\section{Conclusiones Grafana}
+Grafana ha contribuido de manera muy eficaz a la hora de recoger y visualizar los datos del sistema. Gracias a su fácil integración con bases de datos, hemos podido obtener los resultados necesarios y observar el comportamiento del sistema de forma clara y eficiente. Con una implementación sencilla y rápida, Grafana ha demostrado ser una herramienta robusta, permitiéndonos monitorizar el estado del sistema como si se tratara de un entorno real.
+
+
 \chapter{Conclusiones y  Reparto de trabajo}
 
-\section{Conclusiones}
+\section{Conclusiones Finales}
 
 A lo largo de este proyecto se ha conseguido desarrollar una aplicación web en Flask, siguiendo una arquitectura Modelo-Vista-Controlador (MVC). Se han implementado las funcionalidades principales de una tienda online, como el registro y login de usuarios, la visualización de productos, la gestión de carritos y pedidos, así como un sistema de autenticación mediante tokens.
 
@@ -1700,6 +1859,7 @@ También se configuró Grafana para visualizar métricas del sistema, lo cual fu
 \subsubsection*{Problemas encontrados}
 Durante el desarrollo de la web no surgieron demasiados problemas, aunque sí hubo algunos retos, especialmente al implementar los tokens de autenticación y al mostrar todos los pedidos de un usuario, ya que requería una lógica más elaborada. En cuanto a Locust, también hubo dificultades al principio, ya que no conocíamos bien la herramienta y los datos recogidos no eran fiables. Esto se debió a que no comprendíamos bien cómo se distribuían los usuarios ni cómo ejecutaban las tareas. Sin embargo, esto nos llevó a mejorar y escalar el código de manera más sólida.
 
+\subsubsection*{En resumen}
 Gracias a este proyecto hemos podido conocer herramientas de desarrollo backend como Flask, que ha resultado ser bastante intuitiva y fácil de usar. También diseñamos una base de datos relacional, lo cual ha reforzado nuestros conocimientos previos. Por otro lado, el uso de Locust nos ha enseñado lo sencillo que puede ser generar carga y evaluar el comportamiento de una web. Además, hemos conseguido aplicar los conocimientos teóricos de la asignatura a un caso práctico y real, lo que ha reforzado lo aprendido en clase. También hemos mejorado nuestras habilidades con Git y GitHub, trabajando de forma colaborativa.
 
 \subsubsection*{Mejoras}
