@@ -1347,9 +1347,11 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item En otros contextos podrían como en casos donde no se requiera de un usuario autenticado, podría considerarse válidos mediante \texttt{success()}, pero para esta prueba se trató como \texttt{failure()} para reflejar una situación más realista.
         \item Como comprobación se adjunta una captura de los errores obtenidos en el análisis donde se puede observar que son errores controlados y que son todos de respuest http de 300 a 308 lo que nos indica que el backend esta funcionando correctamente y que todo va bien como debería ocurrir en casos reales.
         La explicación de estos errores y porque surgen se explican en pasos anteriores (\autoref{sec:token}).
+        \newpage
+
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.9\linewidth]{errores.png}
+            \includegraphics[width=0.95\linewidth]{Fallos.png}
             \caption{Mensajes de fallos previstos en locust}
             \label{fig:enter-label}
         \end{figure}
@@ -1361,14 +1363,15 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item Se observó un rendimiento estable con incrementos moderados en los tiempos de respuesta a medida que aumentaban los usuarios.
     \end{itemize}
 \end{enumerate}
-\newpage
-\noindent A continuación, se incluyen las capturas obtenidas cada 5 minutos, donde se aprecia visualmente la evolución del sistema tanto desde la perspectiva técnica (Grafana) como funcional (Locust).
+
+\subsection*{Análisis resultados}
+\noindent A continuación, se incluyen los datos obtenidas cada 5 minutos y algunos ejemplos de como se han obtenido a traves de grafana y la interfaz de locust. En estos resultados se puede apreciar visualmente la evolución del sistema tanto desde la perspectiva técnica (Grafana) como funcional (Locust).
 
 
 
 %ejemplo
 \begin{itemize}
-    \item \textbf{Captura minuto 0--5:} \\
+    \item \textbf{Captura datos minuto 0--5:} \\
     En los primeros 5 minutos, se simularon 41 usuarios concurrentes. 
     
     En Grafana se observa un aumento progresivo del uso de CPU hasta el 20{,}40\%, mientras que la RAM se mantiene estable en torno al 35{,}3\%. La carga del sistema a 1 minuto es de 0{,}30 y la de 5 minutos es de 0{,}12. Ambas se sitúan muy por debajo del umbral crítico de 2, lo que indica que el servidor tiene capacidad de procesamiento disponible.
@@ -1386,41 +1389,60 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Datos de locust registrados en el minuto 5}
         \label{fig:enter-label}
     \end{figure}
-
-    \item \textbf{Captura minuto 5--10:} \\
+    
+    \item \textbf{Captura datos minuto 5--10:} \\
     En los siguientes 5 minutos, se simularon 81 usuarios concurrentes. 
     
     En Grafana se observa un aumento del uso de CPU hasta el 30{,}30\%, mientras que la RAM se mantiene estable en torno al 35{,}1\%. La carga del sistema a 1 minuto es de 0{,}36 y la de 5 minutos es de 0{,}33, ambas muy por debajo del umbral de saturación.
-
-    El sistema respondió con una media de 35,6 peticiones por segundo y un tiempo de respuesta medio de 132,18\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 10\,934.  No se registraron errores, más que aquellos descritos con anterioridad.
-
-    \item \textbf{Captura minuto 10--15:} \\
-    Entre los minutos 10 y 15, se simularon 121 usuarios concurrentes. 
-    
-    En Grafana se observa un uso de CPU que alcanza el 36{,}40\%, y la RAM se mantiene estable en torno al 34{,}7\%. La carga del sistema a 1 minuto es de 1{,}14 y la de 5 minutos es de 0{,}80. Aunque los valores aumentan, se mantienen por debajo del umbral crítico de 2.
-
-    El sistema respondió con una media de 52,8 peticiones por segundo y un tiempo de respuesta medio de 139,58\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 24\,217.  No se registraron errores, más que aquellos descritos con anterioridad.
-
-    \item \textbf{Captura minuto 15--20:} \\
-    En los siguientes 5 minutos, se simularon 161 usuarios concurrentes. 
-    
-    En Grafana se observa un incremento del uso de CPU hasta el 37{,}60\%, mientras que la RAM permanece estable en torno al 34{,}8\%. La carga del sistema a 1 minuto es de 1{,}44 y la de 5 minutos es de 1{,}31. Aunque aún por debajo de 2, los valores se acercan al límite, indicando una mayor exigencia sobre el servidor.
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.7\linewidth]{datos10.png}
+        \includegraphics[width=0.7\linewidth]{grafan5.png}
         \caption{Datos registrados en el minuto 10}
         \label{fig:enter-label}
     \end{figure}
     
-    El sistema respondió con una media de 71,5 peticiones por segundo y un tiempo de respuesta medio de 145,44\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 43\,246.  No se registraron errores, más que aquellos descritos con anterioridad.
-    \begin{figure}[!h]
+    El sistema respondió con una media de 35,6 peticiones por segundo y un tiempo de respuesta medio de 132,18\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 10\,934.  No se registraron errores, más que aquellos descritos con anterioridad.
+    \newpage
+    \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.75\linewidth]{imagen10_3.png}
+        \includegraphics[width=0.65\linewidth]{locust10.png}
         \caption{Datos de locust registrados en el minuto 10}
         \label{fig:enter-label}
     \end{figure}
+
+    \item \textbf{Captura datos minuto 10--15:} \\
+    Entre los minutos 10 y 15, se simularon 121 usuarios concurrentes. 
+    
+    En Grafana se observa un uso de CPU que alcanza el 36{,}40\%, y la RAM se mantiene estable en torno al 34{,}7\%. La carga del sistema a 1 minuto es de 1{,}14 y la de 5 minutos es de 0{,}80. Aunque los valores aumentan, se mantienen por debajo del umbral crítico de 2.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\linewidth]{graf15.png}
+        \caption{Datos registrados en el minuto 15}
+        \label{fig:enter-label}
+    \end{figure}
+   
+    El sistema respondió con una media de 52,8 peticiones por segundo y un tiempo de respuesta medio de 139,58\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 24\,217.  No se registraron errores, más que aquellos descritos con anterioridad.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.65\linewidth]{locust15.png}
+        \caption{Datos de locust registrados en el minuto 15}
+        \label{fig:enter-label}
+    \end{figure}
     \newpage
-    \item \textbf{Captura minuto 20--25:} \\
+    \item \textbf{Captura datos minuto 15--20:} \\
+    En los siguientes 5 minutos, se simularon 161 usuarios concurrentes. 
+    
+    En Grafana se observa un incremento del uso de CPU hasta el 37{,}60\%, mientras que la RAM permanece estable en torno al 34{,}8\%. La carga del sistema a 1 minuto es de 1{,}44 y la de 5 minutos es de 1{,}31. Aunque aún por debajo de 2, los valores se acercan al límite, indicando una mayor exigencia sobre el servidor.
+    
+    El sistema respondió con una media de 71,5 peticiones por segundo y un tiempo de respuesta medio de 145,44\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 43\,246.  No se registraron errores, más que aquellos descritos con anterioridad.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\linewidth]{imagen10_3.png}
+        \caption{Datos de locust registrados en el minuto 20}
+        \label{fig:enter-label}
+    \end{figure}
+    \newpage
+    \item \textbf{Captura datos minuto 20--25:} \\
     En los últimos 5 minutos, se simularon 180 usuarios concurrentes. 
     
     En Grafana se observa un uso de CPU de hasta el 36{,}40\% y una RAM estable en torno al 34{,}7\%. La carga del sistema a 1 minuto es de 1{,}87 y la de 5 minutos es de 1{,}72, valores que se aproximan al límite crítico, aunque el servidor aún mantiene capacidad disponible.
@@ -1429,15 +1451,16 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
    \item En total se han capturado 66\,318 peticiones, de las cuales 11\,225 han fallado, lo que representa una tasa de error del 16,9\%. El tiempo de respuesta medio ha sido de 149{,}12 ms, con un mínimo de 4 ms y un máximo de 5\,166 ms. El tamaño medio de las respuestas ha sido de 4\,092 bytes. La tasa de peticiones por segundo (RPS) se ha mantenido en torno a 44,2, mientras que la tasa de errores por segundo ha sido de 7,48. 
 
     A pesar de una media de respuesta aceptable, el número significativo de fallos y la elevada dispersión en los tiempos (especialmente el valor máximo y el percentil 95 cercano a 2\,000 ms) sugieren que existen cuellos de botella, especialmente en endpoints críticos como \texttt{checkout}.El percentil 95 se ha usado con el fín de obtener una referencia del rendimiento general del sistema.
+
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=1.0\linewidth]{totalL.png}
+        \includegraphics[width=1.0\linewidth]{finalV.png}
         \caption{Resumen final valores Locust}
         \label{fig:enter-label}
     \end{figure}
     
 \end{itemize}
-
+\newpage
 \subsubsection{Endpoints críticos}
 
 Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes. Los resultados de este análisis podrían haber sido distintos si se hubiera cambiado el peso de las tareas, pero como se mencionó en el punto (\autoref{sec:pesos}), estos pesos se asignaron de manera que nos parecía coherente y que reflejaba cómo de verdad tenía que actuar nuestra web y sistema en condiciones reales.
@@ -1453,15 +1476,15 @@ Durante la prueba de carga, se ha podido identificar qué endpoints del sistema 
     \item El endpoint \texttt{agregarProductoCarrito} (\texttt{/api/carrito/agregar}) destaca como el más utilizado, con un 13,0\% del total, lo que lo convierte en un candidato prioritario para optimización y pruebas de robustez. Dado que en este endpoint se realizan varias operaciones de base de datos, y con los resultados obtenidos, podría convertirse en un cuello de botella bajo condiciones de estrés como las generadas durante la prueba.
 
     \item Le siguen varios endpoints con una participación del 8,7\% cada uno: \newline
-    \texttt{actualizarProductoPut}, \texttt{actualizarTipoPatch}, \texttt{checkout}, \texttt{getProductos}, \texttt{intentarLogin}, \texttt{menu}. Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella. Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000 ms. Esto se debe al endpoint de \texttt{checkout},la cual es una función de mucho peso ya que hace varios inserts a base datos y tiene un lógica más pesada, pero además incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Entre las peticiones que superan los 2000 ms se encuentran principalmente las del endpoint \texttt{checkout}, como se puede observar en la imagen de abajo, donde se evidencia que este endpoint genera un retraso significativo debido a la simulación de una transacción real con un retardo de 2 segundos. Este comportamiento explica por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95. Dado que se realizaron 66\,318 peticiones en total, esto significa que unas 62\,002 fueron más rápidas o iguales a 2000 ms, mientras que las restantes 4\,316 superaron ese umbral. Por tanto, el endpoint \texttt{checkout} influye de forma directa en la percepción de rendimiento para una parte relevante de los usuarios, lo que puede impactar negativamente en la eficiencia general de la web.
+    \texttt{actualizarProductoPut} ('/api/productos/id'), \texttt{actualizarTipoPatch} ('/api/productos/id'), \texttt{checkout} ('/api/checkout'), \texttt{getProductos} ('/api/productos'), \texttt{intentarLogin} ('/api/login'), \texttt{menu} ('/api/menu'). Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella. Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000 ms. Esto se debe al endpoint de \texttt{checkout},la cual es una función de mucho peso ya que hace varios inserts a base datos y tiene un lógica más pesada, pero además incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Entre las peticiones que superan los 2000 ms se encuentran principalmente las del endpoint \texttt{checkout}, como se puede observar en la imagen de abajo, donde se evidencia que este endpoint genera un retraso significativo debido a la simulación de una transacción real con un retardo de 2 segundos. Este comportamiento explica por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95. Dado que se realizaron 66\,318 peticiones en total, esto significa que unas 62\,002 fueron más rápidas o iguales a 2000 ms, mientras que las restantes 4\,316 superaron ese umbral. Por tanto, el endpoint \texttt{checkout} influye de forma directa en la percepción de rendimiento para una parte relevante de los usuarios, lo que puede impactar negativamente en la eficiencia general de la web.
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=1.0\linewidth]{locust.png}
+        \includegraphics[width=1.0\linewidth]{salidaLF.png}
         \caption{Salida de medición de locust}
         \label{fig:enter-label}
     \end{figure}
 
-    \item Otros endpoints como \texttt{cerrarSesion}, \texttt{deleteCarrito}, \texttt{getCarrito}, \texttt{getPedidos}, \texttt{getProductoPorId}, \texttt{getUnPedido}, \texttt{loginGet} y \texttt{registerGet} se mantienen en un 4,3\%, siendo menos críticos individualmente. No obstante, su uso combinado representa una carga significativa y podrían convertirse en un problema si el número de usuarios o la carga aumentara.
+    \item Otros endpoints como \texttt{cerrarSesion} ('/api/logout'), \texttt{deleteCarrito} ('/api/carrito/vaciar'),  \texttt{getCarrito} ('/api/carrito'),  \texttt{getPedidos} ('/api/pedidos'), \texttt{getProductoPorId} ('/api/productos/id'), \newline \texttt{getUnPedido} ('/api/pedidos/id'), \texttt{loginGet} ('/api/login') y \texttt{registerGet} ('/api/registro')se mantienen en un 4,3\%, siendo menos críticos individualmente. No obstante, su uso combinado representa una carga significativa y podrían convertirse en un problema si el número de usuarios o la carga aumentara.
 \end{itemize}
 
 Este análisis del ratio por clase proporciona una visión clara de dónde se deben realizar pruebas más exhaustivas sobre ciertos endpoints antes de realizar cambios en el código. En particular, los endpoints con ratios superiores al 8\% pueden considerarse como críticos para la experiencia del usuario bajo condiciones reales de uso. Además, aquellos que impliquen operaciones con la base de datos o múltiples pasos internos (como \texttt{agregarProductoCarrito} o \texttt{checkout}) deberían ser revisados para majorar y ofrecer una experiencia de usuario mejor.
@@ -1481,11 +1504,11 @@ A continuación se muestra una tabla resumen con todos los datos recogidos en ca
 \hline
 \textbf{Tiempo (min)} & \textbf{Usuarios} & \textbf{Resp. media (ms)} & \textbf{Peticiones/s} & \textbf{CPU (\%)} & \textbf{RAM (\%)} \\
 \hline
-5   & 41  & 134,18 & 16,8 & 20,40 & 35,3 \\
-10  & 81  & 132,18 & 35,6 & 30,30 & 35,1 \\
-15  & 121 & 139,58 & 52,8 & 36,40 & 34,7 \\
-20  & 161 & 145,44 & 71,5 & 37,60 & 34,8 \\
-25  & 180 & 149,12 & 79,3 & 36,40 & 34,7 \\
+0-5   & 41  & 134,18 & 16,8 & 20,40 & 35,3 \\
+5-10  & 81  & 132,18 & 35,6 & 30,30 & 35,1 \\
+10-15  & 121 & 139,58 & 52,8 & 36,40 & 34,7 \\
+15-20  & 161 & 145,44 & 71,5 & 37,60 & 34,8 \\
+20-25  & 180 & 149,12 & 79,3 & 36,40 & 34,7 \\
 \hline
 \end{tabular}
 \caption{Resumen de usuarios, tiempo medio de respuesta, peticiones por segundo y uso de recursos}
@@ -1499,11 +1522,11 @@ A continuación se muestra una tabla resumen con todos los datos recogidos en ca
 \hline
 \textbf{Tiempo (min)} & \textbf{Carga min 1} & \textbf{Carga min 5} & \textbf{Freq. CPU (MHz)} & \textbf{Operac. E/S} \\
 \hline
-5   & 0,30 & 0,12 & 2095 & 10446 \\
-10  & 0,36 & 0,33 & 2095 & 10446 \\
-15  & 1,14 & 0,80 & 2095 & 10446 \\
-20  & 1,44 & 1,31 & 2095 & 104450 \\
-25  & 1,87 & 1,72 & 2095 & 104452 \\
+0-5   & 0,30 & 0,12 & 2095 & 10446 \\
+5-10  & 0,36 & 0,33 & 2095 & 10446 \\
+10-15  & 1,14 & 0,80 & 2095 & 10446 \\
+15-20  & 1,44 & 1,31 & 2095 & 104450 \\
+20-25  & 1,87 & 1,72 & 2095 & 104452 \\
 \hline
 \end{tabular}
 \caption{Carga del sistema, frecuencia de CPU y operaciones de E/S durante la prueba de carga}
@@ -1546,11 +1569,11 @@ Para saber si el sistema mantiene su rendimiento por usuario, calculamos el thro
 \hline
 \textbf{Tiempo (min)} & \textbf{Usuarios} & \textbf{Peticiones/s} & \textbf{RPS por usuario} \\
 \hline
-5  & 41  & 16.8  & 0.410 \\
-10 & 81  & 35.6  & 0.440 \\
-15 & 121 & 52.8  & 0.436 \\
-20 & 161 & 71.5  & 0.444 \\
-25 & 180 & 79.3  & 0.441 \\
+0-5  & 41  & 16.8  & 0.410 \\
+5-10 & 81  & 35.6  & 0.440 \\
+10-15 & 121 & 52.8  & 0.436 \\
+15-20 & 161 & 71.5  & 0.444 \\
+20-25 & 180 & 79.3  & 0.441 \\
 \hline
 \end{tabular}
 \caption{Throughput por usuario durante la prueba}
@@ -1606,15 +1629,15 @@ A continuación, se compara el producto \(\mu \cdot R\) con los valores observad
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-\textbf{Tiempo (min)} & \textbf{Usuarios \(N\)} & \textbf{Throughput \(\mu\)} & \textbf{\(\mu \cdot R\) (estimado)} \\
+\textbf{Tiempo (min)} & \textbf{Usuarios \(N\)} & \textbf{Resp. media \(R\) (s)} & \textbf{Throughput \(\mu\)} & \(\mu \cdot R\) (estimado) \\
 \hline
-5  & 41  & 16.8  & 2.25 \\
-10 & 81  & 35.6  & 4.71 \\
-15 & 121 & 52.8  & 7.37 \\
-20 & 161 & 71.5  & 10.40 \\
-25 & 180 & 79.3  & 11.82 \\
+0-5  & 41  & 0.134 & 16.8  & 2.25 \\
+5-10 & 81  & 0.132 & 35.6  & 4.71 \\
+10-15 & 121 & 0.140 & 52.8  & 7.37 \\
+15-20 & 161 & 0.145 & 71.5  & 10.40 \\
+20-25 & 180 & 0.149 & 79.3  & 11.82 \\
 \hline
 \end{tabular}
 \caption{Validación de la Ley de Little (R en segundos)}
