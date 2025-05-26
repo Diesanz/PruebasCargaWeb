@@ -132,7 +132,7 @@
 
 
 \title{\textbf{Práctica 2 Pruebas de carga web}}
-\author{\textbf{Fernández Sánchez, Victor}\\\textbf{Sánchez Maroto, Gonzalo}\\\textbf{Sanz Santos, Diego}\\\textbf{Verduras Cavada, Rubén}
+\author{\textbf{Fernández Sánchez, Víctor}\\\textbf{Sánchez Maroto, Gonzalo}\\\textbf{Sanz Santos, Diego}\\\textbf{Verduras Cavada, Rubén}
 \date{\today}}
 
 \pagestyle{fancy}
@@ -175,16 +175,17 @@
 \newpage
 \section*{Introducción}
 
-En este documento se recopila toda la información relacionada con la realización de esta práctica. 
+En este documento se recopila toda la información relacionada con la realización de esta práctica.\\
 
-El objetivo principal es realizar pruebas de carga para evaluar el rendimiento de un servidor web, utilizando Locust para simular tráfico concurrente. 
+El objetivo principal es realizar pruebas de carga para evaluar el rendimiento de un servidor web, utilizando Locust para simular tráfico concurrente.\\
 
-Para ello, se ha desarrollado una página web con Flask, sobre la cual se ejecutan distintas pruebas de carga con Locust para recoger datos relevantes del rendimiento. 
+Para ello, se ha desarrollado una página web con Flask, sobre la cual se ejecutan distintas pruebas de carga con Locust para recoger datos relevantes del rendimiento.\\ 
 
-Además, se monitoriza el sistema mediante Grafana, apoyándonos en el trabajo realizado en la práctica anterior, para obtener métricas del sistema y métricas de negocio que ayuden a interpretar los resultados. 
+Además, se monitoriza el sistema mediante Grafana, apoyándonos en el trabajo realizado en la práctica anterior, para obtener métricas del sistema y métricas de negocio que ayuden a interpretar los resultados.\\
 
-Finalmente, se analizarán los datos recogidos para identificar posibles cuellos de botella y evaluar la escalabilidad del servidor bajo diferentes niveles de carga.
+Finalmente, se analizarán los datos recogidos para identificar posibles cuellos de botella y evaluar la escalabilidad del servidor bajo diferentes niveles de carga.\\
 
+Esta práctica permite afianzar conocimientos sobre pruebas de rendimiento, monitorización y análisis de sistemas, así como comprender la importancia de estas herramientas en entornos de producción donde la disponibilidad y la capacidad de respuesta del servidor son factores críticos.\\
 
 % Opcional para que aparezca en el índice
 \addcontentsline{toc}{section}{Introducción}
@@ -192,7 +193,7 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
 \chapter{Página web}
 
 \section{Introducción Flask}\cite{openwebinars_flask} \cite{flask_docs}
-    Flask es un microframework escrto en Python y desarrollado para simplificar y hacer más fácil la creación de aplicaciones web bajo el patrón modelo vista controlador (MVC). Las pricipales ventajas de usar Flask son:
+    Flask es un microframework escrito en Python y desarrollado para simplificar y hacer más fácil la creación de aplicaciones web bajo el patrón modelo vista controlador (MVC). Las pricipales ventajas de usar Flask son:
         \begin{itemize}
             \item Microframework: perfecto si se quiere desarrollar una app básica de manera rápida y ágil, ya que no se necesitarán muchas extensiones, y con Flask es suficiente.
             \item Incluye un servidor web de desarrollo: no se necesita una infraestructura con un servidor web para testear las aplicaciones, simplemente se puede ejecutar en un servidor web de manera sencilla.
@@ -329,35 +330,35 @@ En nuestro caso, la aplicación web desarrollada sigue esta arquitectura, ya que
     \begin{enumerate}
         \item La carpeta db está formada por:
             \begin{itemize}
-                \item conexiondb.py $\rightarrow$ crea la clase Conexion, que se encarga de gestionar la conexión y operaciones con la base de datos MySQL utilizando la libreria pymysql. Hay diferentes métodos creados como el ''\_\_init\_\_'' (inicializa la configuración de la conexión con la base de datos), ''get\_connection'' (establece la conexión con la base de datos), ''close\_connection'' (cierra la conexión con la base de datos), ''select\_db'', ''execute\_db'' y ''procedure'', para ejecutar consultas SELECT, de modificación o un procedimiento respectivamente.
+                \item \textbf{conexiondb.py} $\rightarrow$ crea la clase Conexion, que se encarga de gestionar la conexión y operaciones con la base de datos MySQL utilizando la libreria pymysql. Hay diferentes métodos creados como el ''\textit{\_\_init\_\_}'' (inicializa la configuración de la conexión con la base de datos), ''\textit{get\_connection}'' (establece la conexión con la base de datos), ''\textit{close\_connection}'' (cierra la conexión con la base de datos), ''\textit{select\_db}'', ''\textit{execute\_db}'' y ''\textit{procedure}'', para ejecutar consultas SELECT, de modificación o un procedimiento respectivamente.
                 \item El objetivo de esta clase es mantener un código más escalable, pero sobre todo se buscó que fuera más legible y que facilitara la realización de consultas a la base de datos.
             \end{itemize}
 
         \item  La carpeta models está formada por:
             \begin{itemize}
-                \item Usuario.py $\rightarrow$ crea la clase Usuario, que representa a una persona registrada en la página web.
-                \item Producto.py $\rightarrow$ crea la clase Producto, que representa un producto que se puede comprar.
-                \item Carrito.py $\rightarrow$ crea la clase Carrito, que representa un almacén de productos para comprar por el usuario.
-                \item itemCarrito.py $\rightarrow$ crea la clase ItemCarrito, que representa un producto que se ha añadido al carrito.
-                \item Pedido.py $\rightarrow$ crea la clase Pedido, que representa una compra de productos que se ha realizado.
-                \item itemPedido.py $\rightarrow$ crea la clase ItemPedido, que representa un producto que forma el pedido.
+                \item \textbf{Usuario.py} $\rightarrow$ crea la clase Usuario, que representa a una persona registrada en la página web.
+                \item \textbf{Producto.py} $\rightarrow$ crea la clase Producto, que representa un producto que se puede comprar.
+                \item \textbf{Carrito.py} $\rightarrow$ crea la clase Carrito, que representa un almacén de productos para comprar por el usuario.
+                \item \textbf{itemCarrito.py} $\rightarrow$ crea la clase ItemCarrito, que representa un producto que se ha añadido al carrito.
+                \item \textbf{Pedido.py} $\rightarrow$ crea la clase Pedido, que representa una compra de productos que se ha realizado.
+                \item \textbf{itemPedido.py} $\rightarrow$ crea la clase ItemPedido, que representa un producto que forma el pedido.
             \end{itemize}
         \item  La carpeta routes está formada por:
             \begin{itemize}
-                \item autenticar.py $\rightarrow$ es el controlador de la autenticación de los usuarios, es el encargado de controlar el registro, login y logout de los usuarios de la página web.
-                \item menuController.py $\rightarrow$ es el controlador de la página principal de la web, es el encargado de mostrar toda la información de dicha página.
-                \item productosController.py $\rightarrow$ es el controlador de los productos en venta, es el encargado de mostrar la lista de productos junto con una breve información y actualizar la información de los productos.
-                \item carritoController.py $\rightarrow$ es el controlador del carrito de la compra, es el encargado de mostrar, actualizar y vaciar el carrito.
-                \item pedidoController.py $\rightarrow$ es el controlador de los pedidos, es el encargado de mostrar el hisotrial de pedidos, los detalles de cada uno y procesar el pedido.A la hora de procesar un pedido se añade un delay de 2 segundos, parasimular transacciones de compra y cumplir con el eneunciado de la pŕactica.
+                \item \textbf{autenticar.py} $\rightarrow$ es el controlador de la autenticación de los usuarios, es el encargado de controlar el registro, login y logout de los usuarios de la página web.
+                \item \textbf{menuController.py} $\rightarrow$ es el controlador de la página principal de la web, es el encargado de mostrar toda la información de dicha página.
+                \item \textbf{productosController.py} $\rightarrow$ es el controlador de los productos en venta, es el encargado de mostrar la lista de productos junto con una breve información y actualizar la información de los productos.
+                \item \textbf{carritoController.py} $\rightarrow$ es el controlador del carrito de la compra, es el encargado de mostrar, actualizar y vaciar el carrito.
+                \item \textbf{pedidoController.py} $\rightarrow$ es el controlador de los pedidos, es el encargado de mostrar el hisotrial de pedidos, los detalles de cada uno y procesar el pedido.A la hora de procesar un pedido se añade un delay de 2 segundos, parasimular transacciones de compra y cumplir con el eneunciado de la pŕactica.
             \end{itemize}
         \item La carpeta schemas está formada por:
             \begin{itemize}
-                \item Usuario.py $\rightarrow$ crea los métodos para la validación de los usuarios para la api.
-                \item Producto.py $\rightarrow$ crea el método para la validación de los productos para la api.
-                \item Carrito.py $\rightarrow$ crea el método para la validación del carrito de la compra para la api.
-                \item itemCarrito.py $\rightarrow$ crea los métodos para la validación de los productos del carrito para la api.
-                \item Pedido.py $\rightarrow$ crea el método para la validación del pedido para la api.
-                \item itemPedido.py $\rightarrow$ crea los métodos para la validación de los productos del pedido para la api.
+                \item \textbf{Usuario.py} $\rightarrow$ crea los métodos para la validación de los usuarios para la api.
+                \item \textbf{Producto.py} $\rightarrow$ crea el método para la validación de los productos para la api.
+                \item \textbf{Carrito.py} $\rightarrow$ crea el método para la validación del carrito de la compra para la api.
+                \item \textbf{itemCarrito.py} $\rightarrow$ crea los métodos para la validación de los productos del carrito para la api.
+                \item \textbf{Pedido.py} $\rightarrow$ crea el método para la validación del pedido para la api.
+                \item \textbf{itemPedido.py} $\rightarrow$ crea los métodos para la validación de los productos del pedido para la api.
             \end{itemize}
         \item  La carpeta static está formada por:
             \begin{itemize}
@@ -368,20 +369,20 @@ En nuestro caso, la aplicación web desarrollada sigue esta arquitectura, ya que
             
         \item La carpeta templates está formada por:
             \begin{itemize}
-                \item index.html $\rightarrow$ representa la vista de la página principal.
-                \item inicioSesion.html $\rightarrow$ representa la vista de inicio de sesión para el usuario.
-                \item registroUsuario.html $\rightarrow$ representa la vista de registro de un usuario nuevo en la página.
-                \item platos.html $\rightarrow$ representa la vista de todos los productos disponibles.
-                \item detallesProducto.html $\rightarrow$ representa la vista de los detalles de un producto.
-                \item carrito.html $\rightarrow$ representa la vista del carrito de un usuario.
-                \item pedidos.html $\rightarrow$ representa la vista del historial de pedidos del usuario.
-                \item unPedido.html $\rightarrow$ representa la vista de los detalles de un pedido.
+                \item \textbf{index.html} $\rightarrow$ representa la vista de la página principal.
+                \item \textbf{inicioSesion.html} $\rightarrow$ representa la vista de inicio de sesión para el usuario.
+                \item \textbf{registroUsuario.html} $\rightarrow$ representa la vista de registro de un usuario nuevo en la página.
+                \item \textbf{platos.html} $\rightarrow$ representa la vista de todos los productos disponibles.
+                \item \textbf{detallesProducto.html} $\rightarrow$ representa la vista de los detalles de un producto.
+                \item \textbf{carrito.html} $\rightarrow$ representa la vista del carrito de un usuario.
+                \item \textbf{pedidos.html} $\rightarrow$ representa la vista del historial de pedidos del usuario.
+                \item \textbf{unPedido.html} $\rightarrow$ representa la vista de los detalles de un pedido.
             \end{itemize}
 
         \item La carpeta utils está formada por:
             \begin{itemize}
-                \item comprobar\_token.py $\rightarrow$ que crea el método de comprobación del token de inicio de sesión del usuario.
-                \item carrito.py $\rightarrow$ se crean métodos  dentro de la carpeta utils ya qu son utilizados tanto por el controlador de los pedidos como el del carrito, su función es obtener los items del carrito de un usuario o la de devolver el id de un carrito de un usuario.
+                \item \textbf{comprobar\_token.py} $\rightarrow$ que crea el método de comprobación del token de inicio de sesión del usuario.
+                \item \textbf{carrito.py} $\rightarrow$ se crean métodos  dentro de la carpeta utils ya qu son utilizados tanto por el controlador de los pedidos como el del carrito, su función es obtener los items del carrito de un usuario o la de devolver el id de un carrito de un usuario.
             \end{itemize}
     \end{enumerate} 
         
@@ -399,7 +400,6 @@ La página web desarrollada representa una tienda online de platos de comida, do
     \item Consulta detallada de cada producto.
     \item Consulta del historial de pedidos y visualización de sus detalles.
 \end{itemize}
-\newpage
 \subsection{Vistas, HTML y lógica Jinja2}
 
 A continuación, se describen las principales vistas de la web, explicando brevemente el uso de Jinja2 en cada una:
@@ -418,7 +418,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endfor %}
     \end{lstlisting}
 
-    \textit{Uso de Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url\_for` para cargar las imágenes estáticas.
+    Uso de \textit{Jinja2:} se recorre la lista de productos y se renderiza su contenido dinámicamente. También se utiliza `url\_for` para cargar las imágenes estáticas.
 
     \item \textbf{Registro de usuario:} permite a nuevos usuarios crear una cuenta. El formulario envía los datos a un endpoint que los procesa.
 
@@ -438,7 +438,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endfor %}
     \end{lstlisting}
 
-    \textit{Uso de Jinja2:} generación dinámica de cada tarjeta de producto, incluyendo enlaces a sus detalles y botón para añadir al carrito.
+    Uso de \textit{Jinja2:} generación dinámica de cada tarjeta de producto, incluyendo enlaces a sus detalles y botón para añadir al carrito.
 
     \item \textbf{Detalle del producto:} muestra información más completa como la descripción, el stock y el tipo.
 
@@ -450,7 +450,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
     \end{lstlisting}
 
-    \textit{Uso de Jinja2:} muestra los atributos de un único objeto `producto`.
+    Uso de \textit{Jinja2:} muestra los atributos de un único objeto `producto`.
 
     \item \textbf{Carrito de la compra:} permite ver los productos añadidos, sus cantidades y el total del pedido.
 
@@ -464,7 +464,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     <p>Total: {{ total if total else '0.0' }} €</p>
     \end{lstlisting}
 
-    \textit{Uso de Jinja2:} se itera sobre los productos del carrito y se calcula el total condicionalmente.
+    Uso de \textit{Jinja2:} se itera sobre los productos del carrito y se calcula el total condicionalmente.
 
     \item \textbf{Detalle del pedido:} visualización detallada de los productos comprados en un pedido específico.
 
@@ -491,7 +491,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     {% endfor %}
     \end{lstlisting}
     
-    \textit{Uso de Jinja2:} Se recorre dinámicamente una lista de pedidos (`pedidos.lista\_p`) y se imprimen los datos de cada uno.
+    Uso de \textit{Jinja2:} Se recorre dinámicamente una lista de pedidos (`pedidos.lista\_p`) y se imprimen los datos de cada uno.
     
 
     \item \textbf{Paginación de pedidos:} Permite navegar entre páginas de pedidos si existen múltiples.
@@ -506,7 +506,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
         page=pedidos.page + 1) }}">Siguiente</a>
     {% endif %}
     \end{lstlisting}
-    \textit{Uso de Jinja2:} Se comprueba el número de página actual para mostrar enlaces de navegación si es necesario.
+    Uso de \textit{Jinja2:} Se comprueba el número de página actual para mostrar enlaces de navegación si es necesario.
         
     \item \textbf{Mensajes de error:} Muestra mensajes flash para informar al usuario sobre errores.
     \begin{lstlisting}[style=bonitoJinja]
@@ -522,10 +522,9 @@ A continuación, se describen las principales vistas de la web, explicando breve
         {% endif %}
     {% endwith %}
     \end{lstlisting}
-    \textit{Uso de Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash.
+    Uso de \textit{Jinja2:} Se usan bloques condicionales y bucles para renderizar mensajes almacenados mediante Flask Flash.
     
 \end{itemize}
-
 
 \subsection{Modelo de dominio}
        \begin{figure}[H]
@@ -542,10 +541,11 @@ A continuación, se describen las principales vistas de la web, explicando breve
         \caption{Enter Caption}
         \label{fig:enter-label}
     \end{figure}
-    
-    \section{API}
-    API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
-    Los tipos de API son:
+
+\newpage
+\section{API}
+    \textbf{API (Application Programming Interface)}, Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
+    Los \textbf{tipos} de API son:
         \begin{itemize}
             \item Según su acceso:
             \begin{itemize}
@@ -558,7 +558,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
                 \item SOAP: usan XML.
             \end{itemize}
         \end{itemize}
-    Los principales usos de las APIs son:
+    Los \textbf{principales usos} de las APIs son:
         \begin{itemize}
             \item Integración de servicios: permiten que diferentes servicios web y aplicaciones se conecten y compartan funcionalidades.
             \item Desarrollo de aplicaciones modulares: son aplicaciones complejas divididas en módulos.
@@ -568,7 +568,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
             \item Plataformas como servicio (PaaS): plataformas en la nube.
             \item Microservicios: funcionalidades pequeñas en la arquitectura de microservicios.
         \end{itemize}
-    Existen diferentes métodos HTTP, que son utilizados por las APIs:
+    Existen diferentes \textbf{métodos} HTTP, que son utilizados por las APIs:
         \begin{itemize}
             \item GET: usado para obtener datos del servidor.
             \item POST: usado para enviar datos al servidor y crear un nuevo recurso.
@@ -581,41 +581,41 @@ A continuación, se describen las principales vistas de la web, explicando breve
         \begin{itemize}
             \item Autenticación (Login y Registro)
             \begin{itemize}
-                \item POST /api/login $\rightarrow$ verificar credenciales y devuelve un token o sesión.
-                \item POST /api/registro $\rightarrow$ crea una nueva cuenta de usuario.
-                \item DELETE /api/logout $\rightarrow$ cierra sesión de un usuario y eleimina su token.
+                \item \textbf{POST /api/login} $\rightarrow$ verificar credenciales y devuelve un token o sesión.
+                \item \textbf{POST /api/registro} $\rightarrow$ crea una nueva cuenta de usuario.
+                \item \textbf{DELETE /api/logout} $\rightarrow$ cierra sesión de un usuario y eleimina su token.
             \end{itemize}
             \item Menú principal
             \begin{itemize}
-                \item GET /api/menu $\rightarrow$ devuelve información general de la tienda y categorías de productos.
+                \item \textbf{GET /api/menu} $\rightarrow$ devuelve información general de la tienda y categorías de productos.
             \end{itemize}
             \item Selector de productos
             \begin{itemize}
-                \item GET /api/productos $\rightarrow$ devuelve la lista de productos disponibles.
-                \item GET /api/productos/{id} $\rightarrow$ devuelve detalles de un producto específico.
+                \item \textbf{GET /api/productos} $\rightarrow$ devuelve la lista de productos disponibles.
+                \item \textbf{GET /api/productos/{id}} $\rightarrow$ devuelve detalles de un producto específico.
             \end{itemize}
             \item Carrito de compra
             \begin{itemize}
-                \item POST /api/carrito/agregar $\rightarrow$ agregar un producto al carrito.
-                \item GET /api/carrito $\rightarrow$ obtiene el estado actual del carrito.
-                \item DELETE /api/carrito/vaciar $\rightarrow$ vacía el carrito del usuario.
+                \item \textbf{POST /api/carrito/agregar} $\rightarrow$ agregar un producto al carrito.
+                \item \textbf{GET /api/carrito} $\rightarrow$ obtiene el estado actual del carrito.
+                \item \textbf{DELETE /api/carrito/vaciar} $\rightarrow$ vacía el carrito del usuario.
             \end{itemize}
             \item Listado de pedidos
             \begin{itemize}
-                \item GET /api/pedidos $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
-                \item GET /api/pedidos/{id} $\rightarrow$ devuelve los detalles de un pedido específico.
+                \item \textbf{GET /api/pedidos} $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
+                \item \textbf{GET /api/pedidos/{id}} $\rightarrow$ devuelve los detalles de un pedido específico.
             \end{itemize}
             \item Proceso de compra
             \begin{itemize}
-                \item POST /api/checkout $\rightarrow$ procesa la compra y registra la venta.
+                \item \textbf{POST /api/checkout} $\rightarrow$ procesa la compra y registra la venta.
             \end{itemize}
             \item Actualización de productos
             \begin{itemize}
-                \item PUT /api/productos/{id} $\rightarrow$ actualiza completamente un producto.
-                \item PATCH /api/productos/{id} $\rightarrow$ modifica parcialmente un producto.
+                \item \textbf{PUT /api/productos/{id}} $\rightarrow$ actualiza completamente un producto.
+                \item \textbf{PATCH /api/productos/{id}} $\rightarrow$ modifica parcialmente un producto.
             \end{itemize}
         \end{itemize}
-\newpage
+        
 \section{Scripts de nuestra web}
 A continuación se detallan una serie de scripts necesarios para arrancar una aplicación web con Flask, junto con otros scripts que ayudan a entender cómo funciona nuestra web.
 \subsection{Archivo \texttt{run.py}}
@@ -766,52 +766,52 @@ El decorador realiza las siguientes funciones:
     
     Esta lógica podría haber sido distinta, por ejemplo, manejando más la parte del frontend y devolviendo también un error 401. Sin embargo, dado que se quería investigar más a fondo Flask, se implementó de esta manera, redirigiendo desde el backend en lugar de hacerlo desde el frontend. 
     
-    Debido a esto, más adelante, en las pruebas de carga \autoref{sec: locust_err}, se encontrarán errores HTTP entre 300 y 308, y esta es la razón por la que ocurren.
+    Debido a esto, más adelante, en las pruebas de carga (\autoref{sec: locust_err}), se encontrarán errores HTTP entre 300 y 308, y esta es la razón por la que ocurren.
     
 \end{itemize}
 
 A continuación, se muestra el código completo del decorador:
 
 \begin{lstlisting}[style=pythonclean, caption={Decorador verificar\_token}]
-def verificar_token(f):
-    """
-    Decorador que protege rutas requeridas para usuarios autenticados.
-    Verifica la validez de un token JWT almacenado en una cookie llamada 'authToken'.
-
-    Si el token es válido, extrae el `usuario_id` y lo pasa como primer argumento
-    a la función decorada.
-
-    - Si el token ha expirado, borra la cookie y redirige al login.
-    - Si el token es inválido, devuelve un error JSON 401.
-    - Si no hay token, redirige al login.
-    """
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        token = request.cookies.get('authToken')  # Obtener el token de la cookie
-        
-        if token:
-            try:
-                # Intentar decodificar el token
-                token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
-                usuario_id = token_decode['id']
-                
-                # Llamar a la función original si el token es válido
-                return f(usuario_id, *args, **kwargs)
-            
-            except jwt.ExpiredSignatureError:
-                # Si el token ha expirado, borra la cookie y redirige al login
-                resp = make_response(redirect(url_for('autentificar.login')))
-                resp.set_cookie('authToken', '', expires=0)
-                return resp
-            
-            except jwt.InvalidTokenError:
-                # Si el token es inválido
-                return jsonify({"message": "Token inválido"}), 401
-        else:
-            # Si no hay token, redirige al login
-            return redirect(url_for('autentificar.login'))
+    def verificar_token(f):
+        """
+        Decorador que protege rutas requeridas para usuarios autenticados.
+        Verifica la validez de un token JWT almacenado en una cookie llamada 'authToken'.
     
-    return wrapper
+        Si el token es válido, extrae el `usuario_id` y lo pasa como primer argumento
+        a la función decorada.
+    
+        - Si el token ha expirado, borra la cookie y redirige al login.
+        - Si el token es inválido, devuelve un error JSON 401.
+        - Si no hay token, redirige al login.
+        """
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            token = request.cookies.get('authToken')  # Obtener el token de la cookie
+            
+            if token:
+                try:
+                    # Intentar decodificar el token
+                    token_decode = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
+                    usuario_id = token_decode['id']
+                    
+                    # Llamar a la función original si el token es válido
+                    return f(usuario_id, *args, **kwargs)
+                
+                except jwt.ExpiredSignatureError:
+                    # Si el token ha expirado, borra la cookie y redirige al login
+                    resp = make_response(redirect(url_for('autentificar.login')))
+                    resp.set_cookie('authToken', '', expires=0)
+                    return resp
+                
+                except jwt.InvalidTokenError:
+                    # Si el token es inválido
+                    return jsonify({"message": "Token inválido"}), 401
+            else:
+                # Si no hay token, redirige al login
+                return redirect(url_for('autentificar.login'))
+        
+        return wrapper
 \end{lstlisting}
 
 Este decorador es esencial para garantizar que sólo los usuarios autenticados puedan acceder a determinadas rutas, especialmente aquellas relacionadas con el carrito, pedidos y perfil de usuario.
@@ -847,24 +847,22 @@ def get_items_carrito(usuario_id):
 
 \textbf{Explicación del funcionamiento:}
 \begin{itemize}
-    \item $\rightarrow$ Este endpoint pertenece al \textbf{controlador \texttt{carritoController}}, encargado de gestionar la lógica del carrito de compras.
-    \item $\rightarrow$ Utiliza el decorador \texttt{@verificar\_token} para proteger la ruta, exigiendo que el usuario esté autenticado.
-    \item $\rightarrow$ El decorador extrae el \texttt{usuario\_id} directamente del token JWT almacenado en la cookie \texttt{authToken}.
-    \item $\rightarrow$ Una vez autenticado, se llama a la función \texttt{get\_carrito\_items\_usuario()} que recupera el carrito asociado a ese usuario.
-    \item $\rightarrow$ Si el carrito existe, se calcula el total, se transforma cada ítem a formato JSON (usando \texttt{item\_carrito\_schema}) y se renderiza la plantilla \texttt{carrito.html}.
-    \item $\rightarrow$ En caso de que el carrito no exista, se redirige a la plantilla de inicio con un mensaje de error.
+    \item Este endpoint pertenece al \textbf{controlador \texttt{carritoController}}, encargado de gestionar la lógica del carrito de compras.
+    \item Utiliza el decorador \texttt{@verificar\_token} para proteger la ruta, exigiendo que el usuario esté autenticado.
+    \item El decorador extrae el \texttt{usuario\_id} directamente del token JWT almacenado en la cookie \texttt{authToken}.
+    \item Una vez autenticado, se llama a la función \texttt{get\_carrito\_items\_usuario()} que recupera el carrito asociado a ese usuario.
+    \item Si el carrito existe, se calcula el total, se transforma cada ítem a formato JSON (usando \texttt{item\_carrito\_schema}) y se renderiza la plantilla \texttt{carrito.html}.
+    \item En caso de que el carrito no exista, se redirige a la plantilla de inicio con un mensaje de error.
 \end{itemize}
 
 \section{Concluiones página web y Flask}
-Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagr un producto al carrito, visualizar los pedidos, etc. 
+Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagr un producto al carrito, visualizar los pedidos, etc. \\
 
-De este modo se asegura la integridad de la web y facilita tareas de seguridad.
-Con el desarrollo de esta parte del proyecto se ha podido comprobar lo sencillo que resulta crear una página web con la ayuda de un framework como Flask. Gracias a su estructura basada en Blueprints y a una serie de funciones incorporadas por defecto, se ha facilitado notablemente la organización del código y se ha podido adoptar una arquitectura basada en el modelo MVC (Modelo-Vista-Controlador).
+De este modo se asegura la integridad de la web y facilita tareas de seguridad. Con el desarrollo de esta parte del proyecto se ha podido comprobar lo sencillo que resulta crear una página web con la ayuda de un framework como Flask. Gracias a su estructura basada en Blueprints y a una serie de funciones incorporadas por defecto, se ha facilitado notablemente la organización del código y se ha podido adoptar una arquitectura basada en el modelo MVC (Modelo-Vista-Controlador).\\
 
-Asimismo, se ha observado lo accesible que resulta generar páginas HTML dinámicas mediante el uso de Jinja2, lo cual permite integrar lógica y datos directamente en las plantillas de forma clara y eficiente.
+Asimismo, se ha observado lo accesible que resulta generar páginas HTML dinámicas mediante el uso de Jinja2, lo cual permite integrar lógica y datos directamente en las plantillas de forma clara y eficiente.\\
 
-Por otro lado, como último apartado de las especificaciones de la práctica, se requería la gestión de al menos cinco productos sobre los que realizar operaciones como añadir, modificar, etc. En nuestro caso, se han añadido algunos productos más, lo cual ha permitido desarrollar una aplicación web más detallada, visualmente atractiva y funcional.
-
+Por otro lado, como último apartado de las especificaciones de la práctica, se requería la gestión de al menos cinco productos sobre los que realizar operaciones como añadir, modificar, etc. En nuestro caso, se han añadido algunos productos más, lo cual ha permitido desarrollar una aplicación web más detallada, visualmente atractiva y funcional.\\
 
 \chapter{Base de datos}
 \section{Diagrama de base de datos y especificaciones}
@@ -1068,7 +1066,6 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
         END;
     \end{lstlisting}
 
-
 \chapter{Pruebas de carga con Locust}
 \section{Locust} \cite{locust_docs}
     Locust es una herramienta de código abierto escrita en Python para realizar pruebas de carga y rendimiento sobre sitios o aplicaciones web, APIs, o cualquier otro sistema que pueda ser probado mediante peticiones HTTP u otras.\\
@@ -1092,13 +1089,13 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
 \cite{locust_video}Para instalar Locust se ha utilizado el siguiente comando:
 
 \begin{lstlisting}[style=simplebash]
-pip install locust
+    pip install locust
 \end{lstlisting}
 
 Para ejecutar las pruebas de carga, se debe lanzar Locust con el siguiente comando:
 
 \begin{lstlisting}[style=simplebash]
-locust -f generar_carga.py --host http://localhost:5000
+    locust -f generar_carga.py --host http://localhost:5000
 \end{lstlisting}
 
 En esta práctica se trabaja dentro de un entorno virtual, por lo que es necesario activarlo antes de ejecutar Locust.
@@ -1251,7 +1248,6 @@ def registro(self):
 
 Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y enviándolos mediante una petición POST. Si el backend responde con una redirección válida o éxito, se almacenan las credenciales para su uso posterior. En el backend existe una función que gestiona tokens; si el token no existe o ha expirado, la aplicación redirige, por eso se comprueban los estados HTTP de redirección (300-308). El código 401 indica que el token ha expirado y se debe iniciar sesión de nuevo.
 
-\newpage
 \subsubsection{Checkout (POST /api/checkout)}
 
 \begin{lstlisting}[style=pythonclean, caption={Tarea para realizar el checkout}]
@@ -1288,7 +1284,6 @@ Esta tarea realiza una petición GET para obtener la lista de productos disponib
 
 Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
 
-\newpage
 \section{Ejecución de la prueba, análisis de resultados}
 
 \subsection{Estrategia de simulación y recogida de métricas}
@@ -1351,7 +1346,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item Se marcaron como errores los códigos HTTP 3xx y 401, ya que representan fallos en flujos autenticados (como tokens inválidos o sesiones caducadas).
         \item En otros contextos podrían como en casos donde no se requiera de un usuario autenticado, podría considerarse válidos mediante \texttt{success()}, pero para esta prueba se trató como \texttt{failure()} para reflejar una situación más realista.
         \item Como comprobación se adjunta una captura de los errores obtenidos en el análisis donde se puede observar que son errores controlados y que son todos de respuest http de 300 a 308 lo que nos indica que el backend esta funcionando correctamente y que todo va bien como debería ocurrir en casos reales.
-        La explicación de estos errores y porque surgen se explican en pasos anteriores, \autoref{sec:token}
+        La explicación de estos errores y porque surgen se explican en pasos anteriores (\autoref{sec:token}).
         \begin{figure}[h!]
             \centering
             \includegraphics[width=0.9\linewidth]{errores.png}
@@ -1442,10 +1437,10 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     \end{figure}
     
 \end{itemize}
-\newpage
+
 \subsubsection{Endpoints críticos}
 
-Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes. Los resultados de este análisis podrían haber sido distintos si se hubiera cambiado el peso de las tareas, pero como se mencionó en el punto \autoref{sec:pesos}, estos pesos se asignaron de manera que nos parecía coherente y que reflejaba cómo de verdad tenía que actuar nuestra web y sistema en condiciones reales.
+Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes. Los resultados de este análisis podrían haber sido distintos si se hubiera cambiado el peso de las tareas, pero como se mencionó en el punto (\autoref{sec:pesos}), estos pesos se asignaron de manera que nos parecía coherente y que reflejaba cómo de verdad tenía que actuar nuestra web y sistema en condiciones reales.
 
 \begin{figure}[!h]
     \centering
@@ -1471,7 +1466,6 @@ Durante la prueba de carga, se ha podido identificar qué endpoints del sistema 
 
 Este análisis del ratio por clase proporciona una visión clara de dónde se deben realizar pruebas más exhaustivas sobre ciertos endpoints antes de realizar cambios en el código. En particular, los endpoints con ratios superiores al 8\% pueden considerarse como críticos para la experiencia del usuario bajo condiciones reales de uso. Además, aquellos que impliquen operaciones con la base de datos o múltiples pasos internos (como \texttt{agregarProductoCarrito} o \texttt{checkout}) deberían ser revisados para majorar y ofrecer una experiencia de usuario mejor.
 
-\newpage
 \section{Análisis de rendimiento y posibles cuellos de botella}
 En esta sección se detalla cómo se ha medido el rendimiento del sistema y cómo éste se comporta ante situaciones de saturación de carga.
 
@@ -1497,8 +1491,6 @@ A continuación se muestra una tabla resumen con todos los datos recogidos en ca
 \caption{Resumen de usuarios, tiempo medio de respuesta, peticiones por segundo y uso de recursos}
 \label{tab:resumen-recursos}
 \end{table}
-
-\vspace{1em}
 
 \begin{table}[H]
 \centering
@@ -1531,14 +1523,14 @@ Con esto podemos decir que el sistema aguanta bien la carga aplicada.
 \subsection{Uso de recursos y carga del sistema}
 
 \begin{itemize}
-  \item La CPU sube hasta un 37\%, pero no llega ni cerca del 100\%, así que no está saturada.
+  \item La \textbf{CPU} sube hasta un 37\%, pero no llega ni cerca del 100\%, así que no está saturada.
   
-  \item La RAM se mantiene bastante estable, sin cambios significativos.
+  \item La \textbf{RAM} se mantiene bastante estable, sin cambios significativos.
   
-  \item La carga promedio del sistema (load average) llega hasta 1.87 en 1 minuto, lo que indica que hay procesos esperando para ejecutarse, pero sigue siendo menos que el número de núcleos (nuestro sistema cuenta con dos núcleos).
+  \item La \textbf{carga promedio} del sistema (load average) llega hasta 1.87 en 1 minuto, lo que indica que hay procesos esperando para ejecutarse, pero sigue siendo menos que el número de núcleos (nuestro sistema cuenta con dos núcleos).
 \end{itemize}
 
-En resumen, la CPU podría ser un posible límite en el futuro, pero todavía hay margen.
+En resumen, la \textbf{CPU} podría ser un posible límite en el futuro, pero todavía hay margen.
 
 \subsection{Eficiencia por usuario}
 
@@ -1554,31 +1546,31 @@ Para saber si el sistema mantiene su rendimiento por usuario, calculamos el thro
 \hline
 \textbf{Tiempo (min)} & \textbf{Usuarios} & \textbf{Peticiones/s} & \textbf{RPS por usuario} \\
 \hline
-5  & 41  & 16.8  & 0.41 \\
-10 & 81  & 35.6  & 0.44 \\
-15 & 121 & 52.8  & 0.44 \\
-20 & 161 & 71.5  & 0.44 \\
-25 & 180 & 79.3  & 0.44 \\
+5  & 41  & 16.8  & 0.410 \\
+10 & 81  & 35.6  & 0.440 \\
+15 & 121 & 52.8  & 0.436 \\
+20 & 161 & 71.5  & 0.444 \\
+25 & 180 & 79.3  & 0.441 \\
 \hline
 \end{tabular}
 \caption{Throughput por usuario durante la prueba}
 \end{table}
 
-El throughput por usuario se mantiene casi constante en 0.44 RPS, lo que indica que el sistema escala correctamente y sigue siendo eficiente por usuario. Los recursos se reparten de manera equilibrada.
+El \textbf{throughput} por usuario se mantiene casi constante en 0.44 RPS, lo que indica que el sistema escala correctamente y sigue siendo eficiente por usuario. Los recursos se reparten de manera equilibrada.
 
 \subsection{Posibles cuellos de botella}
 
 \begin{itemize}
-  \item La carga del sistema se acerca al número de núcleos (1.87 de load average), por lo que si el servidor tiene 2 núcleos, está casi saturado. Esto podría explicar la ralentización en el crecimiento del throughput.
+  \item La \textbf{carga del sistema} se acerca al número de núcleos (1.87 de load average), por lo que si el servidor tiene 2 núcleos, está casi saturado. Esto podría explicar la ralentización en el crecimiento del throughput.
   
-  \item La CPU está al 37\%, no saturada, pero el aumento en latencia indica que algunas peticiones pueden estar esperando recursos. Por ahora no es problema, pero si sube la carga, podría ser un cuello de botella.
+  \item La \textbf{CPU} está al 37\%, no saturada, pero el aumento en latencia indica que algunas peticiones pueden estar esperando recursos. Por ahora no es problema, pero si sube la carga, podría ser un cuello de botella.
   
-  \item La RAM se mantiene estable, no parece ser un problema.
+  \item La \textbf{RAM} se mantiene estable, no parece ser un problema.
 \end{itemize}
 
 \subsection{Ley de Little}
 
-La Ley de Little establece que el número medio de trabajos en un sistema en equilibrio es igual al producto de la tasa media de llegadas y el tiempo medio de permanencia en el sistema:
+La \textbf{Ley de Little} establece que el número medio de trabajos en un sistema en equilibrio es igual al producto de la tasa media de llegadas y el tiempo medio de permanencia en el sistema:
 
 \[
 Q = \lambda \cdot R
@@ -1654,7 +1646,7 @@ Por tanto, si se desea escalar el sistema para soportar una carga superior, ser�
 Durante el desarrollo del backend se aplicaron diversas optimizaciones que, en ese momento, se consideraron útiles para mejorar el rendimiento del sistema. Gracias a estas mejoras, es posible que se haya conseguido un mejor comportamiento bajo carga. Entre las principales acciones implementadas destacan:
 
 \begin{itemize}
-    \item \textbf{Paginación en los endpoints de pedidos}: Para evitar la carga excesiva de datos al listar muchos pedidos. Se muestran 5 pedidos por página y cada vez que se cambia de p+agina se carga unaos nuevos pediso, de esta formasi un usaurio realiza muschos pediso, la consulta a este enpoint no genera tanta carga y lo ira cargando poco a poco todo.
+    \item \textbf{Paginación en los endpoints de pedidos}: Para evitar la carga excesiva de datos al listar muchos pedidos. Se muestran 5 pedidos por página y cada vez que se cambia de página se carga unos nuevos pedido, de esta forma, si un usuario realiza muchos pedidos, la consulta a este endpoint no genera tanta carga y lo irá cargando poco a poco todo.
     \item \textbf{Procedimientos almacenados}: Se han creado en MariaDB para optimizar operaciones como la creación de usuarios o pedidos, reduciendo el número de consultas que realiza la aplicación. Además, para consultas que se ejecutan de forma consecutiva y que no están encapsuladas en un procedimiento almacenado, se utiliza la misma conexión a la base de datos durante todas ellas, cerrándola únicamente al finalizar.
     \item \textbf{Comprobaciones previas a las consultas}: Antes de realizar tareas como modificaciones en los productos, se verifica primero si los datos introducidos son diferentes a los que ya están registrados. Es decir, al intentar modificar un producto, se realiza primero un SELECT para obtener los datos actuales de dicho producto y se comparan con los datos nuevos introducidos. Si los datos son distintos, se ejecuta un UPDATE en la base de datos para actualizar la información; en caso contrario, no se realiza ninguna acción.
     \item \textbf{Minimización de consultas anidadas}: Se han reestructurado algunas funciones para reducir el coste computacional de las consultas complejas, como en el caso de obtener el carrito de un usuario o los productos de un pedido. De esta manera, se consigue un código más escalable y fácil de mantener.
@@ -1662,15 +1654,15 @@ Durante el desarrollo del backend se aplicaron diversas optimizaciones que, en e
 
 
 \section{Conclusiones pruebas de carga con Locust}
-Gracias a Locust, ha sido posible obtener una visión detallada del comportamiento del sistema bajo distintas cargas de trabajo. Esta información, una vez recogida y analizada, resulta muy útil para tomar decisiones informadas de cara a futuras optimizaciones o modificaciones del sistema.
+Gracias a Locust, ha sido posible obtener una visión detallada del comportamiento del sistema bajo distintas cargas de trabajo. Esta información, una vez recogida y analizada, resulta muy útil para tomar decisiones informadas de cara a futuras optimizaciones o modificaciones del sistema.\\
 
-La sintaxis basada en Python ha facilitado la creación de escenarios de prueba de forma sencilla y flexible. Una vez comprendido el funcionamiento básico de la herramienta, su uso se vuelve intuitivo y permite analizar múltiples aspectos del rendimiento de la aplicación, como tiempos de respuesta, peticiones por segundo o errores, entre otros.
+La sintaxis basada en Python ha facilitado la creación de escenarios de prueba de forma sencilla y flexible. Una vez comprendido el funcionamiento básico de la herramienta, su uso se vuelve intuitivo y permite analizar múltiples aspectos del rendimiento de la aplicación, como tiempos de respuesta, peticiones por segundo o errores, entre otros.\\
 
-Locust se presenta como una herramienta muy útil para llevar a cabo pruebas de carga.
+Locust se presenta como una herramienta muy útil para llevar a cabo pruebas de carga.\\
 
 
 \chapter{Monitorización del servidor con Grafana}
-En la práctica anterior se recogieron métricas de rendimiento del servidor como el uso de CPU, memoria RAM, frecuencia de la CPU, operaciones de entrada/salida (E/S), entre otras, las cuales se visualizaron mediante paneles en Grafana. Estas métricas permitieron monitorizar el estado general del sistema durante las pruebas de carga.
+En la práctica anterior se recogieron métricas de rendimiento del servidor como el uso de CPU, memoria RAM, frecuencia de la CPU, operaciones de entrada/salida (E/S), entre otras, las cuales se visualizaron mediante paneles en Grafana. Estas métricas permitieron monitorizar el estado general del sistema durante las pruebas de carga.\\
 
 En esta parte, se han añadido nuevas métricas relacionadas con las reglas de negocio definidas, tales como el número de usuarios registrados, pedidos creados, ingresos totales, número de carritos con ítems dentro y el top 10 de productos más vendidos. Estas métricas permiten evaluar el comportamiento y la carga real de la página web desde un punto de vista más comercial.
 
@@ -1684,7 +1676,7 @@ Una vez creada la conexión y confirmada su correcta configuración, nos dirigim
 En el apartado de Data source podremos seleccionar la base de datos que deseamos utilizar: puede ser la propia de Grafana, la base de datos de esta práctica, cualquier otra disponible o incluso una combinación (mixed) de dos o más fuentes de datos.
 
 Una vez seleccionada la fuente de datos, ya es posible realizar las consultas necesarias y visualizar los datos en el dashboard.
-\newpage
+
 \section{Reglas de negocio} \cite{metricas_boske}
 En este apartado se detallan las métricas de negocio seleccionadas para su visualización.
 
@@ -1692,11 +1684,11 @@ La elección de estas métricas se ha realizado en base a su relevancia e inter�
 
 A continuación, se enumeran cinco de las métricas consideradas más representativas:
 \begin{itemize}
-    \item Número de usurios registrados: Permite conocer el número de usuarios en tiempo resgistrados.
-    \item Pedidos creados: Refleja el número de transacciones. 
-    \item Ingresoso totales: Refleja el rendimiento económico.
-    \item Numero de carritos que tienen itmes/productos dentro: Permite conocer los usaurios que podrían estar listo para realizar un pedido.
-    \item Top 10 productos más vendidos: Permite evaluar como de eficaz y atractiva es la web y los productso que se venden.
+    \item \textbf{Número de usuarios registrados}: Permite conocer el número de usuarios en tiempo registrados.
+    \item \textbf{Pedidos creados}: Refleja el número de transacciones. 
+    \item \textbf{Ingresos totales}: Refleja el rendimiento económico.
+    \item \textbf{Numero de carritos que tienen items/productos dentro}: Permite conocer los usuarios que podrían estar listo para realizar un pedido.
+    \item \textbf{Top 10 productos más vendidos}: Permite evaluar como de eficaz y atractiva es la web y los productos que se venden.
 \end{itemize}
 
 \section{Visualización de Grafana}\label{sec:visualizacion}
@@ -1856,7 +1848,6 @@ ORDER BY
 Esta consulta agrupa los pedidos realizados en intervalos de 10 segundos, permitiendo así una visualización dinámica y detallada de la frecuencia de pedidos a lo largo del tiempo. La función `\_\_timeFilter(fecha)` es gestionada automáticamente por Grafana para adaptar el rango temporal a lo que el usuario seleccione en el panel.
 
 Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Time series*, que facilita el seguimiento temporal de los pedidos, ayudando a detectar patrones de comportamiento de los usuarios, así como a evaluar posibles cuellos de botella o momentos de alta demanda.
-\newpage
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\linewidth]{pedCrea.png}
@@ -1866,7 +1857,6 @@ Para mostrar los resultados en Grafana, se ha optado por una visualización de t
 
 \section{Conclusiones Grafana}
 Grafana ha contribuido de manera muy eficaz a la hora de recoger y visualizar los datos del sistema. Gracias a su fácil integración con bases de datos, hemos podido obtener los resultados necesarios y observar el comportamiento del sistema de forma clara y eficiente. Con una implementación sencilla y rápida, Grafana ha demostrado ser una herramienta robusta, permitiéndonos monitorizar el estado del sistema como si se tratara de un entorno real.
-
 
 \chapter{Conclusiones y  Reparto de trabajo}
 
