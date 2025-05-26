@@ -15,7 +15,7 @@ def sumar_dias(fecha, dias):
 app.jinja_env.filters['suma_dias'] = sumar_dias
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 
 

@@ -4,7 +4,7 @@ import random, json, string, os, threading, time, csv
 # === Archivo de persistencia ===
 ARCHIVO_PRODUCTOS = "productos_cache.json"
 CSV_FILE = "locust_stats.csv"
-SAVE_INTERVAL = 10  # 5 minutos en segundos
+SAVE_INTERVAL = 300  # 5 minutos en segundos
 
 # === Funciones auxiliares ===
 def generar_usuario():
@@ -40,32 +40,39 @@ def save_stats_periodically(environment):
         with open(CSV_FILE, "w", newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
-                "Type", "Name", "# Requests", "# Fails", "Median (ms)", "95%ile (ms)",
+                "Timestamp", "Type", "Name", "# Requests", "# Fails", "Median (ms)", "95%ile (ms)",
                 "99%ile (ms)", "Average (ms)", "Min (ms)", "Max (ms)",
-                "Average size (bytes)", "Current RPS", "Current Failures/s"
+                "Average size (bytes)", "Current RPS", "Current Failures/s",
             ])
 
     while True:
         time.sleep(SAVE_INTERVAL)
+
+        # Estadísticas de Locust
+        stats = environment.stats.total
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Guardar en CSV sin borrar datos anteriores
         with open(CSV_FILE, "a", newline='') as f:
             writer = csv.writer(f)
-            for stat in environment.stats.entries.values():
-                writer.writerow([
-                    stat.method,
-                    stat.name,
-                    stat.num_requests,
-                    stat.num_failures,
-                    round(stat.median_response_time, 2) if stat.median_response_time else 0,
-                    round(stat.get_response_time_percentile(0.95), 2) if stat.num_requests else 0,
-                    round(stat.get_response_time_percentile(0.99), 2) if stat.num_requests else 0,
-                    round(stat.avg_response_time, 2) if stat.avg_response_time else 0,
-                    round(stat.min_response_time, 2) if stat.min_response_time else 0,
-                    round(stat.max_response_time, 2) if stat.max_response_time else 0,
-                    round(stat.avg_content_length, 2) if stat.avg_content_length else 0,
-                    round(stat.total_rps, 2) if hasattr(stat, "total_rps") else 0,
-                    round(stat.fail_ratio * stat.total_rps if hasattr(stat, "fail_ratio") else 0, 2),
-                ])
-        print(f"📊 Estadísticas guardadas en {CSV_FILE}")
+            writer.writerow([
+                timestamp,
+                "Aggregated",
+                ":",
+                stats.num_requests,
+                stats.num_failures,
+                round(stats.median_response_time or 0, 2),
+                round(stats.get_response_time_percentile(0.95), 2) if stats.num_requests else 0,
+                round(stats.get_response_time_percentile(0.99), 2) if stats.num_requests else 0,
+                round(stats.avg_response_time or 0, 2),
+                round(stats.min_response_time or 0, 2),
+                round(stats.max_response_time or 0, 2),
+                round(stats.avg_content_length or 0, 2),
+                round(stats.total_rps, 2) if hasattr(stats, "total_rps") else 0,
+                round(stats.fail_ratio * stats.total_rps, 2) if hasattr(stats, "fail_ratio") else 0,
+            ])
+        print(f"📊 Métricas guardadas en {CSV_FILE} - {timestamp}")
+
 
 # Evento que se ejecuta al iniciar la prueba
 @events.test_start.add_listener

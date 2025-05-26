@@ -212,9 +212,9 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
         Para utilizar Flask, es necesario tener instalado Python. Para ello se ejecuta el comando \lstinline{python --version}, y debe aparecer una versión de Python 3 o superior.\\
         En caso de no tener instalado Python, se puede descargar desde la página oficial de Python.
 
-    \subsection{Uso de entornos virtuales} \cite{venv_python}
+    \subsection{Uso de entornos virtuales} 
     
-    Un entorno virtual (venv) es una carpeta que contiene una instalación independiente de Python y sus dependencias. Es decir, es un espacio aislado donde se pueden instalar paquetes específicos sin afectar al sistema operativo ni a otros proyectos. 
+    \cite{venv_python}Un entorno virtual (venv) es una carpeta que contiene una instalación independiente de Python y sus dependencias. Es decir, es un espacio aislado donde se pueden instalar paquetes específicos sin afectar al sistema operativo ni a otros proyectos. 
     
     Por defecto, Python 3 incluye el módulo \textit{venv}, pero si fuera necesario instalarlo manualmente (por ejemplo, en distribuciones basadas en Debian como Ubuntu o Kali), el comando sería:
     
@@ -292,9 +292,9 @@ Finalmente, se analizarán los datos recogidos para identificar posibles cuellos
 
 
 \section{Contenido y estructura página web} 
-\subsection{Arquitectura MVC} \cite{mdn_mvc}
+\subsection{Arquitectura MVC} 
 
-El patrón \textbf{MVC (Modelo-Vista-Controlador)} es un enfoque común en el diseño de software que se utiliza para implementar interfaces de usuario, lógica de control y gestión de datos. Su principal ventaja es que separa claramente la lógica de negocios de la visualización, lo cual facilita el mantenimiento, mejora la organización del código y permite una división más clara del trabajo entre desarrolladores.
+\cite{mdn_mvc}El patrón \textbf{MVC (Modelo-Vista-Controlador)} es un enfoque común en el diseño de software que se utiliza para implementar interfaces de usuario, lógica de control y gestión de datos. Su principal ventaja es que separa claramente la lógica de negocios de la visualización, lo cual facilita el mantenimiento, mejora la organización del código y permite una división más clara del trabajo entre desarrolladores.
 
 Además, otros patrones de diseño se han basado en MVC, como:
 \begin{itemize}
@@ -348,7 +348,7 @@ En nuestro caso, la aplicación web desarrollada sigue esta arquitectura, ya que
                 \item menuController.py $\rightarrow$ es el controlador de la página principal de la web, es el encargado de mostrar toda la información de dicha página.
                 \item productosController.py $\rightarrow$ es el controlador de los productos en venta, es el encargado de mostrar la lista de productos junto con una breve información y actualizar la información de los productos.
                 \item carritoController.py $\rightarrow$ es el controlador del carrito de la compra, es el encargado de mostrar, actualizar y vaciar el carrito.
-                \item pedidoController.py $\rightarrow$ es el controlador de los pedidos, es el encargado de mostrar el hisotrial de pedidos, los detalles de cada uno y procesar el pedido.
+                \item pedidoController.py $\rightarrow$ es el controlador de los pedidos, es el encargado de mostrar el hisotrial de pedidos, los detalles de cada uno y procesar el pedido.A la hora de procesar un pedido se añade un delay de 2 segundos, parasimular transacciones de compra y cumplir con el eneunciado de la pŕactica.
             \end{itemize}
         \item La carpeta schemas está formada por:
             \begin{itemize}
@@ -536,12 +536,13 @@ A continuación, se describen las principales vistas de la web, explicando breve
        \end{figure}
         
 \subsection{Mapa del sitio web}
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.80\linewidth]{./img/mapa_sitio_web.drawio.png}
-            \caption{Mapa del sitio web}
-            \label{fig:web-map}
-        \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.70\linewidth]{webM.png}
+        \caption{Enter Caption}
+        \label{fig:enter-label}
+    \end{figure}
+    
     \section{API}
     API (Application Programming Interface), Interfaz de Programación de Aplicaciones, es un conjunto de reglas y protocolos que permiten que diferentes programas software se comuniquen e intercambien información entre sí, sin necesidad de que el usuario final sepa los detalles internos de cómo funcionan estas aplicaciones. Es como un puente o traductor que permite que una aplicación le pida cosas a otra de forma controlada y entendible para ambas.\\
     Los tipos de API son:
@@ -750,7 +751,7 @@ A continuación, se describen los distintos \texttt{Blueprints} definidos:
 
 Todos estos \texttt{Blueprints} se registran en la función \texttt{create\_app()} del archivo \texttt{\_\_init\_\_.py} para que formen parte del sistema general de rutas de la aplicación.
 
-\subsection{Decorador \texttt{verificar\_token}}
+\subsection{Decorador \texttt{verificar\_token}} \label{sec:token}
 
 El sistema de autenticación de usuarios se basa en tokens JWT (JSON Web Token) almacenados en cookies. Para proteger rutas que requieren autenticación, se implementa un decorador llamado \texttt{verificar\_token}. Este decorador se aplica a las funciones que sólo deben ser accesibles por usuarios autenticados.
 
@@ -761,7 +762,12 @@ El decorador realiza las siguientes funciones:
     \item Si el token existe, intenta decodificarlo utilizando una clave secreta y el algoritmo definido.
     \item Si el token es válido, extrae el \texttt{usuario\_id} y lo pasa como argumento a la función decorada.
     \item Si el token ha expirado, borra la cookie y redirige al usuario al formulario de inicio de sesión.
-    \item Si el token es inválido o no está presente, se devuelve un error o redirección al login.
+    \item Si el token es inválido o no está presente, se devuelve un error o se redirige al login. El token tiene un tiempo de expiración de 40 minutos; una vez transcurrido este tiempo, si se intenta realizar alguna acción, se devolverá un código 401. Si el token no existiera desde el principio, se devolvería un código de error entre el 300 y el 308. 
+    
+    Esta lógica podría haber sido distinta, por ejemplo, manejando más la parte del frontend y devolviendo también un error 401. Sin embargo, dado que se quería investigar más a fondo Flask, se implementó de esta manera, redirigiendo desde el backend en lugar de hacerlo desde el frontend. 
+    
+    Debido a esto, más adelante, en las pruebas de carga \autoref{sec: locust_err}, se encontrarán errores HTTP entre 300 y 308, y esta es la razón por la que ocurren.
+    
 \end{itemize}
 
 A continuación, se muestra el código completo del decorador:
@@ -1078,9 +1084,9 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
         \end{itemize}
 
 
-\subsection{Instalación y Configuración de Locust} \cite{locust_video}
+\subsection{Instalación y Configuración de Locust} 
 
-Para instalar Locust se ha utilizado el siguiente comando:
+\cite{locust_video}Para instalar Locust se ha utilizado el siguiente comando:
 
 \begin{lstlisting}[style=simplebash]
 pip install locust
@@ -1113,13 +1119,13 @@ Asimismo, para acceder a la interfaz web de Locust en el entorno remoto, se debe
 \end{center}
 
 
-\section{Diseño del Script de Carga}
+\section{Diseño del Script de Carga}  \label{sec:pesos}
 
 El archivo \texttt{generar\_carga.py} define un usuario simulado a través de la clase \texttt{MiUsuario}, que ejecuta varias tareas imitando el comportamiento típico de un usuario real en la tienda online. Estas tareas están agrupadas por funcionalidad, y a cada una se le ha asignado un peso que representa la frecuencia o importancia de su ejecución durante la simulación. A continuación se describe cada grupo de tareas junto con la justificación de su peso:
 
 \begin{itemize}
     \item \textbf{Autenticación}: Incluye el registro y el login de usuarios.  
-    El registro se hace solo una vez al crear un nuevo usuario, así que se le asigna un peso bajo. El login se realiza ocasionalmente, ya que una vez iniciada la sesión, el token permanece activo salvo que expire o se elimine, por lo que su peso es moderado. Las peticiones GET relacionadas también tienen un peso bajo, ya que no son críticas ni frecuentes.
+    El registro se hace solo una vez al crear un nuevo usuario. El login se realiza ocasionalmente, ya que una vez iniciada la sesión, el token permanece activo salvo que expire o se elimine, por lo que su peso es moderado. Las peticiones GET relacionadas también tienen un peso bajo, ya que no son críticas ni frecuentes.
 
     \item \textbf{Navegación}: Consulta del menú principal y visualización de productos.  
     Ver el menú principal es muy común porque es el punto de entrada a otras secciones, así que tiene peso 2. Ver la lista de productos también es bastante frecuente, ya que la tienda gira en torno a ellos. En cambio, ver los detalles de un producto en específico es menos habitual, así que su peso es 1.
@@ -1137,7 +1143,7 @@ El archivo \texttt{generar\_carga.py} define un usuario simulado a través de la
     Aunque no todos los usuarios lo hacen, se quiere ver cómo responde el sistema cuando ocurre. Por eso, ambas tareas tienen peso 2.
 
     \item \textbf{Gestión de sesión}: Cierre de sesión del usuario.  
-    Muchos usuarios no suelen cerrar sesión de forma activa, por lo que esta acción se realiza poco y tiene peso 1. Además que era una tarea que no se pedía en el eneunciado.
+    Muchos usuarios no suelen cerrar sesión de forma activa, por lo que esta acción se realiza poco y tiene peso 1. Además era una tarea que no se pedía en el enunciado.
 \end{itemize}
 
 \subsection*{Tabla de Pesos Asignados por Tarea}
@@ -1148,7 +1154,7 @@ El archivo \texttt{generar\_carga.py} define un usuario simulado a través de la
 \textbf{Tarea} & \textbf{Peso} \\
 \hline
 GET Registro/Login & 1 \\
-POST Registro & 1 \\
+POST Registro & Se realiza cada vez que se inicia un usuario \\
 POST Login & 2 \\
 GET Menú Principal & 2 \\
 GET Lista de Productos & 2 \\
@@ -1309,11 +1315,11 @@ Durante esta prueba se adoptó una metodología estructurada que combinó la sim
     \item \textbf{Métricas de negocio:}
     \begin{itemize}
         \item Se visualizaron en paralelo métricas funcionales como número de pedidos, productos añadidos al carrito y nuevos registros.
-        \item Estas métricas, presentadas en Grafana \autoref{sec:visualizacion}, permitieron correlacionar rendimiento técnico y experiencia de usuario.
+        \item Estas métricas, presentadas en Grafana \autoref{sec:visualizacion}, permitieron ver como se relacionaba una experiencia de usuario con el rendimiento del sistema y la web.
     \end{itemize}
 \end{enumerate}
 
-\subsection{Captura periódica y análisis de resultados}
+\subsection{Captura periódica y análisis de resultados} \label{sec: locust_err}
 Con el fin de obtener una visión evolutiva del sistema bajo carga, se implementó una estrategia de muestreo que capturó métricas cada 5 minutos:
 
 \begin{enumerate}
@@ -1341,11 +1347,12 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     \begin{itemize}
         \item Se marcaron como errores los códigos HTTP 3xx y 401, ya que representan fallos en flujos autenticados (como tokens inválidos o sesiones caducadas).
         \item En otros contextos podrían como en casos donde no se requiera de un usuario autenticado, podría considerarse válidos mediante \texttt{success()}, pero para esta prueba se trató como \texttt{failure()} para reflejar una situación más realista.
-        \item Como comprobación se adjunta una captura de los orrores obtenidos en el análisi donde se puede iobservar que son errores contrrolados y que son todos de respuest hhtps de 300 a 308 lo que bos indica que el backend esta funcionando correctamente y que todo va bien como debria ocurrir en casos reales.
+        \item Como comprobación se adjunta una captura de los errores obtenidos en el análisis donde se puede observar que son errores controlados y que son todos de respuest http de 300 a 308 lo que nos indica que el backend esta funcionando correctamente y que todo va bien como debería ocurrir en casos reales.
+        La explicación de estos errores y porque surgen se explican en pasos anteriores, \autoref{sec:token}
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.8\linewidth]{errores.png}
-            \caption{Enter Caption}
+            \includegraphics[width=0.9\linewidth]{errores.png}
+            \caption{Mensajes de fallos previstos en locust}
             \label{fig:enter-label}
         \end{figure}
     \end{itemize}
@@ -1374,7 +1381,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Datos registrados en el minuto 5}
         \label{fig:enter-label}
     \end{figure}
-    El sistema respondió con una media de 16,8 peticiones por segundo y un tiempo de respuesta medio de 134,18\,ms, con un percentil 95 del tiempo de respuesta de 2000\,ms. El número total de peticiones fue de 2753. No se registraron errores.
+    El sistema respondió con una media de 16,8 peticiones por segundo y un tiempo de respuesta medio de 134,18\,ms, con un percentil 95 del tiempo de respuesta de 2000\,ms. El número total de peticiones fue de 2753.  No se registraron errores, más que aquellos descritos con anterioridad.
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.65\linewidth]{imagen5.png}
@@ -1387,14 +1394,14 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     
     En Grafana se observa un aumento del uso de CPU hasta el 30{,}30\%, mientras que la RAM se mantiene estable en torno al 35{,}1\%. La carga del sistema a 1 minuto es de 0{,}36 y la de 5 minutos es de 0{,}33, ambas muy por debajo del umbral de saturación.
 
-    El sistema respondió con una media de 35,6 peticiones por segundo y un tiempo de respuesta medio de 132,18\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 10\,934. No se registraron errores.
+    El sistema respondió con una media de 35,6 peticiones por segundo y un tiempo de respuesta medio de 132,18\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 10\,934.  No se registraron errores, más que aquellos descritos con anterioridad.
 
     \item \textbf{Captura minuto 10--15:} \\
     Entre los minutos 10 y 15, se simularon 121 usuarios concurrentes. 
     
     En Grafana se observa un uso de CPU que alcanza el 36{,}40\%, y la RAM se mantiene estable en torno al 34{,}7\%. La carga del sistema a 1 minuto es de 1{,}14 y la de 5 minutos es de 0{,}80. Aunque los valores aumentan, se mantienen por debajo del umbral crítico de 2.
 
-    El sistema respondió con una media de 52,8 peticiones por segundo y un tiempo de respuesta medio de 139,58\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 24\,217. No se registraron errores.
+    El sistema respondió con una media de 52,8 peticiones por segundo y un tiempo de respuesta medio de 139,58\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 24\,217.  No se registraron errores, más que aquellos descritos con anterioridad.
 
     \item \textbf{Captura minuto 15--20:} \\
     En los siguientes 5 minutos, se simularon 161 usuarios concurrentes. 
@@ -1407,7 +1414,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \label{fig:enter-label}
     \end{figure}
     
-    El sistema respondió con una media de 71,5 peticiones por segundo y un tiempo de respuesta medio de 145,44\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 43\,246. No se registraron errores.
+    El sistema respondió con una media de 71,5 peticiones por segundo y un tiempo de respuesta medio de 145,44\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 43\,246.  No se registraron errores, más que aquellos descritos con anterioridad.
     \begin{figure}[!h]
         \centering
         \includegraphics[width=0.75\linewidth]{imagen10_3.png}
@@ -1420,16 +1427,26 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     
     En Grafana se observa un uso de CPU de hasta el 36{,}40\% y una RAM estable en torno al 34{,}7\%. La carga del sistema a 1 minuto es de 1{,}87 y la de 5 minutos es de 1{,}72, valores que se aproximan al límite crítico, aunque el servidor aún mantiene capacidad disponible.
 
-    El sistema respondió con una media de 79,3 peticiones por segundo y un tiempo de respuesta medio de 149,12\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 66\,318. No se registraron errores.
-\end{itemize}
+    El sistema respondió con una media de 79,3 peticiones por segundo y un tiempo de respuesta medio de 149,12\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 66\,318. No se registraron errores, más que aquellos descritos con anterioridad.
+   \item En total se han capturado 66\,318 peticiones, de las cuales 11\,225 han fallado, lo que representa una tasa de error del 16,9\%. El tiempo de respuesta medio ha sido de 149{,}12 ms, con un mínimo de 4 ms y un máximo de 5\,166 ms. El tamaño medio de las respuestas ha sido de 4\,092 bytes. La tasa de peticiones por segundo (RPS) se ha mantenido en torno a 44,2, mientras que la tasa de errores por segundo ha sido de 7,48. 
 
+    A pesar de una media de respuesta aceptable, el número significativo de fallos y la elevada dispersión en los tiempos (especialmente el valor máximo y el percentil 95 cercano a 2\,000 ms) sugieren que existen cuellos de botella, especialmente en endpoints críticos como \texttt{checkout}.El percentil 95 se ha usado con el fín de obtener una referencia del rendimiento general del sistema.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=1.0\linewidth]{totalL.png}
+        \caption{Resumen final valores Locust}
+        \label{fig:enter-label}
+    \end{figure}
+    
+\end{itemize}
+\newpage
 \subsubsection{Endpoints críticos}
 
-Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes.
+Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes. Los resultados de este análisis podrían haber sido distintos si se hubiera cambiado el peso de las tareas, pero como se mencionó en el punto \autoref{sec:pesos}, estos pesos se asignaron de manera que nos parecía coherente y que reflejaba cómo de verdad tenía que actuar nuestra web y sistema en condiciones reales.
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.25\linewidth]{ratios.png}
+    \includegraphics[width=0.30\linewidth]{ratios.png}
     \caption{Ratios por clase}
     \label{fig:enter-label}
 \end{figure}
@@ -1438,19 +1455,19 @@ Durante la prueba de carga, se ha podido identificar qué endpoints del sistema 
     \item El endpoint \texttt{agregarProductoCarrito} (\texttt{/api/carrito/agregar}) destaca como el más utilizado, con un 13,0\% del total, lo que lo convierte en un candidato prioritario para optimización y pruebas de robustez. Dado que en este endpoint se realizan varias operaciones de base de datos, y con los resultados obtenidos, podría convertirse en un cuello de botella bajo condiciones de estrés como las generadas durante la prueba.
 
     \item Le siguen varios endpoints con una participación del 8,7\% cada uno: \newline
-    \texttt{actualizarProductoPut}, \texttt{actualizarTipoPatch}, \texttt{checkout}, \texttt{getProductos}, \texttt{intentarLogin}, \texttt{menu}. Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella.
-    Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000ms. Esto se debe al endpoint de checkout, el cual incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Este comportamiento nos dice por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95, impactando negativamente en la eficiencia general de la web.
+    \texttt{actualizarProductoPut}, \texttt{actualizarTipoPatch}, \texttt{checkout}, \texttt{getProductos}, \texttt{intentarLogin}, \texttt{menu}. Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella. Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000 ms. Esto se debe al endpoint de \texttt{checkout},la cual es una función de mucho peso ya que hace varios inserts a base datos y tiene un lógica más pesada, pero además incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Entre las peticiones que superan los 2000 ms se encuentran principalmente las del endpoint \texttt{checkout}, como se puede observar en la imagen de abajo, donde se evidencia que este endpoint genera un retraso significativo debido a la simulación de una transacción real con un retardo de 2 segundos. Este comportamiento explica por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95. Dado que se realizaron 66\,318 peticiones en total, esto significa que unas 62\,002 fueron más rápidas o iguales a 2000 ms, mientras que las restantes 4\,316 superaron ese umbral. Por tanto, el endpoint \texttt{checkout} influye de forma directa en la percepción de rendimiento para una parte relevante de los usuarios, lo que puede impactar negativamente en la eficiencia general de la web.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=1.0\linewidth]{locust.png}
+        \caption{Salida de medición de locust}
+        \label{fig:enter-label}
+    \end{figure}
 
     \item Otros endpoints como \texttt{cerrarSesion}, \texttt{deleteCarrito}, \texttt{getCarrito}, \texttt{getPedidos}, \texttt{getProductoPorId}, \texttt{getUnPedido}, \texttt{loginGet} y \texttt{registerGet} se mantienen en un 4,3\%, siendo menos críticos individualmente. No obstante, su uso combinado representa una carga significativa y podrían convertirse en un problema si el número de usuarios o la carga aumentara.
 \end{itemize}
 
-Este análisis del ratio por clase proporciona una visión clara de dónde se deben realizar pruebas más exhaustivas sobre ciertos endpoints antes de realizar cambios en el código. En particular, los endpoints con ratios superiores al 8\% pueden considerarse como críticos para la experiencia del usuario bajo condiciones reales de uso. Además, aquellos que impliquen operaciones con la base de datos o múltiples pasos internos (como \texttt{agregarProductoCarrito} o \texttt{checkout}) deberían ser revisados cuidadosamente.
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.0\linewidth]{locust.png}
-    \caption{Enter Caption}
-    \label{fig:enter-label}
-\end{figure}
+Este análisis del ratio por clase proporciona una visión clara de dónde se deben realizar pruebas más exhaustivas sobre ciertos endpoints antes de realizar cambios en el código. En particular, los endpoints con ratios superiores al 8\% pueden considerarse como críticos para la experiencia del usuario bajo condiciones reales de uso. Además, aquellos que impliquen operaciones con la base de datos o múltiples pasos internos (como \texttt{agregarProductoCarrito} o \texttt{checkout}) deberían ser revisados para majorar y ofrecer una experiencia de usuario mejor.
+
 \newpage
 \section{Análisis de rendimiento y posibles cuellos de botella}
 En esta sección se detalla cómo se ha medido el rendimiento del sistema y cómo éste se comporta ante situaciones de saturación de carga.
@@ -1515,7 +1532,7 @@ Con esto podemos decir que el sistema aguanta bien la carga aplicada.
   
   \item La RAM se mantiene bastante estable, sin cambios significativos.
   
-  \item La carga promedio del sistema (load average) llega hasta 1.87 en 1 minuto, lo que indica que hay procesos esperando para ejecutarse, pero sigue siendo menos que el número de núcleos (asumiendo al menos 2-4 núcleos).
+  \item La carga promedio del sistema (load average) llega hasta 1.87 en 1 minuto, lo que indica que hay procesos esperando para ejecutarse, pero sigue siendo menos que el número de núcleos (nuestro sistema cuenta con dos núcleos).
 \end{itemize}
 
 En resumen, la CPU podría ser un posible límite en el futuro, pero todavía hay margen.
@@ -1544,7 +1561,7 @@ Para saber si el sistema mantiene su rendimiento por usuario, calculamos el thro
 \caption{Throughput por usuario durante la prueba}
 \end{table}
 
-El throughput por usuario se mantiene casi constante en 0.44 RPS, lo que indica que el sistema escala bien y sigue siendo eficiente por usuario.
+El throughput por usuario se mantiene casi constante en 0.44 RPS, lo que indica que el sistema escala correctamente y sigue siendo eficiente por usuario. Los recursos se reparten de manera equilibrada.
 
 \subsection{Posibles cuellos de botella}
 
@@ -1615,8 +1632,10 @@ Como se observa, \(\mu \cdot R\) es menor que \(N\), lo cual indica que no todos
 Podemos decir que el sistema es eficiente porque:
 
 \begin{itemize}
-  \item El throughput crece bastante mientras la CPU sube poco.
-  \item El sistema aguanta bien la carga sin saturarse ni que la latencia aumente demasiado.
+    \item El throughput crece bastante mientras la CPU sube poco.
+    \item El sistema aguanta bien la carga sin saturarse ni que la latencia aumente demasiado.
+    \item El percentil 95 nos dice que unas 62 002 peticiones dueron más raṕida o iguales a 2000 ms, y 4316 han superado ese umbral. Por lo que hay enpoints que están causando cuellos de botella. Entre estos endpoint destacar el de relizar un pedido ('checkout'), el cual de entre todas sus petiones no fallidas, casi todas las que han superado el umbral son de este enpoint, como se vio con anterioridad.
+    \item Se concluye que no todos los usuarios están activos en cada momento, algunos están en espera entre acciones/tareas.
 \end{itemize}
 
 En resumen, el sistema funciona bien hasta 180 usuarios concurrentes, con buen rendimiento y sin cuellos de botella claros todavía.

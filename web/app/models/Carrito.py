@@ -18,7 +18,6 @@ class Carrito(BaseModel):
 
     id: Optional[int]=None
     usuario_id: int
-    #estado: str
     items: Optional[List[ItemCarrito]] = None
 
     def to_tuple(self):
