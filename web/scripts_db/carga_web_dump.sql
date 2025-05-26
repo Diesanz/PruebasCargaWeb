@@ -1,5 +1,3 @@
--- Active: 1743866200358@@127.0.0.1@3306@Carga_web
-
 -- CREATE DATABASE Carga_web;
 -- CREATE USER 'user_pr'@'localhost' IDENTIFIED BY 'Grupo6esi';
 -- GRANT ALL PRIVILEGES ON Carga_web.* TO 'user_pr'@'localhost';

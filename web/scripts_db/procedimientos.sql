@@ -1,6 +1,6 @@
--- Active: 1744363405273@@127.0.0.1@3306@Carga_web
+
 -- Primero eliminamos el procedimiento si ya existe
-DROP PROCEDURE AddOrUpdateItemCarrito;
+DROP PROCEDURE IF EXISTS AddOrUpdateItemCarrito;
 
 -- Crear el procedimiento para agregar o actualizar un ítem en el carrito
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `AddOrUpdateItemCarrito`(
@@ -29,7 +29,7 @@ BEGIN
 END;
 
 -- Primero eliminamos el procedimiento si ya existe
-DROP PROCEDURE CreateUser;
+DROP PROCEDURE IF EXISTS CreateUser;
 
 -- Crear el procedimiento para crear un nuevo usuario
 CREATE DEFINER=`user_pr`@`localhost` PROCEDURE `CreateUser`(

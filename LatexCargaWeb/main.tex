@@ -914,14 +914,15 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
             \item Este archivo contiene las instrucciones para crear los procedimientos almacenados necesarios.
             \item Verificar que el archivo \texttt{procedimientos.sql} esté presente en la ubicación indicada.
         \end{itemize}
-    
+        
         \item \textbf{Población de la tabla de productos:}
         \begin{itemize}
             \item Ejecutar: \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/insert_productos.sql;}
             \item Este archivo contiene las instrucciones para poblar la tabla de productos con datos de prueba.
             \item Asegurarse de que el archivo \texttt{insert\_productos.sql} existe en la ruta especificada.
         \end{itemize}
-    
+        \item \textbf{Cargar toda la base de datos}: Si se quisiera cargar toda la base de datos tblas, procedimientos y población de datos, habría que ejecutar  \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/carga_web_dump.sql;}
+        
         \item \textbf{Otorgar privilegios al usuario \texttt{user\_pr}:}
         \begin{itemize}
             \item Ejecutar el comando: \lstinline{GRANT ALL PRIVILEGES ON Carga_web.* TO 'user_pr'@'localhost';}
@@ -933,6 +934,8 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
             \item Ejecutar el comando: \lstinline{FLUSH PRIVILEGES;}
             \item Este comando recarga los privilegios de MySQL para aplicar los cambios inmediatamente.
         \end{itemize}
+        \item \textbf{Especificaciones:} Este ejemplo para cargar la base de datos se llevaría a cabo descargando la carpeta del proyecto y guardándola en una ruta local. A continuación, sería necesario cambiar la ruta de los comandos dependiendo de dónde se haya guardado dicha carpeta.
+        
     \end{enumerate}
 
         

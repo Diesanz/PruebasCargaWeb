@@ -1,4 +1,4 @@
--- Active: 1744363405273@@127.0.0.1@3306@Carga_web
+
 --Insert de productos para poblar las tablas 
 INSERT INTO Producto (id,nombre, descripcion, precio, stock, tipo, imagen_url) VALUES
 (1,'Ensalada de Pavo y Pina','1 lechuga. 200 gramos de pechuga de pavo asada. 200 gramos de queso feta. 90 gramos de cebollitas encurtidas. 1 lata de maíz dulce. 6 rodajas de piña, con su jugo. 1 zanahoria',10.50,1,'Equilibrado','ensaladadePavoyPina.jpg'),
