@@ -652,7 +652,7 @@ A continuación se detallan una serie de scripts necesarios para arrancar una ap
     app.jinja_env.filters['suma_dias'] = sumar_dias
 
     if __name__ == '__main__':
-        app.run(debug=False)
+        app.run(host='10.0.31.22',debug=True)
     \end{lstlisting}
     
     Este script realiza las siguientes funciones clave:
@@ -662,6 +662,7 @@ A continuación se detallan una serie de scripts necesarios para arrancar una ap
       \item Define la ruta principal \texttt{/}, que redirige a la función \texttt{api\_index} del blueprint del menú.
       \item Registra un filtro personalizado en Jinja llamado \texttt{suma\_dias}, útil para mostrar fechas manipuladas en las plantillas.
       \item Inicia el servidor en modo \texttt{debug}. En producción el modo \texttt{debug = False} 
+        \item En este caso, con el host 10.0.31.22, la aplicación se está exponiendo en esa IP específica de la red local, esto permite que otros dispositivos de la misma red puedan acceder a la app.
     \end{itemize}
     
 \subsection{Archivo \texttt{\_\_init\_\_.py}}
