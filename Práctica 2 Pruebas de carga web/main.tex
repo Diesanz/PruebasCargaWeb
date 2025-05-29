@@ -191,7 +191,11 @@ Esta práctica permite afianzar conocimientos sobre pruebas de rendimiento, moni
 \addcontentsline{toc}{section}{Introducción}
 
 \chapter{Página web}
+\section{Descripción de nuestra página web}
+\textbf{Descripción}:En EATTHIS!!, somos un equipo joven con ganas de revolucionar la forma en la que comes. Apostamos por una alimentación equilibrada, sin renunciar al sabor ni a la comodidad. Ofrecemos platos saludables, ricos, nutritivos y adaptados a tus objetivos, así como la posibilidad de preparate tus propios menus con ingredientes de calidad para que cuidar de ti sea fácil y apetecible.
 
+\textbf{Funcionalidad}:El contenido y funcionalidad se detalla
+más adelante
 \section{Introducción Flask}\cite{openwebinars_flask} \cite{flask_docs}
     Flask es un microframework escrito en Python y desarrollado para simplificar y hacer más fácil la creación de aplicaciones web bajo el patrón modelo vista controlador (MVC). Las pricipales ventajas de usar Flask son:
         \begin{itemize}
@@ -375,7 +379,7 @@ En nuestro caso, la aplicación web desarrollada sigue esta arquitectura, ya que
                 \item \textbf{platos.html} $\rightarrow$ representa la vista de todos los productos disponibles.
                 \item \textbf{detallesProducto.html} $\rightarrow$ representa la vista de los detalles de un producto.
                 \item \textbf{carrito.html} $\rightarrow$ representa la vista del carrito de un usuario.
-                \item \textbf{pedidos.html} $\rightarrow$ representa la vista del historial de pedidos del usuario.
+                \item \textbf{pedidos.html} $\rightarrow$ representa la vista del historial de pedidos del usuario. En esta vista se utiliza la paginación para poder visualizar de poco en poco los pedidos de un usuario y no sobrecargar la ase de datos.
                 \item \textbf{unPedido.html} $\rightarrow$ representa la vista de los detalles de un pedido.
             \end{itemize}
 
@@ -400,6 +404,7 @@ La página web desarrollada representa una tienda online de platos de comida, do
     \item Consulta detallada de cada producto.
     \item Consulta del historial de pedidos y visualización de sus detalles.
 \end{itemize}
+\newpage
 \subsection{Vistas, HTML y lógica Jinja2}
 
 A continuación, se describen las principales vistas de la web, explicando brevemente el uso de Jinja2 en cada una:
@@ -530,7 +535,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
        \begin{figure}[H]
            \centering
            \includegraphics[width=0.75\linewidth]{modeloDom.png}
-           \caption{Enter Caption}
+           \caption{Diagrama de dominio}
            \label{fig:enter-label}
        \end{figure}
         
@@ -538,7 +543,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.70\linewidth]{webM.png}
-        \caption{Enter Caption}
+        \caption{Mapa web}
         \label{fig:enter-label}
     \end{figure}
 
@@ -602,7 +607,7 @@ A continuación, se describen las principales vistas de la web, explicando breve
             \end{itemize}
             \item Listado de pedidos
             \begin{itemize}
-                \item \textbf{GET /api/pedidos} $\rightarrow$ devuelve la lista de pedidos del usuario autenticado.
+                \item \textbf{GET /api/pedidos} $\rightarrow$ devuelve la lista de pedidos del usuario autenticado. Como se ha dicho anteriormente este endpoint trabaja con un paginación de pedidos, para no sobrecargar la base de datos en caso de que existan demasiados pedidos.
                 \item \textbf{GET /api/pedidos/{id}} $\rightarrow$ devuelve los detalles de un pedido específico.
             \end{itemize}
             \item Proceso de compra
@@ -854,11 +859,49 @@ def get_items_carrito(usuario_id):
     \item Si el carrito existe, se calcula el total, se transforma cada ítem a formato JSON (usando \texttt{item\_carrito\_schema}) y se renderiza la plantilla \texttt{carrito.html}.
     \item En caso de que el carrito no exista, se redirige a la plantilla de inicio con un mensaje de error.
 \end{itemize}
+Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagar un producto al carrito, visualizar los pedidos, etc. \\
 
+De este modo se asegura la integridad de la web y facilita tareas de seguridad.
+
+\subsection{Ejemplo del tratamiento de la paginación en nuestra web}
+Con esta función se busca reducir la cantidad de pedidos que puede visualizar un usuario de forma simultánea. El objetivo principal de esta paginación es mejorar el rendimiento del sistema, evitando sobrecargar la interfaz de usuario y la base de datos con demasiada información en una sola consulta.
+
+La paginación permite mostrar los pedidos del usuario en bloques limitados, cargando únicamente los elementos necesarios según la página solicitada. Esto es especialmente útil cuando el número de pedidos es alto.
+
+\begin{lstlisting}[style=pythonclean, caption={Obtener pedidos de un usuario}]
+def get_pedidos(usuario_id: int, page:int):
+    """
+    Obtiene los pedidos paginados de un usuario, junto con los productos de cada pedido.
+
+    Args:
+        usuario_id (int): ID del usuario.
+        page (int): Número de página actual.
+
+    Returns:
+        dict: Contiene:
+            - 'lista_i': Lista de objetos Pedido con sus items.
+            - 'page': Página actual.
+            - 'total_pages': Total de páginas de pedidos.
+    """
+
+    items_por_pagina = 4  # Número de productos por página
+    # Cálculo para obtener los pedidos de la página actual
+    offset = (page - 1) * items_por_pagina  # Determina el punto de inicio de los pedidos
+
+    # Obtén los pedidos paginados de la base de datos
+    query = "SELECT * FROM Pedido WHERE usuario_id = %s LIMIT %s OFFSET %s"
+    conn = Conexion()
+    pedidos = conn.select_db(query, (usuario_id, items_por_pagina, offset))
+    conn.close_connection()
+
+    lista_p = [Pedido(**pedido_schema(p, [])) for p in pedidos]
+
+    num_pedidos = get_total_pedidos(usuario_id)
+    total_paginas = (num_pedidos // items_por_pagina) + (1 if num_pedidos % items_por_pagina > 0 else 0)
+\end{lstlisting}
+\newpage
 \section{Concluiones página web y Flask}
-Este patrón de verificación del token se ha aplicado de forma consistente en otros puntos de la aplicación donde se requiere autenticación como agreagr un producto al carrito, visualizar los pedidos, etc. \\
-
-De este modo se asegura la integridad de la web y facilita tareas de seguridad. Con el desarrollo de esta parte del proyecto se ha podido comprobar lo sencillo que resulta crear una página web con la ayuda de un framework como Flask. Gracias a su estructura basada en Blueprints y a una serie de funciones incorporadas por defecto, se ha facilitado notablemente la organización del código y se ha podido adoptar una arquitectura basada en el modelo MVC (Modelo-Vista-Controlador).\\
+ Con el desarrollo de esta parte del proyecto se ha podido comprobar lo sencillo que resulta crear una página web con la ayuda de un framework como Flask. Gracias a su estructura basada en Blueprints y a una serie de funciones incorporadas por defecto, se ha facilitado notablemente la organización del código y se ha podido adoptar una arquitectura basada en el modelo MVC (Modelo-Vista-Controlador).\\
 
 Asimismo, se ha observado lo accesible que resulta generar páginas HTML dinámicas mediante el uso de Jinja2, lo cual permite integrar lógica y datos directamente en las plantillas de forma clara y eficiente.\\
 
@@ -919,7 +962,7 @@ Nuestra aplicación web utiliza una base de datos relacional MySQL. El siguiente
             \item Este archivo contiene las instrucciones para poblar la tabla de productos con datos de prueba.
             \item Asegurarse de que el archivo \texttt{insert\_productos.sql} existe en la ruta especificada.
         \end{itemize}
-        \item \textbf{Cargar toda la base de datos}: Si se quisiera cargar toda la base de datos tblas, procedimientos y población de datos, habría que ejecutar  \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/carga_web_dump.sql;}
+        \item \textbf{Cargar toda la base de datos}: Si se quisiera cargar toda la base de datos tablas, procedimientos y población de datos, habría que ejecutar  \lstinline{source /home/usuario/esi/PruebasCargawev/srcips_db/carga_web_dump.sql;}
         
         \item \textbf{Otorgar privilegios al usuario \texttt{user\_pr}:}
         \begin{itemize}
@@ -1195,13 +1238,13 @@ def manejar_redireccion(self, response, mensaje_ok):
         print(mensaje_ok)
         return True
     elif response.status_code in [301,302,303,307,308]:
-        print("❌ Redirigido por problemas con el token")
-        return True
+        print(" Redirigido por problemas con el token")
+        return False
     elif response.status_code == 401:
-        print("❌ No autorizado: token inválido o expirado (401)")
+        print(" No autorizado: token inválido o expirado (401)")
         return False
     else:
-        print(f"❌ Error inesperado ({response.status_code})")
+        print(f" Error inesperado ({response.status_code})")
         return False
 \end{lstlisting}
 
@@ -1216,17 +1259,17 @@ Esta función es clave para que las tareas sepan si la petición fue exitosa, si
 @task(3)
 def agregar_producto_carrito(self):
     if not self.productos_disponibles:
-        print("⚠️ No hay productos disponibles.")
+        print(" No hay productos disponibles.")
         return
 
     producto = random.choice(self.productos_disponibles)
     data = {"id_producto": producto["id"]}
 
     with self.client.post("/api/carrito/agregar", json=data, allow_redirects=False, catch_response=True) as response:
-        if self.manejar_redireccion(response, "✅ Producto añadido al carrito"):
+        if self.manejar_redireccion(response, " Producto añadido al carrito"):
             response.success()
         else:
-            response.failure("❌ Fallo al agregar producto al carrito")
+            response.failure(" Fallo al agregar producto al carrito")
 \end{lstlisting}
 Esta tarea selecciona un producto aleatorio de la lista cargada desde el archivo \texttt{productos\_cache.json} y lo añade al carrito mediante una petición POST a \texttt{/api/carrito/agregar}
 
@@ -1238,12 +1281,12 @@ Esta tarea selecciona un producto aleatorio de la lista cargada desde el archivo
 def registro(self):
     data = generar_usuario()
     with self.client.post("/api/registro", json=data, allow_redirects=False, catch_response=True) as response:
-        if self.manejar_redireccion(response, "✅ Registro exitoso"):
+        if self.manejar_redireccion(response, " Registro exitoso"):
             self.correo = data["email"]
             self.contrasena = data["password"]
             response.success()
         else:
-            response.failure("❌ Error en el registro")
+            response.failure(" Error en el registro")
 \end{lstlisting}
 
 Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y enviándolos mediante una petición POST. Si el backend responde con una redirección válida o éxito, se almacenan las credenciales para su uso posterior. En el backend existe una función que gestiona tokens; si el token no existe o ha expirado, la aplicación redirige, por eso se comprueban los estados HTTP de redirección (300-308). El código 401 indica que el token ha expirado y se debe iniciar sesión de nuevo.
@@ -1254,14 +1297,14 @@ Esta tarea simula el registro de un nuevo usuario generando datos aleatorios y e
 @task(2)
 def checkout(self):
     with self.client.post("/api/checkout", allow_redirects=False, catch_response=True) as response:
-        if self.manejar_redireccion(response, "✅ Checkout realizado"):
+        if self.manejar_redireccion(response, " Checkout realizado"):
             if response.status_code == 200:
                 pedido = response.json().get("id_pedido")
                 if pedido:
                     self.pedido_id = pedido
             response.success()
         else:
-            response.failure("❌ Fallo en el checkout")
+            response.failure(" Fallo en el checkout")
 \end{lstlisting}
 
 Esta tarea simula la finalización de la compra realizando una petición POST al endpoint \texttt{/api/checkout}. Si la respuesta es exitosa y no se requiere redirección, se guarda el identificador del pedido para posibles consultas posteriores. Nuevamente, la verificación del token en el backend asegura que solo usuarios autenticados puedan realizar esta acción.
@@ -1269,14 +1312,14 @@ Esta tarea simula la finalización de la compra realizando una petición POST al
 \subsubsection{Obtener menú (GET /api/menu)}
 
 \begin{lstlisting}[style=pythonclean, caption={Tarea para obtener el menú de productos}]
-@task(5)
+@task(3)
 def obtener_menu(self):
     with self.client.get("/api/menu", allow_redirects=False, catch_response=True) as response:
-        if self.manejar_redireccion(response, "✅ Menú obtenido"):
+        if self.manejar_redireccion(response, " Menú obtenido"):
             self.menu = response.json()
             response.success()
         else:
-            response.failure("❌ Error al obtener el menú")
+            response.failure(" Error al obtener el menú")
 \end{lstlisting}
 
 Esta tarea realiza una petición GET para obtener la lista de productos disponibles en el menú. La respuesta se almacena localmente para ser utilizada en otras tareas. Como en los casos anteriores, si el token no está presente o ha expirado, el backend responde con redirección o error para que la simulación controle el flujo de autenticación correctamente.
@@ -1284,6 +1327,30 @@ Esta tarea realiza una petición GET para obtener la lista de productos disponib
 
 Este fragmento demuestra cómo se maneja la respuesta para detectar posibles problemas de autenticación o errores del servidor.
 
+\subsubsection{Obtener los pedidos de un usuario (GET /api/pedidos)}
+\begin{lstlisting}[style=pythonclean, caption={Tarea para obtener el menú de productos}]
+@task(1)
+def get_pedidos(self):
+
+        if self.lista_pedidos: #ya que en los pedidos a la hora de cargarlos se usa paginación, para no sobrecargar la db.
+                            # con esto se simula como un usuario va a ir accediendo a sus diferentes páginas de pedidos.
+            num_ped = len(self.lista_pedidos)
+            paginas = (num_ped // 4) + (1 if num_ped % 4 > 0 else 0)
+            pagina_rand = random.randint(1,paginas)
+            url = f"/api/pedidos?page={pagina_rand}"
+        else:
+            url = "/api/pedidos"
+
+        with self.client.get(url, allow_redirects=False, catch_response=True) as response:
+            if self.manejar_redireccion(response, " Los pedidos se muestran correctamente"):
+                response.success()
+            else:
+                response.failure(f" Fallo al obtener pedidos {response.status_code}")
+\end{lstlisting}
+La siguiente función tiene como objetivo simular una petición GET al endpoint que devuelve los pedidos de un usuario.Está diseñada para simular el comportamiento real de un usuario navegando por sus páginas de pedidos.
+
+Como los pedidos se cargan mediante paginación (para evitar sobrecargar la base de datos), se selecciona aleatoriamente una página de pedidos en cada ejecución de la función. Si la lista de pedidos (`self.lista\_pedidos`) ya ha sido obtenida previamente, se calcula el número total de páginas y se accede aleatoriamente a una de ellas. Si no se tiene información previa, se accede directamente a la primera página por defecto.
+                
 \section{Ejecución de la prueba, análisis de resultados}
 
 \subsection{Estrategia de simulación y recogida de métricas}
@@ -1308,6 +1375,7 @@ Durante esta prueba se adoptó una metodología estructurada que combinó la sim
     \begin{itemize}
         \item Se monitorizaron continuamente indicadores como uso de CPU, carga del sistema, actividad de E/S, consumo de RAM y frecuencia del procesador.
         \item Esto proporcionó una visión detallada del impacto de la carga sobre el servidor.
+        \item Como detalle se destaca que el servidor cuenta con dos núcleos.
     \end{itemize}
 
     \item \textbf{Métricas de negocio:}
@@ -1347,7 +1415,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \item En otros contextos podrían como en casos donde no se requiera de un usuario autenticado, podría considerarse válidos mediante \texttt{success()}, pero para esta prueba se trató como \texttt{failure()} para reflejar una situación más realista.
         \item Como comprobación se adjunta una captura de los errores obtenidos en el análisis donde se puede observar que son errores controlados y que son todos de respuest http de 300 a 308 lo que nos indica que el backend esta funcionando correctamente y que todo va bien como debería ocurrir en casos reales.
         La explicación de estos errores y porque surgen se explican en pasos anteriores (\autoref{sec:token}).
-        \newpage
+        
 
         \begin{figure}[h!]
             \centering
@@ -1389,7 +1457,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Datos de locust registrados en el minuto 5}
         \label{fig:enter-label}
     \end{figure}
-    
+    \newpage
     \item \textbf{Captura datos minuto 5--10:} \\
     En los siguientes 5 minutos, se simularon 81 usuarios concurrentes. 
     
@@ -1402,7 +1470,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     \end{figure}
     
     El sistema respondió con una media de 35,6 peticiones por segundo y un tiempo de respuesta medio de 132,18\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 10\,934.  No se registraron errores, más que aquellos descritos con anterioridad.
-    \newpage
+    
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.65\linewidth]{locust10.png}
@@ -1420,7 +1488,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Datos registrados en el minuto 15}
         \label{fig:enter-label}
     \end{figure}
-   
+   \newpage
     El sistema respondió con una media de 52,8 peticiones por segundo y un tiempo de respuesta medio de 139,58\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 24\,217.  No se registraron errores, más que aquellos descritos con anterioridad.
     \begin{figure}[h!]
         \centering
@@ -1428,7 +1496,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Datos de locust registrados en el minuto 15}
         \label{fig:enter-label}
     \end{figure}
-    \newpage
+    
     \item \textbf{Captura datos minuto 15--20:} \\
     En los siguientes 5 minutos, se simularon 161 usuarios concurrentes. 
     
@@ -1450,7 +1518,7 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
     El sistema respondió con una media de 79,3 peticiones por segundo y un tiempo de respuesta medio de 149,12\,ms, con un percentil 95 de 2000\,ms. El número total de peticiones fue de 66\,318. No se registraron errores, más que aquellos descritos con anterioridad.
    \item En total se han capturado 66\,318 peticiones, de las cuales 11\,225 han fallado, lo que representa una tasa de error del 16,9\%. El tiempo de respuesta medio ha sido de 149{,}12 ms, con un mínimo de 4 ms y un máximo de 5\,166 ms. El tamaño medio de las respuestas ha sido de 4\,092 bytes. La tasa de peticiones por segundo (RPS) se ha mantenido en torno a 44,2, mientras que la tasa de errores por segundo ha sido de 7,48. 
 
-    A pesar de una media de respuesta aceptable, el número significativo de fallos y la elevada dispersión en los tiempos (especialmente el valor máximo y el percentil 95 cercano a 2\,000 ms) sugieren que existen cuellos de botella, especialmente en endpoints críticos como \texttt{checkout}.El percentil 95 se ha usado con el fín de obtener una referencia del rendimiento general del sistema.
+    A pesar de una media de respuesta aceptable, el número significativo de fallos y la elevada dispersión en los tiempos (especialmente el valor máximo y el percentil 95 cercano a 2\,000 ms) sugieren que existen cuellos de botella, especialmente en endpoints críticos como \texttt{checkout}.El percentil 95 se ha usado con el fín de obtener una referencia del rendimiento general del sistema. *Para obtener el tiempo de respuesta promedio se ha sacado siempre de valor de Average(ms).
 
     \begin{figure}[h!]
         \centering
@@ -1458,10 +1526,17 @@ Con el fin de obtener una visión evolutiva del sistema bajo carga, se implement
         \caption{Resumen final valores Locust}
         \label{fig:enter-label}
     \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.0\linewidth]{imagen.png}
+        \caption{Resumen percentiles Loscust}
+        \label{fig:percentiles}
+    \end{figure}
     
 \end{itemize}
 \newpage
-\subsubsection{Endpoints críticos}
+\subsubsection{Endpoints críticos} \label{sec:enpoiCri}
 
 Durante la prueba de carga, se ha podido identificar qué endpoints del sistema son más utilizados y, por tanto, más críticos desde el punto de vista del rendimiento y la estabilidad. El análisis del ratio final y total de peticiones por clase revela una distribución equilibrada entre las diferentes rutas del usuario \texttt{MiUsuario}, pero con algunos puntos especialmente relevantes. Los resultados de este análisis podrían haber sido distintos si se hubiera cambiado el peso de las tareas, pero como se mencionó en el punto (\autoref{sec:pesos}), estos pesos se asignaron de manera que nos parecía coherente y que reflejaba cómo de verdad tenía que actuar nuestra web y sistema en condiciones reales.
 
@@ -1476,20 +1551,26 @@ Durante la prueba de carga, se ha podido identificar qué endpoints del sistema 
     \item El endpoint \texttt{agregarProductoCarrito} (\texttt{/api/carrito/agregar}) destaca como el más utilizado, con un 13,0\% del total, lo que lo convierte en un candidato prioritario para optimización y pruebas de robustez. Dado que en este endpoint se realizan varias operaciones de base de datos, y con los resultados obtenidos, podría convertirse en un cuello de botella bajo condiciones de estrés como las generadas durante la prueba.
 
     \item Le siguen varios endpoints con una participación del 8,7\% cada uno: \newline
-    \texttt{actualizarProductoPut} ('/api/productos/id'), \texttt{actualizarTipoPatch} ('/api/productos/id'), \texttt{checkout} ('/api/checkout'), \texttt{getProductos} ('/api/productos'), \texttt{intentarLogin} ('/api/login'), \texttt{menu} ('/api/menu'). Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella. Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000 ms. Esto se debe al endpoint de \texttt{checkout},la cual es una función de mucho peso ya que hace varios inserts a base datos y tiene un lógica más pesada, pero además incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Entre las peticiones que superan los 2000 ms se encuentran principalmente las del endpoint \texttt{checkout}, como se puede observar en la imagen de abajo, donde se evidencia que este endpoint genera un retraso significativo debido a la simulación de una transacción real con un retardo de 2 segundos. Este comportamiento explica por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95. Dado que se realizaron 66\,318 peticiones en total, esto significa que unas 62\,002 fueron más rápidas o iguales a 2000 ms, mientras que las restantes 4\,316 superaron ese umbral. Por tanto, el endpoint \texttt{checkout} influye de forma directa en la percepción de rendimiento para una parte relevante de los usuarios, lo que puede impactar negativamente en la eficiencia general de la web.
+    \texttt{actualizarProductoPut} ('/api/productos/id'), \texttt{actualizarTipoPatch} ('/api/productos/id'), \texttt{checkout} ('/api/checkout'), \texttt{getProductos} ('/api/productos'), \texttt{intentarLogin} ('/api/login'), \texttt{menu} ('/api/menu'). Esta frecuencia significativa sugiere que deben ser monitorizados en escenarios de carga elevada. En particular, \texttt{checkout} e \texttt{intentarLogin}, que implican varias operaciones internas como validaciones y consultas más extensas a la base de datos, aumentan el riesgo de convertirse en otro cuello de botella. Como se puede observar en los datos recogidos anteriormente, el percentil 95 presenta casi siempre un valor cercano a los 2000 ms. Esto se debe al endpoint de \texttt{checkout},la cual es una función de mucho peso ya que hace varios inserts a base datos y tiene un lógica más pesada, pero además incluye un retraso de 2 segundos, según las especificaciones de la práctica, con el objetivo de simular una transacción real. Entre las peticiones que superan los 2000 ms se encuentran principalmente las del endpoint \texttt{checkout}, como se puede observar en las imagenes de abajo, donde se evidencia que este endpoint genera un retraso significativo debido a la simulación de una transacción real con un retardo de 2 segundos. Este comportamiento explica por qué dicho endpoint es tan crítico y cómo su tiempo de respuesta afecta directamente al valor del percentil 95. Dado que se realizaron 66\,318 peticiones en total, esto significa que unas 62\,002 fueron más rápidas o iguales a 2000 ms, mientras que las restantes 4\,316 superaron ese umbral. Por tanto, el endpoint \texttt{checkout} influye de forma directa en la percepción de rendimiento para una parte relevante de los usuarios, lo que puede impactar negativamente en la eficiencia general de la web.
     \begin{figure}[h!]
         \centering
         \includegraphics[width=1.0\linewidth]{salidaLF.png}
         \caption{Salida de medición de locust}
         \label{fig:enter-label}
     \end{figure}
-
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=1.0\linewidth]{saliPercent2.png}
+        \caption{Salida de medición de locust de los percentiles}
+        \label{fig:enter-label}
+    \end{figure}
+    \newpage
     \item Otros endpoints como \texttt{cerrarSesion} ('/api/logout'), \texttt{deleteCarrito} ('/api/carrito/vaciar'),  \texttt{getCarrito} ('/api/carrito'),  \texttt{getPedidos} ('/api/pedidos'), \texttt{getProductoPorId} ('/api/productos/id'), \newline \texttt{getUnPedido} ('/api/pedidos/id'), \texttt{loginGet} ('/api/login') y \texttt{registerGet} ('/api/registro')se mantienen en un 4,3\%, siendo menos críticos individualmente. No obstante, su uso combinado representa una carga significativa y podrían convertirse en un problema si el número de usuarios o la carga aumentara.
 \end{itemize}
 
 Este análisis del ratio por clase proporciona una visión clara de dónde se deben realizar pruebas más exhaustivas sobre ciertos endpoints antes de realizar cambios en el código. En particular, los endpoints con ratios superiores al 8\% pueden considerarse como críticos para la experiencia del usuario bajo condiciones reales de uso. Además, aquellos que impliquen operaciones con la base de datos o múltiples pasos internos (como \texttt{agregarProductoCarrito} o \texttt{checkout}) deberían ser revisados para majorar y ofrecer una experiencia de usuario mejor.
 
-\section{Análisis de rendimiento y posibles cuellos de botella}
+\section{Análisis de carga, rendimiento y distribución de recursos}
 En esta sección se detalla cómo se ha medido el rendimiento del sistema y cómo éste se comporta ante situaciones de saturación de carga.
 
 A continuación se muestra una tabla resumen con todos los datos recogidos en cada captura:
@@ -1514,7 +1595,7 @@ A continuación se muestra una tabla resumen con todos los datos recogidos en ca
 \caption{Resumen de usuarios, tiempo medio de respuesta, peticiones por segundo y uso de recursos}
 \label{tab:resumen-recursos}
 \end{table}
-
+La siguiente tabla muestra información adicional sobre la carga del sistema, la frecuencia de CPU y las operaciones de entrada/salida
 \begin{table}[H]
 \centering
 \sisetup{table-format=1.2}
@@ -1534,30 +1615,18 @@ A continuación se muestra una tabla resumen con todos los datos recogidos en ca
 \end{table}
 
 \subsection{Rendimiento básico: Throughput y Latencia}
-
+A partir de los datos anteriores, analizamos ahora dos métricas fundamentales en el rendimiento de sistemas: throughput y latencia
 \begin{itemize}
   \item \textbf{Throughput} (o rendimiento): peticiones por segundo (RPS). El throughput crece casi linealmente conforme aumentan los usuarios, hasta los 180 concurrentes.
   
   \item \textbf{Latencia promedio}: tiempo medio que tarda una petición en responderse. La latencia se mantiene bastante estable, entre 130 y 150 ms, con ligeros picos conforme suben los usuarios, lo cual es normal.
 \end{itemize}
 
-Con esto podemos decir que el sistema aguanta bien la carga aplicada.
 
-\subsection{Uso de recursos y carga del sistema}
-
-\begin{itemize}
-  \item La \textbf{CPU} sube hasta un 37\%, pero no llega ni cerca del 100\%, así que no está saturada.
-  
-  \item La \textbf{RAM} se mantiene bastante estable, sin cambios significativos.
-  
-  \item La \textbf{carga promedio} del sistema (load average) llega hasta 1.87 en 1 minuto, lo que indica que hay procesos esperando para ejecutarse, pero sigue siendo menos que el número de núcleos (nuestro sistema cuenta con dos núcleos).
-\end{itemize}
-
-En resumen, la \textbf{CPU} podría ser un posible límite en el futuro, pero todavía hay margen.
 
 \subsection{Eficiencia por usuario}
-
-Para saber si el sistema mantiene su rendimiento por usuario, calculamos el throughput por usuario activo:
+ Es importante evaluar si el sistema mantiene una eficiencia constante a medida que se suman usuarios. 
+Para ello calculamos el throughput por usuario activo:
 
 \[
 \text{Throughput por usuario} = \frac{\text{Peticiones por segundo}}{\text{Usuarios concurrentes}}
@@ -1581,15 +1650,87 @@ Para saber si el sistema mantiene su rendimiento por usuario, calculamos el thro
 
 El \textbf{throughput} por usuario se mantiene casi constante en 0.44 RPS, lo que indica que el sistema escala correctamente y sigue siendo eficiente por usuario. Los recursos se reparten de manera equilibrada.
 
-\subsection{Posibles cuellos de botella}
+\subsection{Análisis de uso de recursos y posibles cuellos de botella}
+Una vez determinado que el rendimiento por usuario se mantiene estable, exploramos ahora cómo se comportan los recursos del sistema y como se distribuyen para detectar posibles cuellos de botella
+Durante la prueba se han monitorizado los principales recursos del sistema para detectar posibles cuellos de botella. A continuación se detallan las observaciones:
 
 \begin{itemize}
-  \item La \textbf{carga del sistema} se acerca al número de núcleos (1.87 de load average), por lo que si el servidor tiene 2 núcleos, está casi saturado. Esto podría explicar la ralentización en el crecimiento del throughput.
-  
-  \item La \textbf{CPU} está al 37\%, no saturada, pero el aumento en latencia indica que algunas peticiones pueden estar esperando recursos. Por ahora no es problema, pero si sube la carga, podría ser un cuello de botella.
-  
-  \item La \textbf{RAM} se mantiene estable, no parece ser un problema.
+  \item La \textbf{carga promedio del sistema} (\textit{load average}) alcanzó un valor de 1.87 en 1 minuto. Teniendo en cuenta que el sistema cuenta con dos núcleos, esta carga indica que se está acercando al límite de capacidad. Si se continuara aumentando la carga, a partir de los 180 usuarios concurrentes, el sistema podría saturarse, afectando negativamente al rendimiento y a la experiencia del usuario.
+
+  \item La \textbf{CPU} mostró un uso máximo del 37\%. Aunque aún no está saturada, el incremento en la latencia conforme aumenta el número de usuarios sugiere que algunas peticiones empiezan a esperar recursos. Por ahora no representa un problema grave, pero si se incrementa la carga, podría convertirse en un cuello de botella, especialmente considerando que el sistema tiene solo dos núcleos.
+
+  \item La \textbf{RAM} se mantuvo estable durante toda la prueba, sin presentar signos de agotamiento ni de uso excesivo. Por lo tanto, se descarta como factor limitante en este escenario.
+
+  \item La \textbf{latencia} también aumentó ligeramente al acercarse a los 180 usuarios, lo que refuerza la hipótesis de una posible saturación futura de la CPU o del sistema en general.
 \end{itemize}
+
+\textbf{En resumen}, aunque en este punto no se ha alcanzado un cuello de botella crítico, el sistema comienza a mostrar señales tempranas de estrés, especialmente en relación con la carga del sistema y el uso de CPU. Si se planea escalar el número de usuarios concurrentes, convendría mejorar los recursos existentes, como por ejemplo aumentar el número de núcleos.
+
+Además del rendimiento, resulta relevante analizar cómo se distribuye el uso de recursos entre las distintas partes del sistema, especialmente cuando hay varios procesos concurrentes. Para ello, se ha calculado el \textbf{índice de equidad de Jain}, que indica cuán equitativamente se distribuyen los recursos del sistema entre los procesos, usuarios o solicitudes. Un valor cercano a 1 implica una distribución equitativa, mientras que valores más bajos indican desigualdad.
+
+\subsubsection*{Cálculo del índice de Jain}
+
+El índice se define como:
+
+\[
+J(x_1, x_2, ..., x_n) = \frac{(\sum_{i=1}^{n} x_i)^2}{n \cdot \sum_{i=1}^{n} x_i^2}
+\]
+
+\textbf{CPU (\%)}\\
+Valores observados: 20.40, 30.30, 36.40, 37.60, 36.40
+
+\[
+\sum x_i = 161.1 \qquad \sum x_i^2 = 5397.93
+\]
+\[
+J_{CPU} = \frac{(161.1)^2}{5 \cdot 5397.93} = \frac{25953.21}{26989.65} \approx 0.96
+\]
+
+\textbf{RAM (\%)}\\
+Valores observados: 35.3, 35.1, 34.7, 34.8, 34.7
+
+\[
+\sum x_i = 174.6 \qquad \sum x_i^2 = 6097.32
+\]
+\[
+J_{RAM} = \frac{(174.6)^2}{5 \cdot 6097.32} = \frac{30478.76}{30486.6} \approx 1.00
+\]
+
+Estos resultados muestran que el uso de la memoria RAM ha sido prácticamente equitativo entre los procesos concurrentes. En cuanto a la CPU, la distribución también ha sido bastante equilibrada, aunque con ligeras variaciones, lo cual es esperable debido al aumento de carga que está experimentando el sistema. 
+
+Se concluye que, bajo la carga actual de 180 usuarios concurrentes, los recursos del sistema se distribuyen de manera equitativa, sin indicios de desigualdad.
+
+\subsubsection*{Análisis de equidad a partir de percentiles de latencia}
+Además del reparto de recursos, es crucial analizar cómo varía la experiencia de los usuarios.
+Para ello con los datos obtenidos en el resumen final de Locust, que se pueden consultar en la \autoref{fig:percentiles}, y complementando la información presentada en la sección \autoref{sec:enpoiCri}, podemos recoger los siguientes valores representativos del comportamiento del sistema:
+
+\begin{itemize}
+  \item \textbf{Percentil 50 (P50)}: 15 ms
+  \item \textbf{Percentil 90 (P90)}: 49 ms
+  \item \textbf{Percentil 95 (P95)}: 2000 ms
+\end{itemize}
+
+A partir de estos datos, podemos estimar la \textbf{desviación estándar} (\(\sigma\)) utilizando la diferencia entre percentiles:
+
+\[
+\sigma \approx \frac{P_{95} - P_{50}}{2} = \frac{2000 - 15}{2} = 992.5 \, \text{ms}
+\]
+
+También calculamos la \textbf{media} (\(\mu\)) como el promedio de estos tres percentiles:
+
+\[
+\mu \approx \frac{P_{50} + P_{90} + P_{95}}{3} = \frac{15 + 49 + 2000}{3} = \frac{2064}{3} \approx 688 \, \text{ms}
+\]
+
+Con estos valores, estimamos el \textbf{coeficiente de variación} (CV), que mide la variabilidad relativa en la latencia:
+
+\[
+CV \approx \frac{\sigma}{\mu} = \frac{992.5}{688} \approx 1.44
+\]
+
+Un valor de \( CV > 1 \) indica una alta variabilidad y una distribución desigual de los recursos del sistema, lo que sugiere problemas de equidad y posibles cuellos de botella. En sistemas bien optimizados, el CV debería ser menor a 0.5.
+
+De esta manera, podemos confirmar los supuestos planteados anteriormente: aunque el sistema responde rápido para la mayoría de las peticiones (reflejado en el bajo P50 y P90), existe un pequeño porcentaje de solicitudes con latencias muy elevadas (P95). Esto indica que ciertos procesos, como endpoints con una carga de trabajo elevada o tareas intensivas, están acaparando recursos o, en este caso, congestionando el sistema.
 
 \subsection{Ley de Little}
 
@@ -1647,20 +1788,22 @@ Como se observa, \(\mu \cdot R\) es menor que \(N\), lo cual indica que no todos
 
 \subsection{Conclusiones de los resultados}
 
-Podemos decir que el sistema es eficiente porque:
+Según los datos recogidos podemos decir que el sistema matiene un rendimiento más o menos aceptable hasta 180 usuarios, por lo que se puede deducir que el sistema es eficiente debido a que:
 
 \begin{itemize}
-    \item El throughput crece bastante mientras la CPU sube poco.
+    \item El throughput crece bastante mientras la CPU no aumenta de forma proporcional a este.
     \item El sistema aguanta bien la carga sin saturarse ni que la latencia aumente demasiado.
-    \item El percentil 95 nos dice que unas 62 002 peticiones dueron más raṕida o iguales a 2000 ms, y 4316 han superado ese umbral. Por lo que hay enpoints que están causando cuellos de botella. Entre estos endpoint destacar el de relizar un pedido ('checkout'), el cual de entre todas sus petiones no fallidas, casi todas las que han superado el umbral son de este enpoint, como se vio con anterioridad.
+    \item Los recursos del sistema se reparten de manera equitativa.
+    \item El percentil 95 nos dice que unas 62 002 peticiones dieron más rapida o iguales a 2000 ms, y 4316 han superado ese umbral. Por lo que hay enpoints que están causando cuellos de botella. Entre estos endpoint destacar el de realizar un pedido ('checkout'), el cual de entre todas sus petiones no fallidas, casi todas las que han superado el umbral son de este enpoint, como se vio con anterioridad.
     \item Se concluye que no todos los usuarios están activos en cada momento, algunos están en espera entre acciones/tareas.
+    \item Los errores recogidos han sido errores controlados, por lo que no necesitan ser analizados.
 \end{itemize}
 
 En resumen, el sistema funciona bien hasta 180 usuarios concurrentes, con buen rendimiento y sin cuellos de botella claros todavía.
 
 No obstante, si se continuase aumentando la cantidad de usuarios más allá de este punto, es probable que la \textbf{CPU comience a saturarse}, y como consecuencia, la latencia podría incrementarse rápidamente. Esto se debe a que el sistema estaría operando muy cerca de su \textbf{límite de capacidad}, por lo que pequeñas variaciones en la carga o en la disponibilidad de recursos podrían provocar un comportamiento no lineal, con una caída del rendimiento y aumento del tiempo de respuesta de forma abrupta.
 
-Por tanto, si se desea escalar el sistema para soportar una carga superior, sería recomendable considerar optimizaciones a nivel de backend o infraestructura, como balanceo de carga, caché de contenido o escalado horizontal mediante la distribución de servicios.
+Por tanto, si se desea escalar el sistema para soportar una carga superior, sería recomendable considerar optimizaciones a nivel de backend o infraestructura, como balanceo de carga, caché de contenido o escalado horizontal mediante la distribución de servicioso un escalado vertical aumentando el número de nucleos.
 
 
 
@@ -1669,13 +1812,13 @@ Por tanto, si se desea escalar el sistema para soportar una carga superior, ser�
 Durante el desarrollo del backend se aplicaron diversas optimizaciones que, en ese momento, se consideraron útiles para mejorar el rendimiento del sistema. Gracias a estas mejoras, es posible que se haya conseguido un mejor comportamiento bajo carga. Entre las principales acciones implementadas destacan:
 
 \begin{itemize}
-    \item \textbf{Paginación en los endpoints de pedidos}: Para evitar la carga excesiva de datos al listar muchos pedidos. Se muestran 5 pedidos por página y cada vez que se cambia de página se carga unos nuevos pedido, de esta forma, si un usuario realiza muchos pedidos, la consulta a este endpoint no genera tanta carga y lo irá cargando poco a poco todo.
+    \item \textbf{Paginación en los endpoints de pedidos}: Para evitar la carga excesiva de datos al listar muchos pedidos. Se muestran 5 pedidos por página y cada vez que se cambia de página se carga unos nuevos pedido, de esta forma, si un usuario realiza muchos pedidos, la consulta a este endpoint no genera tanta carga y lo irá cargando poco a poco todo. Esto se tiene en cuanta a la hora de generar la carga con Locust, de tal forma que se accede a los pedidos de un usuario, se realizan un par de cálculos, y una vez obteneida las páginas, de manera random se accederá a unas o a otras.
     \item \textbf{Procedimientos almacenados}: Se han creado en MariaDB para optimizar operaciones como la creación de usuarios o pedidos, reduciendo el número de consultas que realiza la aplicación. Además, para consultas que se ejecutan de forma consecutiva y que no están encapsuladas en un procedimiento almacenado, se utiliza la misma conexión a la base de datos durante todas ellas, cerrándola únicamente al finalizar.
     \item \textbf{Comprobaciones previas a las consultas}: Antes de realizar tareas como modificaciones en los productos, se verifica primero si los datos introducidos son diferentes a los que ya están registrados. Es decir, al intentar modificar un producto, se realiza primero un SELECT para obtener los datos actuales de dicho producto y se comparan con los datos nuevos introducidos. Si los datos son distintos, se ejecuta un UPDATE en la base de datos para actualizar la información; en caso contrario, no se realiza ninguna acción.
     \item \textbf{Minimización de consultas anidadas}: Se han reestructurado algunas funciones para reducir el coste computacional de las consultas complejas, como en el caso de obtener el carrito de un usuario o los productos de un pedido. De esta manera, se consigue un código más escalable y fácil de mantener.
 \end{itemize}
 
-
+\newpage
 \section{Conclusiones pruebas de carga con Locust}
 Gracias a Locust, ha sido posible obtener una visión detallada del comportamiento del sistema bajo distintas cargas de trabajo. Esta información, una vez recogida y analizada, resulta muy útil para tomar decisiones informadas de cara a futuras optimizaciones o modificaciones del sistema.\\
 
@@ -1837,7 +1980,7 @@ FROM Carga_web.CarritoItem ci
 JOIN Carga_web.Carrito c ON c.id = ci.carrito_id;
 \end{lstlisting}
 
-Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Gauge*, estableciendo un límite máximo de 150 carritos. Esta elección se debe a que, una vez que se realizan los pedidos, de tabla `CarritoItem` se eliminan los items del usurio que acaba de realizar el pedido, lo que hace que esta visualización varíe constantemente.
+Para mostrar los resultados en Grafana, se ha optado por una visualización de tipo *Gauge*, estableciendo un límite máximo de 150 carritos. Esta elección se debe a que, una vez que se realizan los pedidos, de tabla `CarritoItem` se eliminan los items del usuario que acaba de realizar el pedido, lo que hace que esta visualización varíe constantemente.
 
 Además, esta métrica permite evaluar la carga que está soportando la tabla de carritos y analizar si los usuarios están avanzando en el proceso de compra o simplemente acumulando productos sin completar el pedido.
 
@@ -1848,6 +1991,7 @@ Además, esta métrica permite evaluar la carga que está soportando la tabla de
     \label{fig:enter-label}
 \end{figure}
 
+\newpage
 \subsection*{Pedidos creados}
 
 Esta métrica permite conocer cuántos pedidos se han realizado en cada unidad de tiempo, lo cual resulta útil para analizar el comportamiento de los usuarios en la web, detectar picos de actividad y evaluar el rendimiento del sistema. Además, también permite visualizar el número total de pedidos realizados en el intervalo seleccionado.
@@ -1879,7 +2023,7 @@ Para mostrar los resultados en Grafana, se ha optado por una visualización de t
 \end{figure}
 
 \section{Conclusiones Grafana}
-Grafana ha contribuido de manera muy eficaz a la hora de recoger y visualizar los datos del sistema. Gracias a su fácil integración con bases de datos, hemos podido obtener los resultados necesarios y observar el comportamiento del sistema de forma clara y eficiente. Con una implementación sencilla y rápida, Grafana ha demostrado ser una herramienta robusta, permitiéndonos monitorizar el estado del sistema como si se tratara de un entorno real.
+Grafana ha contribuido de manera muy eficaz a la hora de recoger y visualizar los datos del sistema. Gracias a su fácil integración con bases de datos, hemos podido obtener los resultados necesarios y observar el comportamiento del sistema de forma clara y eficiente. Con una implementación sencilla y rápida, Grafana ha demostrado ser una herramienta fiable y eficiente, permitiéndonos monitorizar el estado del sistema como si se tratara de un entorno real.
 
 \chapter{Conclusiones y  Reparto de trabajo}
 
@@ -1887,7 +2031,7 @@ Grafana ha contribuido de manera muy eficaz a la hora de recoger y visualizar lo
 
 A lo largo de este proyecto se ha conseguido desarrollar una aplicación web en Flask, siguiendo una arquitectura Modelo-Vista-Controlador (MVC). Se han implementado las funcionalidades principales de una tienda online, como el registro y login de usuarios, la visualización de productos, la gestión de carritos y pedidos, así como un sistema de autenticación mediante tokens.
 
-Por otro lado, se han realizado pruebas de carga sobre la página web y sus diferentes endpoints utilizando la herramienta Locust, desarrollada en Python. Para estas pruebas, se creó un script que simulaba diferentes usuarios realizando las distintas tareas posibles en nuestra web. Esto permitió exponer el sistema a distintas condiciones de carga. Tras las pruebas, se recogieron los resultados y se generaron métricas que ayudaron a identificar posibles cuellos de botella.
+Por otro lado, se han realizado pruebas de carga sobre la página web y sus diferentes endpoints utilizando la herramienta Locust, desarrollada en Python. Para estas pruebas, se creó un script que simulaba diferentes usuarios realizando las distintas tareas posibles en nuestra web. Esto permitió exponer el sistema a distintas condiciones de carga. Tras las pruebas, se recogieron los resultados y se generaron métricas que ayudaron a identificar posibles cuellos de botella y evaluar el rendimiento,comportamiento del sistema.
 
 También se configuró Grafana para visualizar métricas del sistema, lo cual fue útil para observar el rendimiento en tiempo real y entender mejor el comportamiento de la aplicación bajo carga.
 
@@ -1918,7 +2062,7 @@ Como posibles mejoras futuras, se propone:
 
 \subsubsection*{Sánchez Maroto, Gonzalo}
 \begin{itemize}
-    \item \textbf{Página web}: Menú principal e implementación del endpoint de pedidos.
+    \item \textbf{Página web}: Menú principal e implementación del endpoint de pedidos. Creación de sistema de errores con Flask.
     \item \textbf{Locust}: Tareas de visualización de pedidos individuales, listados de pedidos y vaciado del carrito.
 \end{itemize}
 
